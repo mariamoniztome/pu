@@ -7,7 +7,8 @@ import { Select } from './ui/select';
 import { Textarea } from './ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { appointmentsApi, patientsApi } from '../api';
-import { Appointment, Patient } from '../types';
+import { Appointment } from '../types/appointment';
+import { Patient } from '../types/patient';
 
 interface AppointmentFormProps {
   appointment?: Appointment | null;
