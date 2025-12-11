@@ -144,13 +144,13 @@ export function PatientsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="bg-gradient-to-r from-white/60 to-white/40 backdrop-blur-sm rounded-3xl p-6 border border-white/50 shadow-xl shadow-primary-100/50 flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Patients</h1>
-          <p className="text-slate-500 mt-1">Manage patient records</p>
+          <h1 className="text-3xl font-bold text-slate-800">Patients</h1>
+          <p className="text-slate-600 mt-1">Manage patient records</p>
         </div>
         <Button onClick={() => setShowForm(true)}>
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="h-5 w-5 mr-2" />
           Add Patient
         </Button>
       </div>

@@ -4,10 +4,13 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { paymentsApi } from '../api';
 import { Payment } from '../types/payment';
+import { PaymentForm } from '../components/PaymentForm';
 
 export function PaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
 
   useEffect(() => {
     loadPayments();
@@ -33,13 +36,13 @@ export function PaymentsPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'paid':
-        return 'bg-green-100 text-green-800';
+        return 'bg-gradient-to-r from-sage-200 to-sage-300 text-sage-800';
       case 'partial':
-        return 'bg-orange-100 text-orange-800';
+        return 'bg-gradient-to-r from-sand-200 to-sand-300 text-sand-800';
       case 'unpaid':
-        return 'bg-red-100 text-red-800';
+        return 'bg-gradient-to-r from-peach-200 to-peach-300 text-peach-800';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gradient-to-r from-sand-200 to-sand-300 text-sand-800';
     }
   };
 
@@ -49,13 +52,13 @@ export function PaymentsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="bg-gradient-to-r from-white/60 to-white/40 backdrop-blur-sm rounded-3xl p-6 border border-white/50 shadow-xl shadow-sand-100/50 flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Payments</h1>
-          <p className="text-slate-500 mt-1">Financial records and invoices</p>
+          <h1 className="text-3xl font-bold text-slate-800">Payments</h1>
+          <p className="text-slate-600 mt-1">Financial records and invoices</p>
         </div>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
+        <Button onClick={() => setShowForm(true)}>
+          <Plus className="h-5 w-5 mr-2" />
           Record Payment
         </Button>
       </div>
@@ -68,7 +71,7 @@ export function PaymentsPage() {
                 <span>{getPatientName(payment)}</span>
                 <DollarSign className="h-5 w-5 text-slate-400" />
               </CardTitle>
-              <span className={`text-xs px-2 py-1 rounded ${getStatusColor(payment.status)} w-fit`}>
+              <span className={`text-xs font-medium px-3 py-1.5 rounded-xl ${getStatusColor(payment.status)} w-fit`}>
                 {payment.status}
               </span>
             </CardHeader>
@@ -112,6 +115,17 @@ export function PaymentsPage() {
           </Card>
         ))}
       </div>
+
+      {showForm && (
+        <PaymentForm
+          payment={selectedPayment}
+          onClose={() => {
+            setShowForm(false);
+            setSelectedPayment(null);
+            loadPayments();
+          }}
+        />
+      )}
     </div>
   );
 }

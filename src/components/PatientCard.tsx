@@ -14,31 +14,37 @@ export function PatientCard({ patient, onEdit, onDelete }: PatientCardProps) {
     (new Date().getTime() - new Date(patient.dateOfBirth).getTime()) / (365.25 * 24 * 60 * 60 * 1000)
   );
 
+  const genderColors = {
+    male: 'bg-gradient-to-r from-primary-300 to-primary-400 text-white',
+    female: 'bg-gradient-to-r from-peach-300 to-peach-400 text-white',
+    other: 'bg-gradient-to-r from-lavender-300 to-lavender-400 text-white',
+  };
+
   return (
-    <Card className="hover:shadow-md transition-shadow">
-      <CardHeader>
+    <Card className="hover:scale-105 transition-transform duration-200">
+      <CardHeader className="bg-gradient-to-br from-sand-50 to-transparent">
         <CardTitle className="flex items-center justify-between">
-          <span className="text-lg">{`${patient.firstName} ${patient.lastName}`}</span>
-          <span className="text-xs font-normal text-slate-500 bg-slate-100 px-2 py-1 rounded">
+          <span className="text-lg text-slate-800">{`${patient.firstName} ${patient.lastName}`}</span>
+          <span className={`text-xs font-medium px-3 py-1.5 rounded-xl ${genderColors[patient.gender as keyof typeof genderColors]}`}>
             {patient.gender}
           </span>
         </CardTitle>
-        <p className="text-sm text-slate-500">Age: {age} years</p>
+        <p className="text-sm text-slate-600 font-medium">Age: {age} years</p>
       </CardHeader>
-      <CardContent className="space-y-2">
+      <CardContent className="space-y-3">
         {patient.email && (
-          <div className="flex items-center text-sm text-slate-600">
-            <Mail className="h-4 w-4 mr-2" />
+          <div className="flex items-center text-sm text-slate-700 bg-primary-50 p-2 rounded-xl">
+            <Mail className="h-4 w-4 mr-2 text-primary-600" />
             {patient.email}
           </div>
         )}
-        <div className="flex items-center text-sm text-slate-600">
-          <Phone className="h-4 w-4 mr-2" />
+        <div className="flex items-center text-sm text-slate-700 bg-sage-50 p-2 rounded-xl">
+          <Phone className="h-4 w-4 mr-2 text-sage-600" />
           {patient.phone}
         </div>
         {patient.address && (
-          <div className="flex items-center text-sm text-slate-600">
-            <MapPin className="h-4 w-4 mr-2" />
+          <div className="flex items-center text-sm text-slate-700 bg-sand-50 p-2 rounded-xl">
+            <MapPin className="h-4 w-4 mr-2 text-sand-600" />
             {patient.address}
           </div>
         )}
