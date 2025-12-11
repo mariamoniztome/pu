@@ -4,10 +4,13 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { externalReportsApi } from '../api';
 import { ExternalReport } from '../types';
+import { ReportForm } from '../components/ReportForm';
 
 export function ReportsPage() {
   const [reports, setReports] = useState<ExternalReport[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [selectedReport, setSelectedReport] = useState<ExternalReport | null>(null);
 
   useEffect(() => {
     loadReports();
@@ -56,7 +59,7 @@ export function ReportsPage() {
           <h1 className="text-3xl font-bold text-slate-800">Reports</h1>
           <p className="text-slate-600 mt-1">External reports for institutions</p>
         </div>
-        <Button>
+        <Button onClick={() => setShowForm(true)}>
           <Plus className="h-5 w-5 mr-2" />
           New Report
         </Button>
@@ -102,6 +105,17 @@ export function ReportsPage() {
           </Card>
         ))}
       </div>
+
+      {showForm && (
+        <ReportForm
+          report={selectedReport}
+          onClose={() => {
+            setShowForm(false);
+            setSelectedReport(null);
+            loadReports();
+          }}
+        />
+      )}
     </div>
   );
 }

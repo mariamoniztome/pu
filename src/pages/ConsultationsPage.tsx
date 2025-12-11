@@ -4,10 +4,13 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { consultationsApi } from '../api';
 import { Consultation } from '../types';
+import { ConsultationForm } from '../components/ConsultationForm';
 
 export function ConsultationsPage() {
   const [consultations, setConsultations] = useState<Consultation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [selectedConsultation, setSelectedConsultation] = useState<Consultation | null>(null);
 
   useEffect(() => {
     loadConsultations();
@@ -41,7 +44,7 @@ export function ConsultationsPage() {
           <h1 className="text-3xl font-bold text-slate-800">Sessions</h1>
           <p className="text-slate-600 mt-1">Clinical session records</p>
         </div>
-        <Button>
+        <Button onClick={() => setShowForm(true)}>
           <Plus className="h-5 w-5 mr-2" />
           New Session
         </Button>
@@ -82,6 +85,17 @@ export function ConsultationsPage() {
           </Card>
         ))}
       </div>
+
+      {showForm && (
+        <ConsultationForm
+          consultation={selectedConsultation}
+          onClose={() => {
+            setShowForm(false);
+            setSelectedConsultation(null);
+            loadConsultations();
+          }}
+        />
+      )}
     </div>
   );
 }

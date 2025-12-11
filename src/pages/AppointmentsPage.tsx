@@ -4,10 +4,13 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { appointmentsApi } from '../api';
 import { Appointment } from '../types';
+import { AppointmentForm } from '../components/AppointmentForm';
 
 export function AppointmentsPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
 
   useEffect(() => {
     loadAppointments();
@@ -58,7 +61,7 @@ export function AppointmentsPage() {
           <h1 className="text-3xl font-bold text-slate-800">Appointments</h1>
           <p className="text-slate-600 mt-1">Manage appointment schedules</p>
         </div>
-        <Button>
+        <Button onClick={() => setShowForm(true)}>
           <Plus className="h-5 w-5 mr-2" />
           Schedule Appointment
         </Button>
@@ -97,6 +100,17 @@ export function AppointmentsPage() {
           </Card>
         ))}
       </div>
+
+      {showForm && (
+        <AppointmentForm
+          appointment={selectedAppointment}
+          onClose={() => {
+            setShowForm(false);
+            setSelectedAppointment(null);
+            loadAppointments();
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -4,10 +4,13 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { paymentsApi } from '../api';
 import { Payment } from '../types';
+import { PaymentForm } from '../components/PaymentForm';
 
 export function PaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
 
   useEffect(() => {
     loadPayments();
@@ -54,7 +57,7 @@ export function PaymentsPage() {
           <h1 className="text-3xl font-bold text-slate-800">Payments</h1>
           <p className="text-slate-600 mt-1">Financial records and invoices</p>
         </div>
-        <Button>
+        <Button onClick={() => setShowForm(true)}>
           <Plus className="h-5 w-5 mr-2" />
           Record Payment
         </Button>
@@ -112,6 +115,17 @@ export function PaymentsPage() {
           </Card>
         ))}
       </div>
+
+      {showForm && (
+        <PaymentForm
+          payment={selectedPayment}
+          onClose={() => {
+            setShowForm(false);
+            setSelectedPayment(null);
+            loadPayments();
+          }}
+        />
+      )}
     </div>
   );
 }
