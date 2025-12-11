@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Users, Calendar, FileText, DollarSign, Plus, Bell, Search, ChevronLeft, ChevronRight, Check, Clock } from 'lucide-react';
+import { Users, Calendar, FileText, Plus, Bell, Search, ChevronLeft, ChevronRight, Check, Clock } from 'lucide-react';
 import { Card } from '../components/ui/card';
 import { patientsApi, appointmentsApi, consultationsApi, paymentsApi, PaymentStats } from '../api';
 import { Button } from '../components/ui/button';
