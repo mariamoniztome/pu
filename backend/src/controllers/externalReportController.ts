@@ -38,9 +38,9 @@ export const getReportsByPatient = async (req: Request, res: Response) => {
 
 export const createReport = async (req: Request, res: Response) => {
   try {
-    const reportData = req.body;
+    const { attachments, ...reportData } = req.body;
 
-    if (req.files && Array.isArray(req.files)) {
+    if (req.files && Array.isArray(req.files) && req.files.length > 0) {
       reportData.attachments = req.files.map((file: Express.Multer.File) => ({
         filename: file.filename,
         originalName: file.originalname,
@@ -49,6 +49,8 @@ export const createReport = async (req: Request, res: Response) => {
         path: file.path,
         uploadedAt: new Date(),
       }));
+    } else {
+      reportData.attachments = [];
     }
 
     const report = new ExternalReport(reportData);
@@ -56,13 +58,14 @@ export const createReport = async (req: Request, res: Response) => {
     await report.populate('patient', 'firstName lastName email phone');
     res.status(201).json(report);
   } catch (error: any) {
+    console.error('Failed to create report:', error.message);
     res.status(400).json({ error: 'Failed to create report', message: error.message });
   }
 };
 
 export const updateReport = async (req: Request, res: Response) => {
   try {
-    const reportData = req.body;
+    const { attachments, ...reportData } = req.body;
 
     if (req.files && Array.isArray(req.files) && req.files.length > 0) {
       const newAttachments = req.files.map((file: Express.Multer.File) => ({
@@ -96,6 +99,7 @@ export const updateReport = async (req: Request, res: Response) => {
     }
     res.json(report);
   } catch (error: any) {
+    console.error('Failed to update report:', error.message);
     res.status(400).json({ error: 'Failed to update report', message: error.message });
   }
 };
