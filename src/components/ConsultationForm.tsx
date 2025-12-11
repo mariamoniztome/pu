@@ -103,7 +103,6 @@ export function ConsultationForm({ consultation, onClose }: ConsultationFormProp
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
       <Dialog open={true} onOpenChange={onClose}>
         <DialogHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-peach-50 to-transparent">
           <DialogTitle className="text-slate-800">
@@ -271,6 +270,5 @@ export function ConsultationForm({ consultation, onClose }: ConsultationFormProp
           </form>
         </DialogContent>
       </Dialog>
-    </div>
   );
 }

@@ -87,7 +87,6 @@ export function AppointmentForm({ appointment, onClose }: AppointmentFormProps) 
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
       <Dialog open={true} onOpenChange={onClose}>
         <DialogHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-sage-50 to-transparent">
           <DialogTitle className="text-slate-800">
@@ -202,6 +201,5 @@ export function AppointmentForm({ appointment, onClose }: AppointmentFormProps) 
           </form>
         </DialogContent>
       </Dialog>
-    </div>
   );
 }
