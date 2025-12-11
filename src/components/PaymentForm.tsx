@@ -5,9 +5,10 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select } from './ui/select';
 import { Textarea } from './ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { paymentsApi, patientsApi } from '../api';
-import { Payment, Patient } from '../types';
+import { Payment } from '../types/payment';
+import { Patient } from '../types/patient';
 
 interface PaymentFormProps {
   payment?: Payment | null;
@@ -95,16 +96,16 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <Card className="max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-sand-50 to-transparent">
-          <CardTitle className="text-slate-800">
+      <Dialog open={true} onOpenChange={onClose}>
+        <DialogHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-sand-50 to-transparent">
+          <DialogTitle className="text-slate-800">
             {payment ? 'Edit Payment' : 'Record New Payment'}
-          </CardTitle>
+          </DialogTitle>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>
-        </CardHeader>
-        <CardContent className="pt-6">
+        </DialogHeader>
+        <DialogContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <Label htmlFor="patient">Patient *</Label>
@@ -183,7 +184,7 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
                 >
                   <option value="">Select method</option>
                   <option value="cash">Cash</option>
-                  <option value="card">Card</option>
+                  <option value="card">Dialog</option>
                   <option value="transfer">Transfer</option>
                   <option value="check">Check</option>
                   <option value="insurance">Insurance</option>
@@ -250,8 +251,8 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
               </Button>
             </div>
           </form>
-        </CardContent>
-      </Card>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

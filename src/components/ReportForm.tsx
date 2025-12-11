@@ -5,9 +5,10 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select } from './ui/select';
 import { Textarea } from './ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { externalReportsApi, patientsApi } from '../api';
-import { ExternalReport, Patient } from '../types';
+import { ExternalReport } from '../types/reports';
+import { Patient } from '../types/patient';
 
 interface ReportFormProps {
   report?: ExternalReport | null;
@@ -106,16 +107,16 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-      <Card className="max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-        <CardHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-lavender-50 to-transparent">
-          <CardTitle className="text-slate-800">
+      <Dialog open={true} onOpenChange={onClose}>
+        <DialogHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-lavender-50 to-transparent">
+          <DialogTitle className="text-slate-800">
             {report ? 'Edit Report' : 'New External Report'}
-          </CardTitle>
+          </DialogTitle>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>
-        </CardHeader>
-        <CardContent className="pt-6">
+        </DialogHeader>
+        <DialogContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -291,8 +292,8 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
               </Button>
             </div>
           </form>
-        </CardContent>
-      </Card>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
