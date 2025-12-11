@@ -25,10 +25,10 @@ export function DashboardPage() {
       ]);
 
       setStats({
-        totalPatients: patients.data.length,
-        totalAppointments: appointments.data.length,
-        totalConsultations: consultations.data.length,
-        paymentStats: paymentStats.data,
+        totalPatients: patients.length,
+        totalAppointments: appointments.length,
+        totalConsultations: consultations.length,
+        paymentStats: paymentStats,
       });
     } catch (error) {
       console.error('Failed to load stats:', error);
