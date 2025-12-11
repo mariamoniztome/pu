@@ -21,7 +21,7 @@ export function Layout() {
     <div className="min-h-screen bg-gray-50">
       <div className="flex">
         <aside className={cn(
-          "min-h-screen bg-gradient-to-b from-gray-900 to-black transition-all duration-300 flex flex-col",
+          "fixed left-0 top-0 h-screen bg-gradient-to-b from-gray-900 to-black transition-all duration-300 flex flex-col z-40",
           isExpanded ? "w-64" : "w-20"
         )}>
           <div className="p-6">
@@ -86,7 +86,10 @@ export function Layout() {
           </div>
         </aside>
 
-        <main className="flex-1 p-8 overflow-x-hidden">
+        <main className={cn(
+          "flex-1 p-8 overflow-x-hidden transition-all duration-300",
+          isExpanded ? "ml-64" : "ml-20"
+        )}>
           <div className="max-w-7xl mx-auto">
             <Outlet />
           </div>

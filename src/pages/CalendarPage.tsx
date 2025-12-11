@@ -1,67 +1,176 @@
-import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { Calendar, dateFnsLocalizer, Event } from 'react-big-calendar';
+import { format, parse, startOfWeek, getDay } from 'date-fns';
+import { enUS } from 'date-fns/locale';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { Plus } from 'lucide-react';
+import { toast } from 'sonner';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
-import { appointmentsApi } from '../api';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Select } from '../components/ui/select';
+import { Textarea } from '../components/ui/textarea';
+import { appointmentsApi, patientsApi } from '../api';
 import { Appointment } from '../types/appointment';
+import { Patient } from '../types/patient';
+
+const locales = {
+  'en-US': enUS,
+};
+
+const localizer = dateFnsLocalizer({
+  format,
+  parse,
+  startOfWeek,
+  getDay,
+  locales,
+});
+
+interface CalendarEvent extends Event {
+  id: string;
+  appointment: Appointment;
+}
 
 export function CalendarPage() {
-  const [currentDate, setCurrentDate] = useState(new Date());
   const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [showDialog, setShowDialog] = useState(false);
+  const [selectedSlot, setSelectedSlot] = useState<{ start: Date; end: Date } | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const [formData, setFormData] = useState({
+    patientId: '',
+    dateTime: '',
+    type: 'consultation' as 'consultation' | 'follow-up' | 'initial' | 'emergency',
+    notes: '',
+  });
 
   useEffect(() => {
-    loadAppointments();
+    loadData();
   }, []);
 
-  const loadAppointments = async () => {
+  const loadData = async () => {
     try {
-      const data = await appointmentsApi.getAll();
-      setAppointments(data);
+      const [appointmentsData, patientsData] = await Promise.all([
+        appointmentsApi.getAll(),
+        patientsApi.getAll(),
+      ]);
+      setAppointments(appointmentsData);
+      setPatients(patientsData);
     } catch (error) {
-      console.error('Failed to load appointments:', error);
+      console.error('Failed to load data:', error);
+      toast.error('Failed to load calendar data');
     }
   };
 
-  const getDaysInMonth = () => {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startingDayOfWeek = firstDay.getDay();
+  const events: CalendarEvent[] = useMemo(() => {
+    return appointments.map((apt) => ({
+      id: apt._id,
+      title: `${apt.patient.firstName} ${apt.patient.lastName} - ${apt.type}`,
+      start: new Date(apt.dateTime),
+      end: new Date(new Date(apt.dateTime).getTime() + 60 * 60 * 1000),
+      appointment: apt,
+    }));
+  }, [appointments]);
 
-    return { daysInMonth, startingDayOfWeek, year, month };
-  };
-
-  const { daysInMonth, startingDayOfWeek, year, month } = getDaysInMonth();
-  const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-  const monthName = currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-  const weekDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-  const previousMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
-  };
-
-  const nextMonth = () => {
-    setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
-  };
-
-  const getAppointmentsForDate = (day: number) => {
-    const date = new Date(year, month, day);
-    return appointments.filter(apt => {
-      const aptDate = new Date(apt.dateTime);
-      return aptDate.getDate() === day &&
-             aptDate.getMonth() === month &&
-             aptDate.getFullYear() === year;
+  const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
+    setSelectedSlot(slotInfo);
+    setSelectedEvent(null);
+    setFormData({
+      patientId: '',
+      dateTime: format(slotInfo.start, "yyyy-MM-dd'T'HH:mm"),
+      type: 'consultation',
+      notes: '',
     });
+    setShowDialog(true);
   };
 
-  const isToday = (day: number) => {
-    const today = new Date();
-    return day === today.getDate() &&
-           month === today.getMonth() &&
-           year === today.getFullYear();
+  const handleSelectEvent = (event: CalendarEvent) => {
+    setSelectedEvent(event);
+    setSelectedSlot(null);
+    setFormData({
+      patientId: event.appointment.patient._id,
+      dateTime: format(new Date(event.appointment.dateTime), "yyyy-MM-dd'T'HH:mm"),
+      type: event.appointment.type,
+      notes: event.appointment.notes || '',
+    });
+    setShowDialog(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const data = {
+        patientId: formData.patientId,
+        dateTime: new Date(formData.dateTime).toISOString(),
+        type: formData.type,
+        notes: formData.notes || undefined,
+      };
+
+      if (selectedEvent) {
+        await appointmentsApi.update(selectedEvent.id, data);
+        toast.success('Appointment updated successfully');
+      } else {
+        await appointmentsApi.create(data);
+        toast.success('Appointment created successfully');
+      }
+
+      setShowDialog(false);
+      loadData();
+      setFormData({
+        patientId: '',
+        dateTime: '',
+        type: 'consultation',
+        notes: '',
+      });
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to save appointment');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!selectedEvent) return;
+
+    if (!confirm('Are you sure you want to delete this appointment?')) return;
+
+    try {
+      await appointmentsApi.delete(selectedEvent.id);
+      toast.success('Appointment deleted successfully');
+      setShowDialog(false);
+      loadData();
+    } catch (error) {
+      toast.error('Failed to delete appointment');
+    }
+  };
+
+  const eventStyleGetter = (event: CalendarEvent) => {
+    const colors = {
+      scheduled: { backgroundColor: '#22c55e', borderColor: '#16a34a' },
+      completed: { backgroundColor: '#6b7280', borderColor: '#4b5563' },
+      cancelled: { backgroundColor: '#ef4444', borderColor: '#dc2626' },
+      'no-show': { backgroundColor: '#f59e0b', borderColor: '#d97706' },
+    };
+
+    const color = colors[event.appointment.status] || colors.scheduled;
+
+    return {
+      style: {
+        backgroundColor: color.backgroundColor,
+        borderColor: color.borderColor,
+        borderRadius: '8px',
+        border: 'none',
+        color: 'white',
+        fontSize: '0.875rem',
+        padding: '4px 8px',
+      },
+    };
   };
 
   return (
@@ -71,139 +180,142 @@ export function CalendarPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-1">Calendar</h1>
           <p className="text-gray-500">View and manage all your appointments</p>
         </div>
-        <Button className="bg-black hover:bg-gray-900 text-white rounded-full px-6">
+        <Button
+          onClick={() => {
+            setSelectedSlot(null);
+            setSelectedEvent(null);
+            setFormData({
+              patientId: '',
+              dateTime: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
+              type: 'consultation',
+              notes: '',
+            });
+            setShowDialog(true);
+          }}
+          className="bg-black hover:bg-gray-900 text-white rounded-full px-6"
+        >
           <Plus className="h-5 w-5 mr-2" />
           New Appointment
         </Button>
       </div>
 
-      <Card className="rounded-3xl p-8 shadow-sm">
-        <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold text-gray-900">{monthName}</h2>
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={previousMonth}
-              variant="outline"
-              className="rounded-full w-10 h-10 p-0"
-            >
-              <ChevronLeft className="h-5 w-5" />
-            </Button>
-            <Button
-              onClick={nextMonth}
-              variant="outline"
-              className="rounded-full w-10 h-10 p-0"
-            >
-              <ChevronRight className="h-5 w-5" />
-            </Button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-7 gap-4 mb-4">
-          {weekDays.map((day) => (
-            <div key={day} className="text-center font-semibold text-gray-700 py-2">
-              {day}
-            </div>
-          ))}
-        </div>
-
-        <div className="grid grid-cols-7 gap-4">
-          {Array.from({ length: startingDayOfWeek }).map((_, i) => (
-            <div key={`empty-${i}`} className="aspect-square" />
-          ))}
-          {days.map((day) => {
-            const dayAppointments = getAppointmentsForDate(day);
-            const today = isToday(day);
-
-            return (
-              <button
-                key={day}
-                onClick={() => setSelectedDate(new Date(year, month, day))}
-                className={`aspect-square p-2 rounded-2xl border-2 transition-all hover:border-primary-400 ${
-                  today
-                    ? 'border-primary-500 bg-primary-50'
-                    : 'border-gray-100 hover:bg-gray-50'
-                }`}
-              >
-                <div className={`text-sm font-semibold mb-1 ${today ? 'text-primary-600' : 'text-gray-700'}`}>
-                  {day}
-                </div>
-                <div className="space-y-1">
-                  {dayAppointments.slice(0, 3).map((apt, idx) => (
-                    <div
-                      key={idx}
-                      className={`text-xs p-1 rounded truncate ${
-                        apt.status === 'scheduled'
-                          ? 'bg-primary-100 text-primary-700'
-                          : apt.status === 'completed'
-                          ? 'bg-gray-100 text-gray-600'
-                          : 'bg-secondary-100 text-secondary-700'
-                      }`}
-                    >
-                      {new Date(apt.dateTime).toLocaleTimeString('en-US', {
-                        hour: 'numeric',
-                        minute: '2-digit',
-                        hour12: true
-                      })}
-                    </div>
-                  ))}
-                  {dayAppointments.length > 3 && (
-                    <div className="text-xs text-gray-500">
-                      +{dayAppointments.length - 3} more
-                    </div>
-                  )}
-                </div>
-              </button>
-            );
-          })}
+      <Card className="rounded-3xl p-6 shadow-sm">
+        <div style={{ height: 'calc(100vh - 250px)', minHeight: '600px' }}>
+          <Calendar
+            localizer={localizer}
+            events={events}
+            startAccessor="start"
+            endAccessor="end"
+            onSelectSlot={handleSelectSlot}
+            onSelectEvent={handleSelectEvent}
+            selectable
+            eventPropGetter={eventStyleGetter}
+            views={['month', 'week', 'day', 'agenda']}
+            defaultView="week"
+            step={30}
+            showMultiDayTimes
+            style={{ height: '100%' }}
+          />
         </div>
       </Card>
 
-      {selectedDate && (
-        <Card className="rounded-3xl p-6 shadow-sm">
-          <h3 className="text-xl font-semibold text-gray-900 mb-4">
-            Appointments for {selectedDate.toLocaleDateString('en-US', {
-              weekday: 'long',
-              month: 'long',
-              day: 'numeric'
-            })}
-          </h3>
-          <div className="space-y-3">
-            {getAppointmentsForDate(selectedDate.getDate()).length === 0 ? (
-              <p className="text-gray-500 py-4 text-center">No appointments scheduled</p>
-            ) : (
-              getAppointmentsForDate(selectedDate.getDate()).map((apt) => (
-                <div
-                  key={apt._id}
-                  className="flex items-center justify-between p-4 rounded-2xl bg-gray-50 hover:bg-gray-100 transition"
+      <Dialog open={showDialog} onOpenChange={(open) => !loading && setShowDialog(open)}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedEvent ? 'Edit Appointment' : 'New Appointment'}
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <Label htmlFor="patientId">Patient *</Label>
+              <Select
+                id="patientId"
+                value={formData.patientId}
+                onChange={(e) => setFormData({ ...formData, patientId: e.target.value })}
+                required
+                className="rounded-2xl"
+              >
+                <option value="">Select a patient</option>
+                {patients.map((patient) => (
+                  <option key={patient._id} value={patient._id}>
+                    {patient.firstName} {patient.lastName}
+                  </option>
+                ))}
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="dateTime">Date & Time *</Label>
+              <Input
+                id="dateTime"
+                type="datetime-local"
+                value={formData.dateTime}
+                onChange={(e) => setFormData({ ...formData, dateTime: e.target.value })}
+                required
+                className="rounded-2xl"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="type">Appointment Type *</Label>
+              <Select
+                id="type"
+                value={formData.type}
+                onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
+                required
+                className="rounded-2xl"
+              >
+                <option value="consultation">Consultation</option>
+                <option value="follow-up">Follow-up</option>
+                <option value="initial">Initial Assessment</option>
+                <option value="emergency">Emergency</option>
+              </Select>
+            </div>
+
+            <div>
+              <Label htmlFor="notes">Notes</Label>
+              <Textarea
+                id="notes"
+                value={formData.notes}
+                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                rows={3}
+                className="rounded-2xl"
+              />
+            </div>
+
+            <div className="flex gap-2 justify-end pt-4">
+              {selectedEvent && (
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={handleDelete}
+                  className="rounded-full mr-auto"
+                  disabled={loading}
                 >
-                  <div>
-                    <div className="font-semibold text-gray-900">{apt.patient.firstName} {apt.patient.lastName}</div>
-                    <div className="text-sm text-gray-600">{apt.type}</div>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-medium text-gray-900">
-                      {new Date(apt.dateTime).toLocaleTimeString('en-US', {
-                        hour: 'numeric',
-                        minute: '2-digit',
-                        hour12: true
-                      })}
-                    </div>
-                    <div className={`text-sm inline-block px-2 py-1 rounded-full ${
-                      apt.status === 'scheduled'
-                        ? 'bg-primary-100 text-primary-700'
-                        : apt.status === 'completed'
-                        ? 'bg-gray-200 text-gray-700'
-                        : 'bg-secondary-100 text-secondary-700'
-                    }`}>
-                      {apt.status}
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </Card>
-      )}
+                  Delete
+                </Button>
+              )}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowDialog(false)}
+                className="rounded-full"
+                disabled={loading}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={loading}
+                className="rounded-full bg-black hover:bg-gray-900"
+              >
+                {loading ? 'Saving...' : selectedEvent ? 'Update' : 'Create'}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

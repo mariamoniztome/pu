@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Plus, Grid3x3, Table as TableIcon, Search } from 'lucide-react';
+import { toast } from 'sonner';
 import { AgGridReact } from 'ag-grid-react';
 import { ColDef } from 'ag-grid-community';
 import 'ag-grid-community/styles/ag-grid.css';
@@ -33,6 +34,7 @@ export function PatientsPage() {
       setPatients(data);
     } catch (error) {
       console.error('Failed to load patients:', error);
+      toast.error('Failed to load patients');
     } finally {
       setLoading(false);
     }
@@ -46,8 +48,10 @@ export function PatientsPage() {
     try {
       const data = await patientsApi.search(searchQuery);
       setPatients(data);
+      toast.success(`Found ${data.length} patient(s)`);
     } catch (error) {
       console.error('Search failed:', error);
+      toast.error('Search failed');
     }
   };
 
@@ -60,9 +64,11 @@ export function PatientsPage() {
     if (!confirm('Are you sure you want to delete this patient?')) return;
     try {
       await patientsApi.delete(id);
+      toast.success('Patient deleted successfully');
       loadPatients();
     } catch (error) {
       console.error('Failed to delete patient:', error);
+      toast.error('Failed to delete patient');
     }
   };
 

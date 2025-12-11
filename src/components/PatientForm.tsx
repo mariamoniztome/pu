@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { toast } from 'sonner';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -83,12 +83,15 @@ export function PatientForm({ patient, open, onClose }: PatientFormProps) {
 
       if (patient) {
         await patientsApi.update(patient._id, data);
+        toast.success('Patient updated successfully');
       } else {
         await patientsApi.create(data);
+        toast.success('Patient created successfully');
       }
 
       onClose();
     } catch (err: any) {
+      toast.error(err.message || 'Failed to save patient');
       setError(err.message || 'Failed to save patient');
     } finally {
       setLoading(false);
