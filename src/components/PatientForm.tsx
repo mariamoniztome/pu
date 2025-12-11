@@ -7,7 +7,7 @@ import { Select } from './ui/select';
 import { Textarea } from './ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { patientsApi } from '../api';
-import { Patient } from '../types';
+import { Patient } from '../types/patient';
 
 interface PatientFormProps {
   patient?: Patient | null;

@@ -8,7 +8,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { patientsApi } from '../api';
-import { Patient } from '../types';
+import { Patient } from '../types/patient';
 import { PatientForm } from '../components/PatientForm';
 import { PatientCard } from '../components/PatientCard';
 
@@ -30,7 +30,7 @@ export function PatientsPage() {
     try {
       setLoading(true);
       const data = await patientsApi.getAll();
-      setPatients(data);
+      setPatients(data.data);
     } catch (error) {
       console.error('Failed to load patients:', error);
     } finally {
@@ -45,7 +45,7 @@ export function PatientsPage() {
     }
     try {
       const data = await patientsApi.search(searchQuery);
-      setPatients(data);
+      setPatients(data.data);
     } catch (error) {
       console.error('Search failed:', error);
     }

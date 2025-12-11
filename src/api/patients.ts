@@ -1,5 +1,5 @@
-import { api } from './client';
-import { Patient } from '../types';
+import api from './axios';
+import { Patient } from '../types/patient';
 
 export const patientsApi = {
   getAll: () => api.get<Patient[]>('/patients'),

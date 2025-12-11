@@ -3,7 +3,7 @@ import { Plus } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { appointmentsApi } from '../api';
-import { Appointment } from '../types';
+import { Appointment } from '../types/appointment';
 
 export function AppointmentsPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -17,7 +17,7 @@ export function AppointmentsPage() {
     try {
       setLoading(true);
       const data = await appointmentsApi.getAll();
-      setAppointments(data);
+      setAppointments(data.data);
     } catch (error) {
       console.error('Failed to load appointments:', error);
     } finally {

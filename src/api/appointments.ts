@@ -1,5 +1,5 @@
-import { api } from './client';
-import { Appointment } from '../types';
+import api from './axios';
+import { Appointment } from '../types/appointment';
 
 export const appointmentsApi = {
   getAll: () => api.get<Appointment[]>('/appointments'),

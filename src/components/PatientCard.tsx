@@ -1,7 +1,7 @@
 import { Edit, Trash2, Mail, Phone, MapPin } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
-import { Patient } from '../types';
+import { Patient } from '../types/patient';
 
 interface PatientCardProps {
   patient: Patient;

@@ -3,7 +3,7 @@ import { Plus, FileText } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { externalReportsApi } from '../api';
-import { ExternalReport } from '../types';
+import { ExternalReport } from '../types/reports';
 
 export function ReportsPage() {
   const [reports, setReports] = useState<ExternalReport[]>([]);
@@ -17,7 +17,7 @@ export function ReportsPage() {
     try {
       setLoading(true);
       const data = await externalReportsApi.getAll();
-      setReports(data);
+      setReports(data.data);
     } catch (error) {
       console.error('Failed to load reports:', error);
     } finally {

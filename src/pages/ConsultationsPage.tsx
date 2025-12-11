@@ -3,7 +3,7 @@ import { Plus, FileText } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { consultationsApi } from '../api';
-import { Consultation } from '../types';
+import { Consultation } from '../types/consultation';
 
 export function ConsultationsPage() {
   const [consultations, setConsultations] = useState<Consultation[]>([]);
@@ -17,7 +17,7 @@ export function ConsultationsPage() {
     try {
       setLoading(true);
       const data = await consultationsApi.getAll();
-      setConsultations(data);
+      setConsultations(data.data);
     } catch (error) {
       console.error('Failed to load consultations:', error);
     } finally {

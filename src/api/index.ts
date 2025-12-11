@@ -1,4 +1,3 @@
-export * from './client';
 export * from './patients';
 export * from './appointments';
 export * from './consultations';

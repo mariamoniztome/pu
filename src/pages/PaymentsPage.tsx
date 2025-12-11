@@ -3,7 +3,7 @@ import { Plus, DollarSign } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { paymentsApi } from '../api';
-import { Payment } from '../types';
+import { Payment } from '../types/payment';
 
 export function PaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
@@ -17,7 +17,7 @@ export function PaymentsPage() {
     try {
       setLoading(true);
       const data = await paymentsApi.getAll();
-      setPayments(data);
+      setPayments(data.data);
     } catch (error) {
       console.error('Failed to load payments:', error);
     } finally {
