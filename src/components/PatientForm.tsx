@@ -5,16 +5,17 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Select } from './ui/select';
 import { Textarea } from './ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
 import { patientsApi } from '../api';
 import { Patient } from '../types/patient';
 
 interface PatientFormProps {
   patient?: Patient | null;
+  open: boolean;
   onClose: () => void;
 }
 
-export function PatientForm({ patient, onClose }: PatientFormProps) {
+export function PatientForm({ patient, open, onClose }: PatientFormProps) {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -95,16 +96,12 @@ export function PatientForm({ patient, onClose }: PatientFormProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <Card className="max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>{patient ? 'Edit Patient' : 'Add New Patient'}</CardTitle>
-          <Button variant="ghost" size="icon" onClick={onClose}>
-            <X className="h-4 w-4" />
-          </Button>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
+    <Dialog open={open} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>{patient ? 'Edit Patient' : 'Add New Patient'}</DialogTitle>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="firstName">First Name *</Label>
@@ -250,17 +247,16 @@ export function PatientForm({ patient, onClose }: PatientFormProps) {
               </div>
             )}
 
-            <div className="flex gap-2 justify-end">
-              <Button type="button" variant="outline" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button type="submit" disabled={loading}>
-                {loading ? 'Saving...' : patient ? 'Update' : 'Create'}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-    </div>
+          <div className="flex gap-2 justify-end pt-4">
+            <Button type="button" variant="outline" onClick={onClose} className="rounded-full">
+              Cancel
+            </Button>
+            <Button type="submit" disabled={loading} className="rounded-full bg-black hover:bg-gray-900">
+              {loading ? 'Saving...' : patient ? 'Update' : 'Create'}
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }

@@ -3,6 +3,7 @@ import { Layout } from './components/Layout';
 import { DashboardPage } from './pages/DashboardPage';
 import { PatientsPage } from './pages/PatientsPage';
 import { AppointmentsPage } from './pages/AppointmentsPage';
+import { CalendarPage } from './pages/CalendarPage';
 import { ConsultationsPage } from './pages/ConsultationsPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { PaymentsPage } from './pages/PaymentsPage';
@@ -15,6 +16,7 @@ function App() {
           <Route index element={<DashboardPage />} />
           <Route path="patients" element={<PatientsPage />} />
           <Route path="appointments" element={<AppointmentsPage />} />
+          <Route path="calendar" element={<CalendarPage />} />
           <Route path="consultations" element={<ConsultationsPage />} />
           <Route path="reports" element={<ReportsPage />} />
           <Route path="payments" element={<PaymentsPage />} />

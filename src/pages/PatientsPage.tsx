@@ -144,28 +144,30 @@ export function PatientsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-gradient-to-r from-white/60 to-white/40 backdrop-blur-sm rounded-3xl p-6 border border-white/50 shadow-xl shadow-primary-100/50 flex justify-between items-center">
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-slate-800">Patients</h1>
-          <p className="text-slate-600 mt-1">Manage patient records</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-1">Patients</h1>
+          <p className="text-gray-500">Manage patient records</p>
         </div>
-        <Button onClick={() => setShowForm(true)}>
+        <Button onClick={() => setShowForm(true)} className="bg-black hover:bg-gray-900 text-white rounded-full px-6">
           <Plus className="h-5 w-5 mr-2" />
           Add Patient
         </Button>
       </div>
 
-      <div className="flex gap-4 items-center">
+      <div className="flex gap-4 items-center bg-white rounded-3xl p-4 shadow-sm">
         <div className="flex-1 flex gap-2">
-          <Input
-            placeholder="Search patients by name, email, or phone..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            className="max-w-md"
-          />
-          <Button onClick={handleSearch} variant="outline">
-            <Search className="h-4 w-4 mr-2" />
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              placeholder="Search patients by name, email, or phone..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              className="pl-11 rounded-2xl border-gray-200"
+            />
+          </div>
+          <Button onClick={handleSearch} className="rounded-2xl bg-primary-500 hover:bg-primary-600 text-white">
             Search
           </Button>
         </div>
@@ -174,6 +176,7 @@ export function PatientsPage() {
             variant={viewMode === 'grid' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setViewMode('grid')}
+            className={`rounded-2xl ${viewMode === 'grid' ? 'bg-gray-900 hover:bg-gray-800' : ''}`}
           >
             <Grid3x3 className="h-4 w-4 mr-2" />
             Grid
@@ -182,6 +185,7 @@ export function PatientsPage() {
             variant={viewMode === 'table' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setViewMode('table')}
+            className={`rounded-2xl ${viewMode === 'table' ? 'bg-gray-900 hover:bg-gray-800' : ''}`}
           >
             <TableIcon className="h-4 w-4 mr-2" />
             Table
@@ -201,12 +205,12 @@ export function PatientsPage() {
           ))}
         </div>
       ) : (
-        <Card>
+        <Card className="shadow-sm">
           <CardHeader>
-            <CardTitle>Patient List</CardTitle>
+            <CardTitle className="text-gray-900">Patient List</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="ag-theme-alpine" style={{ height: 600, width: '100%' }}>
+            <div className="ag-theme-alpine rounded-2xl overflow-hidden" style={{ height: 600, width: '100%' }}>
               <AgGridReact
                 rowData={patients}
                 columnDefs={columnDefs}
@@ -221,6 +225,7 @@ export function PatientsPage() {
               <Button
                 variant="outline"
                 size="sm"
+                className="rounded-2xl"
                 onClick={() => {
                   const csvData = patients.map(p => ({
                     Name: `${p.firstName} ${p.lastName}`,
@@ -248,12 +253,11 @@ export function PatientsPage() {
         </Card>
       )}
 
-      {showForm && (
-        <PatientForm
-          patient={selectedPatient}
-          onClose={handleFormClose}
-        />
-      )}
+      <PatientForm
+        open={showForm}
+        patient={selectedPatient}
+        onClose={handleFormClose}
+      />
     </div>
   );
 }
