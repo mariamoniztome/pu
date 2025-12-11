@@ -33,15 +33,15 @@ export function ReportsPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'bg-green-100 text-green-800';
+        return 'bg-gradient-to-r from-sage-200 to-sage-300 text-sage-800';
       case 'in-progress':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-gradient-to-r from-primary-200 to-primary-300 text-primary-800';
       case 'requested':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-gradient-to-r from-sand-200 to-sand-300 text-sand-800';
       case 'delivered':
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gradient-to-r from-lavender-200 to-lavender-300 text-lavender-800';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-gradient-to-r from-sand-200 to-sand-300 text-sand-800';
     }
   };
 
@@ -51,13 +51,13 @@ export function ReportsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="bg-gradient-to-r from-white/60 to-white/40 backdrop-blur-sm rounded-3xl p-6 border border-white/50 shadow-xl shadow-lavender-100/50 flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">External Reports</h1>
-          <p className="text-slate-500 mt-1">Reports for external entities</p>
+          <h1 className="text-3xl font-bold text-slate-800">Reports</h1>
+          <p className="text-slate-600 mt-1">External reports for institutions</p>
         </div>
         <Button>
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="h-5 w-5 mr-2" />
           New Report
         </Button>
       </div>
@@ -68,10 +68,10 @@ export function ReportsPage() {
             <CardHeader>
               <CardTitle className="text-lg">{getPatientName(report)}</CardTitle>
               <div className="flex items-center gap-2 mt-1">
-                <span className={`text-xs px-2 py-1 rounded ${getStatusColor(report.status)}`}>
+                <span className={`text-xs font-medium px-3 py-1.5 rounded-xl ${getStatusColor(report.status)}`}>
                   {report.status}
                 </span>
-                <span className="text-xs px-2 py-1 rounded bg-slate-100 text-slate-800">
+                <span className="text-xs font-medium px-3 py-1.5 rounded-xl bg-gradient-to-r from-peach-100 to-peach-200 text-peach-800">
                   {report.reportType}
                 </span>
               </div>
