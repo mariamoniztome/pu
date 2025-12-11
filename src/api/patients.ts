@@ -2,10 +2,28 @@ import api from './axios';
 import { Patient } from '../types/patient';
 
 export const patientsApi = {
-  getAll: () => api.get<Patient[]>('/patients'),
-  getById: (id: string) => api.get<Patient>(`/patients/${id}`),
-  search: (query: string) => api.get<Patient[]>(`/patients/search?q=${encodeURIComponent(query)}`),
-  create: (data: Partial<Patient>) => api.post<Patient>('/patients', data),
-  update: (id: string, data: Partial<Patient>) => api.put<Patient>(`/patients/${id}`, data),
-  delete: (id: string) => api.delete<{ message: string }>(`/patients/${id}`),
+  getAll: async () => {
+    const response = await api.get<Patient[]>('/patients');
+    return response.data;
+  },
+  getById: async (id: string) => {
+    const response = await api.get<Patient>(`/patients/${id}`);
+    return response.data;
+  },
+  search: async (query: string) => {
+    const response = await api.get<Patient[]>(`/patients/search?q=${encodeURIComponent(query)}`);
+    return response.data;
+  },
+  create: async (data: Partial<Patient>) => {
+    const response = await api.post<Patient>('/patients', data);
+    return response.data;
+  },
+  update: async (id: string, data: Partial<Patient>) => {
+    const response = await api.put<Patient>(`/patients/${id}`, data);
+    return response.data;
+  },
+  delete: async (id: string) => {
+    const response = await api.delete<{ message: string }>(`/patients/${id}`);
+    return response.data;
+  },
 };

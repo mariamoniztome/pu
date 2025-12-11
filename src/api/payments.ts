@@ -8,11 +8,32 @@ export interface PaymentStats {
 }
 
 export const paymentsApi = {
-  getAll: () => api.get<Payment[]>('/payments'),
-  getById: (id: string) => api.get<Payment>(`/payments/${id}`),
-  getByPatient: (patientId: string) => api.get<Payment[]>(`/payments/patient/${patientId}`),
-  getStats: () => api.get<PaymentStats>('/payments/stats'),
-  create: (formData: FormData) => api.post<Payment>('/payments', formData),
-  update: (id: string, formData: FormData) => api.put<Payment>(`/payments/${id}`, formData),
-  delete: (id: string) => api.delete<{ message: string }>(`/payments/${id}`),
+  getAll: async () => {
+    const response = await api.get<Payment[]>('/payments');
+    return response.data;
+  },
+  getById: async (id: string) => {
+    const response = await api.get<Payment>(`/payments/${id}`);
+    return response.data;
+  },
+  getByPatient: async (patientId: string) => {
+    const response = await api.get<Payment[]>(`/payments/patient/${patientId}`);
+    return response.data;
+  },
+  getStats: async () => {
+    const response = await api.get<PaymentStats>('/payments/stats');
+    return response.data;
+  },
+  create: async (formData: FormData) => {
+    const response = await api.post<Payment>('/payments', formData);
+    return response.data;
+  },
+  update: async (id: string, formData: FormData) => {
+    const response = await api.put<Payment>(`/payments/${id}`, formData);
+    return response.data;
+  },
+  delete: async (id: string) => {
+    const response = await api.delete<{ message: string }>(`/payments/${id}`);
+    return response.data;
+  },
 };
