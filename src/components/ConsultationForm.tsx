@@ -54,9 +54,11 @@ export function ConsultationForm({ consultation, onClose }: ConsultationFormProp
   const loadPatients = async () => {
     try {
       const data = await patientsApi.getAll();
-      setPatients(data);
+      setPatients(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Failed to load patients:', error);
+      setPatients([]);
+      setError('Unable to load patients. Please ensure the backend server is running.');
     }
   };
 
