@@ -30,7 +30,7 @@ export function PatientsPage() {
     try {
       setLoading(true);
       const data = await patientsApi.getAll();
-      setPatients(data.data);
+      setPatients(data);
     } catch (error) {
       console.error('Failed to load patients:', error);
     } finally {
@@ -45,7 +45,7 @@ export function PatientsPage() {
     }
     try {
       const data = await patientsApi.search(searchQuery);
-      setPatients(data.data);
+      setPatients(data);
     } catch (error) {
       console.error('Search failed:', error);
     }

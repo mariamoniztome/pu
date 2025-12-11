@@ -20,7 +20,7 @@ export function PaymentsPage() {
     try {
       setLoading(true);
       const data = await paymentsApi.getAll();
-      setPayments(data.data);
+      setPayments(data);
     } catch (error) {
       console.error('Failed to load payments:', error);
     } finally {

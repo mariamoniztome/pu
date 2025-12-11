@@ -20,7 +20,7 @@ export function ReportsPage() {
     try {
       setLoading(true);
       const data = await externalReportsApi.getAll();
-      setReports(data.data);
+      setReports(data);
     } catch (error) {
       console.error('Failed to load reports:', error);
     } finally {

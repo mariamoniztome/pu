@@ -20,7 +20,7 @@ export function ConsultationsPage() {
     try {
       setLoading(true);
       const data = await consultationsApi.getAll();
-      setConsultations(data.data);
+      setConsultations(data);
     } catch (error) {
       console.error('Failed to load consultations:', error);
     } finally {
