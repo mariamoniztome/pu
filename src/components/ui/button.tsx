@@ -3,16 +3,16 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "../../lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-2xl text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 shadow-sm",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lilac-300 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 shadow-lg",
   {
     variants: {
       variant: {
-        default: "bg-gradient-to-r from-primary-500 to-primary-600 text-white hover:from-primary-600 hover:to-primary-700 shadow-primary-200",
-        destructive: "bg-gradient-to-r from-peach-500 to-peach-600 text-white hover:from-peach-600 hover:to-peach-700",
-        outline: "border-2 border-primary-200 bg-white text-primary-700 hover:bg-primary-50",
-        secondary: "bg-gradient-to-r from-sage-400 to-sage-500 text-white hover:from-sage-500 hover:to-sage-600",
-        ghost: "hover:bg-primary-50 text-slate-700",
-        link: "text-primary-600 underline-offset-4 hover:underline",
+        default: "bg-gradient-to-r from-primary-400 to-primary-500 text-white hover:from-primary-500 hover:to-primary-600 shadow-primary-300/50 hover:shadow-primary-400/60",
+        destructive: "bg-gradient-to-r from-red-400 to-red-500 text-white hover:from-red-500 hover:to-red-600 shadow-red-300/50",
+        outline: "border-2 border-lilac-200 bg-white/70 backdrop-blur-sm text-gray-700 hover:bg-white/90 hover:border-lilac-300",
+        secondary: "bg-gradient-to-r from-lilac-400 to-lilac-500 text-white hover:from-lilac-500 hover:to-lilac-600 shadow-lilac-300/50 hover:shadow-lilac-400/60",
+        ghost: "hover:bg-white/60 text-gray-700 backdrop-blur-sm",
+        link: "text-lilac-600 underline-offset-4 hover:underline",
       },
       size: {
         default: "h-11 px-6 py-2",
