@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { paymentsApi } from '../api';
 import { Payment } from '../types/payment';
 import { PaymentForm } from '../components/PaymentForm';
+import { PaymentCharts } from '../components/PaymentCharts';
 
 export function PaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
@@ -63,57 +64,62 @@ export function PaymentsPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {payments.map((payment) => (
-          <Card key={payment._id}>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center justify-between">
-                <span>{getPatientName(payment)}</span>
-                <DollarSign className="h-5 w-5 text-slate-400" />
-              </CardTitle>
-              <span className={`text-xs font-medium px-3 py-1.5 rounded-xl ${getStatusColor(payment.status)} w-fit`}>
-                {payment.status}
-              </span>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {payment.invoiceNumber && (
+      <PaymentCharts />
+
+      <div>
+        <h2 className="text-xl font-bold text-gray-900 mb-4">Recent Payments</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {payments.map((payment) => (
+            <Card key={payment._id}>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center justify-between">
+                  <span>{getPatientName(payment)}</span>
+                  <DollarSign className="h-5 w-5 text-slate-400" />
+                </CardTitle>
+                <span className={`text-xs font-medium px-3 py-1.5 rounded-xl ${getStatusColor(payment.status)} w-fit`}>
+                  {payment.status}
+                </span>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {payment.invoiceNumber && (
+                  <div className="text-sm">
+                    <span className="font-medium">Invoice:</span> {payment.invoiceNumber}
+                  </div>
+                )}
                 <div className="text-sm">
-                  <span className="font-medium">Invoice:</span> {payment.invoiceNumber}
+                  <span className="font-medium">Amount:</span>{' '}
+                  {payment.currency} {payment.amount.toFixed(2)}
                 </div>
-              )}
-              <div className="text-sm">
-                <span className="font-medium">Amount:</span>{' '}
-                {payment.currency} {payment.amount.toFixed(2)}
-              </div>
-              <div className="text-sm">
-                <span className="font-medium">Paid:</span>{' '}
-                {payment.currency} {payment.amountPaid.toFixed(2)}
-              </div>
-              {payment.amountPaid < payment.amount && (
-                <div className="text-sm text-red-600">
-                  <span className="font-medium">Balance:</span>{' '}
-                  {payment.currency} {(payment.amount - payment.amountPaid).toFixed(2)}
-                </div>
-              )}
-              {payment.paymentMethod && (
                 <div className="text-sm">
-                  <span className="font-medium">Method:</span> {payment.paymentMethod}
+                  <span className="font-medium">Paid:</span>{' '}
+                  {payment.currency} {payment.amountPaid.toFixed(2)}
                 </div>
-              )}
-              {payment.paymentDate && (
-                <div className="text-sm">
-                  <span className="font-medium">Date:</span>{' '}
-                  {new Date(payment.paymentDate).toLocaleDateString()}
-                </div>
-              )}
-              {payment.notes && (
-                <div className="text-sm text-slate-600 mt-2">
-                  {payment.notes}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        ))}
+                {payment.amountPaid < payment.amount && (
+                  <div className="text-sm text-red-600">
+                    <span className="font-medium">Balance:</span>{' '}
+                    {payment.currency} {(payment.amount - payment.amountPaid).toFixed(2)}
+                  </div>
+                )}
+                {payment.paymentMethod && (
+                  <div className="text-sm">
+                    <span className="font-medium">Method:</span> {payment.paymentMethod}
+                  </div>
+                )}
+                {payment.paymentDate && (
+                  <div className="text-sm">
+                    <span className="font-medium">Date:</span>{' '}
+                    {new Date(payment.paymentDate).toLocaleDateString()}
+                  </div>
+                )}
+                {payment.notes && (
+                  <div className="text-sm text-slate-600 mt-2">
+                    {payment.notes}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
       </div>
 
       {showForm && (

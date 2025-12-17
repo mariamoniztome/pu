@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { consultationsApi } from '../api';
 import { Consultation } from '../types/consultation';
 import { ConsultationForm } from '../components/ConsultationForm';
+import { ConsultationTemplates } from '../components/ConsultationTemplates';
+import { ConsultationChecklist } from '../components/ConsultationChecklist';
+import { ChangeHistory } from '../components/ChangeHistory';
 
 export function ConsultationsPage() {
   const [consultations, setConsultations] = useState<Consultation[]>([]);
@@ -50,40 +53,51 @@ export function ConsultationsPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {consultations.map((consultation) => (
-          <Card key={consultation._id}>
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center justify-between">
-                <span>{getPatientName(consultation)}</span>
-                <span className="text-sm font-normal text-slate-500">
-                  Session #{consultation.sessionNumber}
-                </span>
-              </CardTitle>
-              <div className="text-sm text-slate-500">
-                {new Date(consultation.date).toLocaleDateString()}
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              {consultation.chiefComplaint && (
-                <div>
-                  <div className="text-sm font-medium text-slate-700">Chief Complaint:</div>
-                  <div className="text-sm text-slate-600">{consultation.chiefComplaint}</div>
-                </div>
-              )}
-              <div>
-                <div className="text-sm font-medium text-slate-700">Session Notes:</div>
-                <div className="text-sm text-slate-600 line-clamp-3">{consultation.sessionNotes}</div>
-              </div>
-              {consultation.attachments.length > 0 && (
-                <div className="flex items-center text-sm text-slate-500">
-                  <FileText className="h-4 w-4 mr-1" />
-                  {consultation.attachments.length} attachment(s)
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        ))}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {consultations.map((consultation) => (
+              <Card key={consultation._id}>
+                <CardHeader>
+                  <CardTitle className="text-lg flex items-center justify-between">
+                    <span>{getPatientName(consultation)}</span>
+                    <span className="text-sm font-normal text-slate-500">
+                      Session #{consultation.sessionNumber}
+                    </span>
+                  </CardTitle>
+                  <div className="text-sm text-slate-500">
+                    {new Date(consultation.date).toLocaleDateString()}
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {consultation.chiefComplaint && (
+                    <div>
+                      <div className="text-sm font-medium text-slate-700">Chief Complaint:</div>
+                      <div className="text-sm text-slate-600">{consultation.chiefComplaint}</div>
+                    </div>
+                  )}
+                  <div>
+                    <div className="text-sm font-medium text-slate-700">Session Notes:</div>
+                    <div className="text-sm text-slate-600 line-clamp-3">{consultation.sessionNotes}</div>
+                  </div>
+                  {consultation.attachments.length > 0 && (
+                    <div className="flex items-center text-sm text-slate-500">
+                      <FileText className="h-4 w-4 mr-1" />
+                      {consultation.attachments.length} attachment(s)
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <ConsultationTemplates />
+        </div>
+
+        <div className="space-y-6">
+          <ConsultationChecklist />
+          <ChangeHistory />
+        </div>
       </div>
 
       {showForm && (

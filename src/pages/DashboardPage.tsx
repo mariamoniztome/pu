@@ -3,6 +3,8 @@ import { Users, Calendar, FileText, Plus, Bell, Search, ChevronLeft, ChevronRigh
 import { Card } from '../components/ui/card';
 import { patientsApi, appointmentsApi, consultationsApi, paymentsApi, PaymentStats } from '../api';
 import { Button } from '../components/ui/button';
+import { QuickActionsDialog } from '../components/QuickActionsDialog';
+import { LastActionHighlight } from '../components/LastActionHighlight';
 
 export function DashboardPage() {
   const [stats, setStats] = useState({
@@ -257,8 +259,12 @@ export function DashboardPage() {
               <ChevronRight className="h-5 w-5 text-white" />
             </button>
           </Card>
+
+          <LastActionHighlight />
         </div>
       </div>
+
+      <QuickActionsDialog />
     </div>
   );
 }
