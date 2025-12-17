@@ -23,9 +23,10 @@ export function ConsultationsPage() {
     try {
       setLoading(true);
       const data = await consultationsApi.getAll();
-      setConsultations(data);
+      setConsultations(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Failed to load consultations:', error);
+      setConsultations([]);
     } finally {
       setLoading(false);
     }

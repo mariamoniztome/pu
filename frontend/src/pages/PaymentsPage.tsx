@@ -21,9 +21,10 @@ export function PaymentsPage() {
     try {
       setLoading(true);
       const data = await paymentsApi.getAll();
-      setPayments(data);
+      setPayments(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Failed to load payments:', error);
+      setPayments([]);
     } finally {
       setLoading(false);
     }

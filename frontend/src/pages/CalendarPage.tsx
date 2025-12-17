@@ -58,11 +58,13 @@ export function CalendarPage() {
         appointmentsApi.getAll(),
         patientsApi.getAll(),
       ]);
-      setAppointments(appointmentsData);
-      setPatients(patientsData);
+      setAppointments(Array.isArray(appointmentsData) ? appointmentsData : []);
+      setPatients(Array.isArray(patientsData) ? patientsData : []);
     } catch (error) {
       console.error('Failed to load data:', error);
       toast.error('Failed to load calendar data');
+      setAppointments([]);
+      setPatients([]);
     }
   };
 

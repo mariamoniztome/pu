@@ -20,9 +20,10 @@ export function AppointmentsPage() {
     try {
       setLoading(true);
       const data = await appointmentsApi.getAll();
-      setAppointments(data);
+      setAppointments(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Failed to load appointments:', error);
+      setAppointments([]);
     } finally {
       setLoading(false);
     }

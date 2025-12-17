@@ -20,9 +20,10 @@ export function ReportsPage() {
     try {
       setLoading(true);
       const data = await externalReportsApi.getAll();
-      setReports(data);
+      setReports(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Failed to load reports:', error);
+      setReports([]);
     } finally {
       setLoading(false);
     }

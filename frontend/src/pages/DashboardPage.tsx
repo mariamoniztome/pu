@@ -30,13 +30,19 @@ export function DashboardPage() {
       ]);
 
       setStats({
-        totalPatients: patients.length,
-        totalAppointments: appointments.length,
-        totalConsultations: consultations.length,
-        paymentStats: paymentStats,
+        totalPatients: Array.isArray(patients) ? patients.length : 0,
+        totalAppointments: Array.isArray(appointments) ? appointments.length : 0,
+        totalConsultations: Array.isArray(consultations) ? consultations.length : 0,
+        paymentStats: paymentStats || null,
       });
     } catch (error) {
       console.error('Failed to load stats:', error);
+      setStats({
+        totalPatients: 0,
+        totalAppointments: 0,
+        totalConsultations: 0,
+        paymentStats: null,
+      });
     }
   };
 

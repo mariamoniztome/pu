@@ -31,10 +31,11 @@ export function PatientsPage() {
     try {
       setLoading(true);
       const data = await patientsApi.getAll();
-      setPatients(data);
+      setPatients(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Failed to load patients:', error);
       toast.error('Failed to load patients');
+      setPatients([]);
     } finally {
       setLoading(false);
     }
@@ -47,11 +48,13 @@ export function PatientsPage() {
     }
     try {
       const data = await patientsApi.search(searchQuery);
-      setPatients(data);
-      toast.success(`Found ${data.length} patient(s)`);
+      const results = Array.isArray(data) ? data : [];
+      setPatients(results);
+      toast.success(`Found ${results.length} patient(s)`);
     } catch (error) {
       console.error('Search failed:', error);
       toast.error('Search failed');
+      setPatients([]);
     }
   };
 
