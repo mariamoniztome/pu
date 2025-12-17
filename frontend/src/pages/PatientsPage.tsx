@@ -3,8 +3,7 @@ import { Plus, Grid3x3, Table as TableIcon, Search } from 'lucide-react';
 import { toast } from 'sonner';
 import { AgGridReact } from 'ag-grid-react';
 import { ColDef } from 'ag-grid-community';
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-alpine.css';
+import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
@@ -12,6 +11,8 @@ import { patientsApi } from '../api';
 import { Patient } from '../types/patient';
 import { PatientForm } from '../components/PatientForm';
 import { PatientCard } from '../components/PatientCard';
+
+ModuleRegistry.registerModules([AllCommunityModule]);
 
 type ViewMode = 'grid' | 'table';
 
