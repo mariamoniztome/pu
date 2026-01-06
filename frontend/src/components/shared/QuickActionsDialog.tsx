@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { FileText, Calendar, UserPlus, DollarSign, ClipboardList, X } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
-import { Button } from './ui/button';
-import { Card } from './ui/card';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Button } from '../ui/button';
+import { Card } from '../ui/card';
 
 interface QuickAction {
   id: string;

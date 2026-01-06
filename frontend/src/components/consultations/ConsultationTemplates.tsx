@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { FileText, Plus, Copy, Edit, Trash2 } from 'lucide-react';
-import { Card } from './ui/card';
-import { Button } from './ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Textarea } from './ui/textarea';
+import { Card } from '../ui/card';
+import { Button } from '../ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Textarea } from '../ui/textarea';
 
 interface Template {
   id: string;
@@ -53,7 +53,7 @@ export function ConsultationTemplates({ onSelectTemplate }: { onSelectTemplate?:
 
   const handleEdit = (template: Template) => {
     setEditingTemplate(template);
-    setFormData({ title: template.title, content: template.content, category: template.category });
+    setFormData({ title: template.title, content: template.content, category: template.category as 'consultation' });
     setIsDialogOpen(true);
   };
 
@@ -151,7 +151,7 @@ export function ConsultationTemplates({ onSelectTemplate }: { onSelectTemplate?:
               <select
                 id="category"
                 value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value as 'consultation' | 'report' })}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value as 'consultation' })}
                 className="flex h-11 w-full rounded-full border-2 border-lilac-100 bg-white/70 backdrop-blur-sm px-5 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-lilac-300 transition-all duration-300"
               >
                 <option value="consultation">Consultation</option>

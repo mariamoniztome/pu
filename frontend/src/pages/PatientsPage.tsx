@@ -9,8 +9,8 @@ import { Input } from '../components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { patientsApi } from '../api';
 import { Patient } from '../types/patient';
-import { PatientForm } from '../components/PatientForm';
-import { PatientCard } from '../components/PatientCard';
+import { PatientForm } from '../components/patients/PatientForm';
+import { PatientCard } from '../components/patients/PatientCard';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 

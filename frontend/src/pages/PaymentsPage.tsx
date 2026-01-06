@@ -9,8 +9,8 @@ import {
 } from "../components/ui/card";
 import { paymentsApi } from "../api";
 import { Payment } from "../types/payment";
-import { PaymentForm } from "../components/PaymentForm";
-import { PaymentCharts } from "../components/PaymentCharts";
+import { PaymentForm } from "../components/payments/PaymentForm";
+import { PaymentCharts } from "../components/payments/PaymentCharts";
 
 export function PaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([]);

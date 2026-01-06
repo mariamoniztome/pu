@@ -4,7 +4,7 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { appointmentsApi } from '../api';
 import { Appointment } from '../types/appointment';
-import { AppointmentForm } from '../components/AppointmentForm';
+import { AppointmentForm } from '../components/appointments/AppointmentForm';
 
 export function AppointmentsPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -62,7 +62,7 @@ export function AppointmentsPage() {
           <h1 className="text-3xl font-bold text-slate-800">Appointments</h1>
           <p className="text-slate-600 mt-1">Manage appointment schedules</p>
         </div>
-        <Button onClick={() => setShowForm(true)}>
+        <Button onClick={() => setShowForm(true)} className="rounded-full bg-black hover:bg-gray-900">
           <Plus className="h-5 w-5 mr-2" />
           Schedule Appointment
         </Button>

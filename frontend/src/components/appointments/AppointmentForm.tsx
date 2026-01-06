@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Select } from './ui/select';
-import { Textarea } from './ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
-import { appointmentsApi, patientsApi } from '../api';
-import { Appointment } from '../types/appointment';
-import { Patient } from '../types/patient';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Select } from '../ui/select';
+import { Textarea } from '../ui/textarea';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { appointmentsApi, patientsApi } from '../../api';
+import { Appointment } from '../../types/appointment';
+import { Patient } from '../../types/patient';
 
 interface AppointmentFormProps {
   appointment?: Appointment | null;

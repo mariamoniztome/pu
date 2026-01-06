@@ -4,10 +4,10 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { consultationsApi } from '../api';
 import { Consultation } from '../types/consultation';
-import { ConsultationForm } from '../components/ConsultationForm';
-import { ConsultationTemplates } from '../components/ConsultationTemplates';
-import { ConsultationChecklist } from '../components/ConsultationChecklist';
-import { ChangeHistory } from '../components/ChangeHistory';
+import { ConsultationForm } from '../components/consultations/ConsultationForm';
+import { ConsultationTemplates } from '../components/consultations/ConsultationTemplates';
+import { ConsultationChecklist } from '../components/consultations/ConsultationChecklist';
+import { ChangeHistory } from '../components/shared/ChangeHistory';
 
 export function ConsultationsPage() {
   const [consultations, setConsultations] = useState<Consultation[]>([]);

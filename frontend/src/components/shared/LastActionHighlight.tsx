@@ -1,5 +1,5 @@
 import { Clock, User, FileText } from 'lucide-react';
-import { Card } from './ui/card';
+import { Card } from '../ui/card';
 
 interface LastAction {
   type: string;

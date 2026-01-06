@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Check, Circle } from 'lucide-react';
-import { Card } from './ui/card';
+import { Card } from '../ui/card';
 
 interface ChecklistItem {
   id: string;

@@ -1,4 +1,4 @@
-import { Card } from './ui/card';
+import { Card } from '../ui/card';
 import { DollarSign, TrendingUp, TrendingDown, Calendar } from 'lucide-react';
 
 interface ChartData {

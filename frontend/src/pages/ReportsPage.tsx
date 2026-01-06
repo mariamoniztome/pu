@@ -4,7 +4,7 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { externalReportsApi } from '../api';
 import { ExternalReport } from '../types/reports';
-import { ReportForm } from '../components/ReportForm';
+import { ReportForm } from '../components/reports/ReportForm';
 
 export function ReportsPage() {
   const [reports, setReports] = useState<ExternalReport[]>([]);

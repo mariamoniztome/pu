@@ -1,5 +1,5 @@
-import { Clock, User, Edit, FileText } from 'lucide-react';
-import { Card } from './ui/card';
+import { User, Edit, FileText } from 'lucide-react';
+import { Card } from '../ui/card';
 
 interface HistoryEntry {
   id: string;

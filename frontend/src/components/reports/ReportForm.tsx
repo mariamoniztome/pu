@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react';
 import { X, Upload } from 'lucide-react';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { Select } from './ui/select';
-import { Textarea } from './ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from './ui/dialog';
-import { externalReportsApi, patientsApi } from '../api';
-import { ExternalReport } from '../types/reports';
-import { Patient } from '../types/patient';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Select } from '../ui/select';
+import { Textarea } from '../ui/textarea';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
+import { externalReportsApi, patientsApi } from '../../api';
+import { ExternalReport } from '../../types/reports';
+import { Patient } from '../../types/patient';
 
 interface ReportFormProps {
   report?: ExternalReport | null;
