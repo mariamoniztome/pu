@@ -1,24 +1,35 @@
-import { useState, useEffect, useMemo } from 'react';
-import { Calendar, dateFnsLocalizer, Event } from 'react-big-calendar';
-import { format, parse, startOfWeek, getDay } from 'date-fns';
-import { enUS } from 'date-fns/locale';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-import '../styles/calendar.css';
-import { Plus } from 'lucide-react';
-import { toast } from 'sonner';
-import { Card } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Select } from '../components/ui/select';
-import { Textarea } from '../components/ui/textarea';
-import { appointmentsApi, patientsApi } from '../api';
-import { Appointment } from '../types/appointment';
-import { Patient } from '../types/patient';
+import { useState, useEffect, useMemo } from "react";
+import { Calendar, dateFnsLocalizer, Event } from "react-big-calendar";
+import { format, parse, startOfWeek, getDay } from "date-fns";
+import { enUS } from "date-fns/locale";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import "../styles/calendar.css";
+import { Plus, X } from "lucide-react";
+import { toast } from "sonner";
+import { Card } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "../components/ui/dialog";
+import { Input } from "../components/ui/input";
+import { Label } from "../components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../components/ui/select";
+import { Textarea } from "../components/ui/textarea";
+import { appointmentsApi, patientsApi } from "../api";
+import { Appointment } from "../types/appointment";
+import { Patient } from "../types/patient";
 
 const locales = {
-  'en-US': enUS,
+  "en-US": enUS,
 };
 
 const localizer = dateFnsLocalizer({
@@ -38,14 +49,21 @@ export function CalendarPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [showDialog, setShowDialog] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(
+    null
+  );
   const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
-    patientId: '',
-    dateTime: '',
-    type: 'initial' as 'follow-up' | 'initial' | 'assessment' | 'therapy' | 'other',
-    notes: '',
+    patientId: "",
+    dateTime: "",
+    type: "initial" as
+      | "follow-up"
+      | "initial"
+      | "assessment"
+      | "therapy"
+      | "other",
+    notes: "",
   });
 
   useEffect(() => {
@@ -61,8 +79,8 @@ export function CalendarPage() {
       setAppointments(Array.isArray(appointmentsData) ? appointmentsData : []);
       setPatients(Array.isArray(patientsData) ? patientsData : []);
     } catch (error) {
-      console.error('Failed to load data:', error);
-      toast.error('Failed to load calendar data');
+      console.error("Failed to load data:", error);
+      toast.error("Failed to load calendar data");
       setAppointments([]);
       setPatients([]);
     }
@@ -70,10 +88,11 @@ export function CalendarPage() {
 
   const events: CalendarEvent[] = useMemo(() => {
     return appointments.map((apt) => {
-      const patientName = typeof apt.patient === 'string' 
-        ? apt.patient 
-        : `${apt.patient.firstName} ${apt.patient.lastName}`;
-      
+      const patientName =
+        typeof apt.patient === "string"
+          ? apt.patient
+          : `${apt.patient.firstName} ${apt.patient.lastName}`;
+
       return {
         id: apt._id,
         title: `${patientName} - ${apt.type}`,
@@ -87,10 +106,10 @@ export function CalendarPage() {
   const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
     setSelectedEvent(null);
     setFormData({
-      patientId: '',
+      patientId: "",
       dateTime: format(slotInfo.start, "yyyy-MM-dd'T'HH:mm"),
-      type: 'initial',
-      notes: '',
+      type: "initial",
+      notes: "",
     });
     setShowDialog(true);
   };
@@ -98,10 +117,16 @@ export function CalendarPage() {
   const handleSelectEvent = (event: CalendarEvent) => {
     setSelectedEvent(event);
     setFormData({
-      patientId: typeof event.appointment.patient === 'string' ? event.appointment.patient : event.appointment.patient._id,
-      dateTime: format(new Date(event.appointment.dateTime), "yyyy-MM-dd'T'HH:mm"),
+      patientId:
+        typeof event.appointment.patient === "string"
+          ? event.appointment.patient
+          : event.appointment.patient._id,
+      dateTime: format(
+        new Date(event.appointment.dateTime),
+        "yyyy-MM-dd'T'HH:mm"
+      ),
       type: event.appointment.type,
-      notes: event.appointment.notes || '',
+      notes: event.appointment.notes || "",
     });
     setShowDialog(true);
   };
@@ -120,22 +145,22 @@ export function CalendarPage() {
 
       if (selectedEvent) {
         await appointmentsApi.update(selectedEvent.id, data);
-        toast.success('Appointment updated successfully');
+        toast.success("Appointment updated successfully");
       } else {
         await appointmentsApi.create(data);
-        toast.success('Appointment created successfully');
+        toast.success("Appointment created successfully");
       }
 
       setShowDialog(false);
       loadData();
       setFormData({
-        patientId: '',
-        dateTime: '',
-        type: 'initial',
-        notes: '',
+        patientId: "",
+        dateTime: "",
+        type: "initial",
+        notes: "",
       });
     } catch (err: any) {
-      toast.error(err.message || 'Failed to save appointment');
+      toast.error(err.message || "Failed to save appointment");
     } finally {
       setLoading(false);
     }
@@ -144,40 +169,42 @@ export function CalendarPage() {
   const handleDelete = async () => {
     if (!selectedEvent) return;
 
-    if (!confirm('Are you sure you want to delete this appointment?')) return;
+    if (!confirm("Are you sure you want to delete this appointment?")) return;
 
     try {
       await appointmentsApi.delete(selectedEvent.id);
-      toast.success('Appointment deleted successfully');
+      toast.success("Appointment deleted successfully");
       setShowDialog(false);
       loadData();
     } catch (error) {
-      toast.error('Failed to delete appointment');
+      toast.error("Failed to delete appointment");
     }
   };
 
   const eventStyleGetter = (event: CalendarEvent) => {
     const colors = {
-      scheduled: { backgroundColor: '#6366f1', borderColor: '#4f46e5' },
-      completed: { backgroundColor: '#10b981', borderColor: '#059669' },
-      cancelled: { backgroundColor: '#ef4444', borderColor: '#dc2626' },
-      'no-show': { backgroundColor: '#f59e0b', borderColor: '#d97706' },
-      confirmed: { backgroundColor: '#8b5cf6', borderColor: '#7c3aed' },
+      scheduled: { backgroundColor: "#6366f1", borderColor: "#4f46e5" },
+      completed: { backgroundColor: "#10b981", borderColor: "#059669" },
+      cancelled: { backgroundColor: "#ef4444", borderColor: "#dc2626" },
+      "no-show": { backgroundColor: "#f59e0b", borderColor: "#d97706" },
+      confirmed: { backgroundColor: "#8b5cf6", borderColor: "#7c3aed" },
     };
 
-    const color = colors[event.appointment.status as keyof typeof colors] || colors.scheduled;
+    const color =
+      colors[event.appointment.status as keyof typeof colors] ||
+      colors.scheduled;
 
     return {
       style: {
         backgroundColor: color.backgroundColor,
         borderColor: color.borderColor,
-        borderRadius: '8px',
-        border: 'none',
-        color: 'white',
-        fontSize: '0.875rem',
-        padding: '4px 8px',
-        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-        fontWeight: '500',
+        borderRadius: "8px",
+        border: "none",
+        color: "white",
+        fontSize: "0.875rem",
+        padding: "4px 8px",
+        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+        fontWeight: "500",
       },
     };
   };
@@ -193,10 +220,10 @@ export function CalendarPage() {
           onClick={() => {
             setSelectedEvent(null);
             setFormData({
-              patientId: '',
+              patientId: "",
               dateTime: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
-              type: 'initial',
-              notes: '',
+              type: "initial",
+              notes: "",
             });
             setShowDialog(true);
           }}
@@ -208,7 +235,7 @@ export function CalendarPage() {
       </div>
 
       <Card className="rounded-3xl p-6 shadow-xl overflow-hidden">
-        <div style={{ height: 'calc(100vh - 250px)', minHeight: '600px' }}>
+        <div style={{ height: "calc(100vh - 250px)", minHeight: "600px" }}>
           <Calendar
             localizer={localizer}
             events={events}
@@ -218,111 +245,139 @@ export function CalendarPage() {
             onSelectEvent={handleSelectEvent}
             selectable
             eventPropGetter={eventStyleGetter}
-            views={['month', 'week', 'day', 'agenda']}
+            views={["month", "week", "day", "agenda"]}
             defaultView="week"
             step={30}
             showMultiDayTimes
-            style={{ height: '100%' }}
+            style={{ height: "100%" }}
           />
         </div>
       </Card>
-
-      <Dialog open={showDialog} onOpenChange={(open) => !loading && setShowDialog(open)}>
-        <DialogContent className="max-w-lg rounded-3xl">
-          <DialogHeader className="border-b border-gray-200 pb-4">
+      <Dialog
+        open={showDialog}
+        onOpenChange={(open) => !loading && setShowDialog(open)}
+      >
+        <DialogContent>
+          <DialogHeader className="flex flex-row items-center justify-between">
             <DialogTitle className="text-xl font-bold text-gray-900">
-              {selectedEvent ? 'Edit Appointment' : 'New Appointment'}
+              {selectedEvent ? "Edit Appointment" : "New Appointment"}
             </DialogTitle>
+
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => setShowDialog(false)}
+              disabled={loading}
+            >
+              <X className="h-4 w-4" />
+            </Button>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-5 pt-4">
+
+          <form onSubmit={handleSubmit} className="space-y-4 px-12 pb-12 ">
+            {/* Patient */}
             <div className="space-y-2">
-              <Label htmlFor="patientId" className="text-sm font-semibold text-gray-700">
+              <Label className="text-sm font-semibold text-gray-700">
                 Patient <span className="text-red-500">*</span>
               </Label>
               <Select
                 value={formData.patientId}
-                onValueChange={(value) => setFormData({ ...formData, patientId: value })}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, patientId: value })
+                }
               >
-                <option value="">Select a patient</option>
-                {patients.map((patient) => (
-                  <option key={patient._id} value={patient._id}>
-                    {patient.firstName} {patient.lastName}
-                  </option>
-                ))}
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a patient" />
+                </SelectTrigger>
+                <SelectContent>
+                  {patients.map((patient) => (
+                    <SelectItem key={patient._id} value={patient._id}>
+                      {patient.firstName} {patient.lastName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
               </Select>
             </div>
 
+            {/* Date */}
             <div className="space-y-2">
-              <Label htmlFor="dateTime" className="text-sm font-semibold text-gray-700">
+              <Label className="text-sm font-semibold text-gray-700">
                 Date & Time <span className="text-red-500">*</span>
               </Label>
               <Input
-                id="dateTime"
                 type="datetime-local"
                 value={formData.dateTime}
-                onChange={(e) => setFormData({ ...formData, dateTime: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, dateTime: e.target.value })
+                }
                 required
-                className="rounded-xl border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
             </div>
 
+            {/* Type */}
             <div className="space-y-2">
-              <Label htmlFor="type" className="text-sm font-semibold text-gray-700">
+              <Label className="text-sm font-semibold text-gray-700">
                 Appointment Type <span className="text-red-500">*</span>
               </Label>
               <Select
                 value={formData.type}
-                onValueChange={(value) => setFormData({ ...formData, type: value as any })}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, type: value as any })
+                }
               >
-                <option value="initial">Initial Assessment</option>
-                <option value="follow-up">Follow-up</option>
-                <option value="assessment">Assessment</option>
-                <option value="therapy">Therapy</option>
-                <option value="other">Other</option>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="initial">Initial Assessment</SelectItem>
+                  <SelectItem value="follow-up">Follow-up</SelectItem>
+                  <SelectItem value="assessment">Assessment</SelectItem>
+                  <SelectItem value="therapy">Therapy</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
               </Select>
             </div>
 
+            {/* Notes */}
             <div className="space-y-2">
-              <Label htmlFor="notes" className="text-sm font-semibold text-gray-700">
+              <Label className="text-sm font-semibold text-gray-700">
                 Notes
               </Label>
               <Textarea
-                id="notes"
                 value={formData.notes}
-                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, notes: e.target.value })
+                }
                 rows={3}
-                className="rounded-xl border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
                 placeholder="Add any additional notes..."
               />
             </div>
 
-            <div className="flex gap-2 justify-end pt-6 border-t border-gray-200">
+            {/* Actions */}
+            <div className="flex gap-2 justify-end">
               {selectedEvent && (
                 <Button
                   type="button"
                   variant="destructive"
                   onClick={handleDelete}
-                  className="rounded-full mr-auto bg-red-500 hover:bg-red-600 text-white"
+                  className="rounded-full mr-auto"
                   disabled={loading}
                 >
                   Delete
                 </Button>
               )}
+
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => setShowDialog(false)}
-                className="rounded-full border-gray-300 text-gray-700 hover:bg-gray-50"
                 disabled={loading}
               >
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                disabled={loading}
-                className="rounded-full bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white shadow-lg"
-              >
-                {loading ? 'Saving...' : selectedEvent ? 'Update' : 'Create'}
+
+              <Button type="submit" disabled={loading}>
+                {loading ? "Saving..." : selectedEvent ? "Update" : "Create"}
               </Button>
             </div>
           </form>

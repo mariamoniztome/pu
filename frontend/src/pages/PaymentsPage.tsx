@@ -70,7 +70,7 @@ export function PaymentsPage() {
         </div>
         <Button
           onClick={() => setShowForm(true)}
-          className="rounded-full bg-gray-900 hover:bg-gray-900"
+          className="rounded-full bg-gray-900 hover:bg-black"
         >
           <Plus className="h-5 w-5 mr-2" />
           Record Payment

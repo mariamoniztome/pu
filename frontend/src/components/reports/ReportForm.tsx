@@ -1,14 +1,20 @@
-import { useState, useEffect } from 'react';
-import { X, Upload } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { Select } from '../ui/select';
-import { Textarea } from '../ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
-import { externalReportsApi, patientsApi } from '../../api';
-import { ExternalReport } from '../../types/reports';
-import { Patient } from '../../types/patient';
+import { useState, useEffect } from "react";
+import { X, Upload } from "lucide-react";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "../ui/select";
+import { Textarea } from "../ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
+import { externalReportsApi, patientsApi } from "../../api";
+import { ExternalReport } from "../../types/reports";
+import { Patient } from "../../types/patient";
 
 interface ReportFormProps {
   report?: ExternalReport | null;
@@ -18,37 +24,56 @@ interface ReportFormProps {
 export function ReportForm({ report, onClose }: ReportFormProps) {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [files, setFiles] = useState<FileList | null>(null);
-  const [formData, setFormData] = useState({
-    patient: '',
-    reportType: 'court' as 'court' | 'school' | 'employer' | 'insurance' | 'medical' | 'other',
-    recipientName: '',
-    recipientOrganization: '',
-    requestDate: new Date().toISOString().split('T')[0],
-    completionDate: '',
-    purpose: '',
-    summary: '',
-    findings: '',
-    recommendations: '',
-    status: 'requested' as 'requested' | 'in-progress' | 'completed' | 'delivered',
+
+  const [formData, setFormData] = useState<{
+    patient?: string;
+    reportType?: ExternalReport["reportType"];
+    recipientName: string;
+    recipientOrganization: string;
+    requestDate: string;
+    completionDate: string;
+    purpose: string;
+    summary: string;
+    findings: string;
+    recommendations: string;
+    status?: ExternalReport["status"];
+  }>({
+    patient: undefined,
+    reportType: undefined,
+    recipientName: "",
+    recipientOrganization: "",
+    requestDate: new Date().toISOString().split("T")[0],
+    completionDate: "",
+    purpose: "",
+    summary: "",
+    findings: "",
+    recommendations: "",
+    status: undefined,
   });
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     loadPatients();
+
     if (report) {
       setFormData({
-        patient: typeof report.patient === 'string' ? report.patient : report.patient._id,
+        patient:
+          typeof report.patient === "string"
+            ? report.patient
+            : report.patient._id,
         reportType: report.reportType,
         recipientName: report.recipientName,
-        recipientOrganization: report.recipientOrganization || '',
-        requestDate: report.requestDate.split('T')[0],
-        completionDate: report.completionDate ? report.completionDate.split('T')[0] : '',
+        recipientOrganization: report.recipientOrganization || "",
+        requestDate: report.requestDate.split("T")[0],
+        completionDate: report.completionDate
+          ? report.completionDate.split("T")[0]
+          : "",
         purpose: report.purpose,
         summary: report.summary,
-        findings: report.findings || '',
-        recommendations: report.recommendations || '',
+        findings: report.findings || "",
+        recommendations: report.recommendations || "",
         status: report.status,
       });
     }
@@ -58,37 +83,60 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
     try {
       const data = await patientsApi.getAll();
       setPatients(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.error('Failed to load patients:', error);
-      setPatients([]);
-      setError('Unable to load patients. Please ensure the backend server is running.');
+    } catch {
+      setError(
+        "Unable to load patients. Please ensure the backend server is running."
+      );
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.patient || !formData.reportType || !formData.status) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+
     setLoading(true);
-    setError('');
+    setError("");
 
     try {
       const formDataToSend = new FormData();
-      formDataToSend.append('patient', formData.patient);
-      formDataToSend.append('reportType', formData.reportType);
-      formDataToSend.append('recipientName', formData.recipientName);
-      formDataToSend.append('requestDate', new Date(formData.requestDate).toISOString());
-      formDataToSend.append('purpose', formData.purpose);
-      formDataToSend.append('summary', formData.summary);
-      formDataToSend.append('status', formData.status);
 
-      if (formData.recipientOrganization) formDataToSend.append('recipientOrganization', formData.recipientOrganization);
-      if (formData.completionDate) formDataToSend.append('completionDate', new Date(formData.completionDate).toISOString());
-      if (formData.findings) formDataToSend.append('findings', formData.findings);
-      if (formData.recommendations) formDataToSend.append('recommendations', formData.recommendations);
+      formDataToSend.append("patient", formData.patient);
+      formDataToSend.append("reportType", formData.reportType);
+      formDataToSend.append("recipientName", formData.recipientName);
+      formDataToSend.append(
+        "requestDate",
+        new Date(formData.requestDate).toISOString()
+      );
+      formDataToSend.append("purpose", formData.purpose);
+      formDataToSend.append("summary", formData.summary);
+      formDataToSend.append("status", formData.status);
+
+      if (formData.recipientOrganization)
+        formDataToSend.append(
+          "recipientOrganization",
+          formData.recipientOrganization
+        );
+      if (formData.completionDate)
+        formDataToSend.append(
+          "completionDate",
+          new Date(formData.completionDate).toISOString()
+        );
+      if (formData.findings)
+        formDataToSend.append("findings", formData.findings);
+      if (formData.recommendations)
+        formDataToSend.append(
+          "recommendations",
+          formData.recommendations
+        );
 
       if (files) {
-        Array.from(files).forEach((file) => {
-          formDataToSend.append('attachments', file);
-        });
+        Array.from(files).forEach((file) =>
+          formDataToSend.append("attachments", file)
+        );
       }
 
       if (report) {
@@ -99,193 +147,210 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
 
       onClose();
     } catch (err: any) {
-      setError(err.message || 'Failed to save report');
+      setError(err.message || "Failed to save report");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-      <Dialog open={true} onOpenChange={onClose}>
-        <DialogHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-lavender-50 to-transparent">
+    <Dialog open onOpenChange={onClose}>
+      <DialogContent>
+      <DialogHeader className="flex  flex-row items-center justify-between">
           <DialogTitle className="text-slate-800">
-            {report ? 'Edit Report' : 'New External Report'}
+            {report ? "Edit Report" : "New External Report"}
           </DialogTitle>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-4 w-4" />
           </Button>
         </DialogHeader>
-        <DialogContent className="pt-6">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="patient">Patient *</Label>
-                <Select
-                  value={formData.patient}
-                  onValueChange={(value) => setFormData({ ...formData, patient: value })}
-                >
-                  <option value="">Select a patient</option>
-                  {patients.map((patient) => (
-                    <option key={patient._id} value={patient._id}>
-                      {patient.firstName} {patient.lastName}
-                    </option>
+
+        <form onSubmit={handleSubmit} className="space-y-4 px-12 pb-12">
+          {/* Patient + Type */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label>Patient *</Label>
+              <Select
+                value={formData.patient}
+                onValueChange={(value) =>
+                  setFormData({ ...formData, patient: value })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a patient" />
+                </SelectTrigger>
+                <SelectContent>
+                  {patients.map((p) => (
+                    <SelectItem key={p._id} value={p._id}>
+                      {p.firstName} {p.lastName}
+                    </SelectItem>
                   ))}
-                </Select>
-              </div>
-              <div>
-                <Label htmlFor="reportType">Report Type *</Label>
-                <Select
-                  value={formData.reportType}
-                  onValueChange={(value) => setFormData({ ...formData, reportType: value as any })}
-                >
-                  <option value="court">Court</option>
-                  <option value="school">School</option>
-                  <option value="employer">Employer</option>
-                  <option value="insurance">Insurance</option>
-                  <option value="medical">Medical</option>
-                  <option value="other">Other</option>
-                </Select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="recipientName">Recipient Name *</Label>
-                <Input
-                  id="recipientName"
-                  value={formData.recipientName}
-                  onChange={(e) => setFormData({ ...formData, recipientName: e.target.value })}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="recipientOrganization">Organization</Label>
-                <Input
-                  id="recipientOrganization"
-                  value={formData.recipientOrganization}
-                  onChange={(e) => setFormData({ ...formData, recipientOrganization: e.target.value })}
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <Label htmlFor="requestDate">Request Date *</Label>
-                <Input
-                  id="requestDate"
-                  type="date"
-                  value={formData.requestDate}
-                  onChange={(e) => setFormData({ ...formData, requestDate: e.target.value })}
-                  required
-                />
-              </div>
-              <div>
-                <Label htmlFor="completionDate">Completion Date</Label>
-                <Input
-                  id="completionDate"
-                  type="date"
-                  value={formData.completionDate}
-                  onChange={(e) => setFormData({ ...formData, completionDate: e.target.value })}
-                />
-              </div>
-              <div>
-                <Label htmlFor="status">Status *</Label>
-                <Select
-                  value={formData.status}
-                  onValueChange={(value) => setFormData({ ...formData, status: value as any })}
-                >
-                  <option value="requested">Requested</option>
-                  <option value="in-progress">In Progress</option>
-                  <option value="completed">Completed</option>
-                  <option value="delivered">Delivered</option>
-                </Select>
-              </div>
+                </SelectContent>
+              </Select>
             </div>
 
             <div>
-              <Label htmlFor="purpose">Purpose *</Label>
-              <Textarea
-                id="purpose"
-                value={formData.purpose}
-                onChange={(e) => setFormData({ ...formData, purpose: e.target.value })}
-                rows={2}
-                placeholder="Purpose of this report..."
+              <Label>Report Type *</Label>
+              <Select
+                value={formData.reportType}
+                onValueChange={(value) =>
+                  setFormData({
+                    ...formData,
+                    reportType: value as ExternalReport["reportType"],
+                  })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="court">Court</SelectItem>
+                  <SelectItem value="school">School</SelectItem>
+                  <SelectItem value="employer">Employer</SelectItem>
+                  <SelectItem value="insurance">Insurance</SelectItem>
+                  <SelectItem value="medical">Medical</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Dates + Status */}
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <Label>Request Date *</Label>
+              <Input
+                type="date"
+                value={formData.requestDate}
+                onChange={(e) =>
+                  setFormData({ ...formData, requestDate: e.target.value })
+                }
                 required
               />
             </div>
 
             <div>
-              <Label htmlFor="summary">Summary *</Label>
-              <Textarea
-                id="summary"
-                value={formData.summary}
-                onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
-                rows={3}
-                placeholder="Brief summary of the report..."
-                required
+              <Label>Completion Date</Label>
+              <Input
+                type="date"
+                value={formData.completionDate}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    completionDate: e.target.value,
+                  })
+                }
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="findings">Findings</Label>
-                <Textarea
-                  id="findings"
-                  value={formData.findings}
-                  onChange={(e) => setFormData({ ...formData, findings: e.target.value })}
-                  rows={3}
-                />
-              </div>
-              <div>
-                <Label htmlFor="recommendations">Recommendations</Label>
-                <Textarea
-                  id="recommendations"
-                  value={formData.recommendations}
-                  onChange={(e) => setFormData({ ...formData, recommendations: e.target.value })}
-                  rows={3}
-                />
-              </div>
+            <div>
+              <Label>Status *</Label>
+              <Select
+                value={formData.status}
+                onValueChange={(value) =>
+                  setFormData({
+                    ...formData,
+                    status: value as ExternalReport["status"],
+                  })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="requested">Requested</SelectItem>
+                  <SelectItem value="in-progress">In Progress</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
+                  <SelectItem value="delivered">Delivered</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Text fields */}
+          <div>
+            <Label>Purpose *</Label>
+            <Textarea
+              value={formData.purpose}
+              onChange={(e) =>
+                setFormData({ ...formData, purpose: e.target.value })
+              }
+              required
+            />
+          </div>
+
+          <div>
+            <Label>Summary *</Label>
+            <Textarea
+              value={formData.summary}
+              onChange={(e) =>
+                setFormData({ ...formData, summary: e.target.value })
+              }
+              required
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label>Findings</Label>
+              <Textarea
+                value={formData.findings}
+                onChange={(e) =>
+                  setFormData({ ...formData, findings: e.target.value })
+                }
+              />
             </div>
 
             <div>
-              <Label htmlFor="attachments">Attachments</Label>
-              <div className="mt-2">
-                <label className="flex items-center justify-center w-full h-24 border-2 border-dashed border-lavender-200 rounded-2xl cursor-pointer bg-lavender-50/30 hover:bg-lavender-50 transition-colors">
-                  <div className="text-center">
-                    <Upload className="h-8 w-8 text-lavender-400 mx-auto mb-2" />
-                    <p className="text-sm text-slate-600">
-                      {files ? `${files.length} file(s) selected` : 'Click to upload files'}
-                    </p>
-                    <p className="text-xs text-slate-400">PDF, images, documents</p>
-                  </div>
-                  <input
-                    id="attachments"
-                    type="file"
-                    multiple
-                    className="hidden"
-                    onChange={(e) => setFiles(e.target.files)}
-                    accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.txt"
-                  />
-                </label>
-              </div>
+              <Label>Recommendations</Label>
+              <Textarea
+                value={formData.recommendations}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    recommendations: e.target.value,
+                  })
+                }
+              />
             </div>
+          </div>
 
-            {error && (
-              <div className="text-sm text-red-700 bg-red-50 p-3 rounded-2xl border border-red-200">
-                {error}
+          {/* Attachments */}
+          <div>
+            <Label>Attachments</Label>
+            <label className="mt-2 flex h-24 w-full cursor-pointer items-center justify-center rounded-2xl border-2 border-dashed border-lavender-200 bg-lavender-50/30 hover:bg-lavender-50">
+              <div className="text-center">
+                <Upload className="mx-auto mb-2 h-8 w-8 text-lavender-400" />
+                <p className="text-sm text-slate-600">
+                  {files ? `${files.length} file(s) selected` : "Click to upload files"}
+                </p>
               </div>
-            )}
+              <input
+                type="file"
+                multiple
+                className="hidden"
+                accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.txt"
+                onChange={(e) => setFiles(e.target.files)}
+              />
+            </label>
+          </div>
 
-            <div className="flex gap-2 justify-end pt-4">
-              <Button type="button" variant="outline" onClick={onClose}>
-                Cancel
-              </Button>
-              <Button type="submit" disabled={loading}>
-                {loading ? 'Saving...' : report ? 'Update' : 'Create'}
-              </Button>
+          {error && (
+            <div className="rounded-2xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+              {error}
             </div>
-          </form>
-        </DialogContent>
-      </Dialog>
+          )}
+
+          <div className="flex justify-end gap-2 pt-4">
+            <Button type="button" variant="outline" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={loading}>
+              {loading ? "Saving..." : report ? "Update" : "Create"}
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }

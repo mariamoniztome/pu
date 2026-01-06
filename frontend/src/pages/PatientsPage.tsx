@@ -162,7 +162,7 @@ export function PatientsPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-1">Patients</h1>
           <p className="text-gray-500">Manage patient records</p>
         </div>
-        <Button onClick={() => setShowForm(true)} className="bg-gray-900 hover:bg-gray-900 text-white rounded-full px-6">
+        <Button onClick={() => setShowForm(true)} className="bg-gray-900 hover:bg-black text-white rounded-full px-6">
           <Plus className="h-5 w-5 mr-2" />
           Add Patient
         </Button>

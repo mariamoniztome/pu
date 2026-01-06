@@ -26,22 +26,19 @@ export function AppointmentForm({
   onClose,
 }: AppointmentFormProps) {
   const [patients, setPatients] = useState<Patient[]>([]);
-  const [formData, setFormData] = useState({
-    patient: "",
+  const [formData, setFormData] = useState<{
+    patient?: string;
+    dateTime: string;
+    duration: string;
+    type?: Appointment["type"];
+    status?: Appointment["status"];
+    notes: string;
+  }>({
+    patient: undefined,
     dateTime: "",
     duration: "60",
-    type: "follow-up" as
-      | "initial"
-      | "follow-up"
-      | "assessment"
-      | "therapy"
-      | "other",
-    status: "scheduled" as
-      | "scheduled"
-      | "confirmed"
-      | "completed"
-      | "cancelled"
-      | "no-show",
+    type: undefined,
+    status: undefined,
     notes: "",
   });
 
@@ -50,16 +47,18 @@ export function AppointmentForm({
 
   useEffect(() => {
     loadPatients();
+
     if (appointment) {
-      const dateTime = new Date(appointment.dateTime);
-      const formattedDateTime = dateTime.toISOString().slice(0, 16);
+      const dateTime = new Date(appointment.dateTime)
+        .toISOString()
+        .slice(0, 16);
 
       setFormData({
         patient:
           typeof appointment.patient === "string"
             ? appointment.patient
             : appointment.patient._id,
-        dateTime: formattedDateTime,
+        dateTime,
         duration: appointment.duration.toString(),
         type: appointment.type,
         status: appointment.status,
@@ -72,9 +71,8 @@ export function AppointmentForm({
     try {
       const data = await patientsApi.getAll();
       setPatients(Array.isArray(data) ? data : []);
-    } catch (error) {
-      console.error("Failed to load patients:", error);
-      setPatients([]);
+    } catch (err) {
+      console.error(err);
       setError(
         "Unable to load patients. Please ensure the backend server is running."
       );
@@ -83,6 +81,12 @@ export function AppointmentForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.patient || !formData.type || !formData.status) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+
     setLoading(true);
     setError("");
 
@@ -90,7 +94,7 @@ export function AppointmentForm({
       const data = {
         patient: formData.patient,
         dateTime: new Date(formData.dateTime).toISOString(),
-        duration: parseInt(formData.duration),
+        duration: parseInt(formData.duration, 10),
         type: formData.type,
         status: formData.status,
         notes: formData.notes || undefined,
@@ -111,39 +115,45 @@ export function AppointmentForm({
   };
 
   return (
-    <Dialog open={true} onOpenChange={onClose}>
-      <DialogHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-sage-50 to-transparent">
-        <DialogTitle className="text-slate-800">
-          {appointment ? "Edit Appointment" : "Schedule New Appointment"}
-        </DialogTitle>
-        <Button variant="ghost" size="icon" onClick={onClose}>
-          <X className="h-4 w-4" />
-        </Button>
-      </DialogHeader>
-      <DialogContent className="pt-6">
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <Dialog open onOpenChange={onClose}>
+      <DialogContent>
+        <DialogHeader className="flex flex-row items-center justify-between">
+          <DialogTitle className="text-slate-800">
+            {appointment ? "Edit Appointment" : "Schedule New Appointment"}
+          </DialogTitle>
+          <Button variant="ghost" size="icon" onClick={onClose}>
+            <X className="h-4 w-4" />
+          </Button>
+        </DialogHeader>
+
+        <form onSubmit={handleSubmit} className="space-y-4 px-12 pb-12">
+          {/* Patient */}
           <div>
-            <Label htmlFor="patient">Patient *</Label>
+            <Label>Patient *</Label>
             <Select
               value={formData.patient}
               onValueChange={(value) =>
                 setFormData({ ...formData, patient: value })
               }
             >
-              <option value="">Select a patient</option>
-              {patients.map((patient) => (
-                <option key={patient._id} value={patient._id}>
-                  {patient.firstName} {patient.lastName}
-                </option>
-              ))}
+              <SelectTrigger>
+                <SelectValue placeholder="Select a patient" />
+              </SelectTrigger>
+              <SelectContent>
+                {patients.map((patient) => (
+                  <SelectItem key={patient._id} value={patient._id}>
+                    {patient.firstName} {patient.lastName}
+                  </SelectItem>
+                ))}
+              </SelectContent>
             </Select>
           </div>
 
+          {/* Date & Duration */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="dateTime">Date & Time *</Label>
+              <Label>Date & Time *</Label>
               <Input
-                id="dateTime"
                 type="datetime-local"
                 value={formData.dateTime}
                 onChange={(e) =>
@@ -152,10 +162,10 @@ export function AppointmentForm({
                 required
               />
             </div>
+
             <div>
-              <Label htmlFor="duration">Duration (minutes) *</Label>
+              <Label>Duration (minutes) *</Label>
               <Input
-                id="duration"
                 type="number"
                 min="15"
                 max="480"
@@ -168,34 +178,46 @@ export function AppointmentForm({
             </div>
           </div>
 
+          {/* Type & Status */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="type">Type *</Label>
+              <Label>Type *</Label>
               <Select
                 value={formData.type}
                 onValueChange={(value) =>
-                  setFormData({ ...formData, type: value as any })
-                }
-              >
-                <option value="initial">Initial</option>
-                <option value="follow-up">Follow-up</option>
-                <option value="assessment">Assessment</option>
-                <option value="therapy">Therapy</option>
-                <option value="other">Other</option>
-              </Select>
-            </div>
-            <div>
-              <Label htmlFor="status">Status *</Label>
-              <Select
-                value={formData.status}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, status: value as any })
+                  setFormData({
+                    ...formData,
+                    type: value as Appointment["type"],
+                  })
                 }
               >
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue placeholder="Select a type" />
                 </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="initial">Initial</SelectItem>
+                  <SelectItem value="follow-up">Follow-up</SelectItem>
+                  <SelectItem value="assessment">Assessment</SelectItem>
+                  <SelectItem value="therapy">Therapy</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
+            <div>
+              <Label>Status *</Label>
+              <Select
+                value={formData.status}
+                onValueChange={(value) =>
+                  setFormData({
+                    ...formData,
+                    status: value as Appointment["status"],
+                  })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a status" />
+                </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="scheduled">Scheduled</SelectItem>
                   <SelectItem value="confirmed">Confirmed</SelectItem>
@@ -207,10 +229,10 @@ export function AppointmentForm({
             </div>
           </div>
 
+          {/* Notes */}
           <div>
-            <Label htmlFor="notes">Notes</Label>
+            <Label>Notes</Label>
             <Textarea
-              id="notes"
               value={formData.notes}
               onChange={(e) =>
                 setFormData({ ...formData, notes: e.target.value })

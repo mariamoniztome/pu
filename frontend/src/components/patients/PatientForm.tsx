@@ -252,7 +252,7 @@ export function PatientForm({ patient, open, onClose }: PatientFormProps) {
             <Button type="button" variant="outline" onClick={onClose} className="rounded-full">
               Cancel
             </Button>
-            <Button type="submit" disabled={loading} className="rounded-full bg-gray-900 hover:bg-gray-900">
+            <Button type="submit" disabled={loading} className="rounded-full bg-gray-900 hover:bg-black">
               {loading ? 'Saving...' : patient ? 'Update' : 'Create'}
             </Button>
           </div>
