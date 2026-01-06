@@ -3,6 +3,7 @@ import { Calendar, dateFnsLocalizer, Event } from 'react-big-calendar';
 import { format, parse, startOfWeek, getDay } from 'date-fns';
 import { enUS } from 'date-fns/locale';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import '../styles/calendar.css';
 import { Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import { Card } from '../components/ui/card';
@@ -44,7 +45,7 @@ export function CalendarPage() {
   const [formData, setFormData] = useState({
     patientId: '',
     dateTime: '',
-    type: 'consultation' as 'consultation' | 'follow-up' | 'initial' | 'emergency',
+    type: 'initial' as 'follow-up' | 'initial' | 'assessment' | 'therapy' | 'other',
     notes: '',
   });
 
@@ -69,13 +70,19 @@ export function CalendarPage() {
   };
 
   const events: CalendarEvent[] = useMemo(() => {
-    return appointments.map((apt) => ({
-      id: apt._id,
-      title: `${apt.patient.firstName} ${apt.patient.lastName} - ${apt.type}`,
-      start: new Date(apt.dateTime),
-      end: new Date(new Date(apt.dateTime).getTime() + 60 * 60 * 1000),
-      appointment: apt,
-    }));
+    return appointments.map((apt) => {
+      const patientName = typeof apt.patient === 'string' 
+        ? apt.patient 
+        : `${apt.patient.firstName} ${apt.patient.lastName}`;
+      
+      return {
+        id: apt._id,
+        title: `${patientName} - ${apt.type}`,
+        start: new Date(apt.dateTime),
+        end: new Date(new Date(apt.dateTime).getTime() + 60 * 60 * 1000),
+        appointment: apt,
+      };
+    });
   }, [appointments]);
 
   const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
@@ -84,7 +91,7 @@ export function CalendarPage() {
     setFormData({
       patientId: '',
       dateTime: format(slotInfo.start, "yyyy-MM-dd'T'HH:mm"),
-      type: 'consultation',
+      type: 'initial',
       notes: '',
     });
     setShowDialog(true);
@@ -94,7 +101,7 @@ export function CalendarPage() {
     setSelectedEvent(event);
     setSelectedSlot(null);
     setFormData({
-      patientId: event.appointment.patient._id,
+      patientId: typeof event.appointment.patient === 'string' ? event.appointment.patient : event.appointment.patient._id,
       dateTime: format(new Date(event.appointment.dateTime), "yyyy-MM-dd'T'HH:mm"),
       type: event.appointment.type,
       notes: event.appointment.notes || '',
@@ -127,7 +134,7 @@ export function CalendarPage() {
       setFormData({
         patientId: '',
         dateTime: '',
-        type: 'consultation',
+        type: 'initial',
         notes: '',
       });
     } catch (err: any) {
@@ -154,13 +161,14 @@ export function CalendarPage() {
 
   const eventStyleGetter = (event: CalendarEvent) => {
     const colors = {
-      scheduled: { backgroundColor: '#22c55e', borderColor: '#16a34a' },
-      completed: { backgroundColor: '#6b7280', borderColor: '#4b5563' },
+      scheduled: { backgroundColor: '#6366f1', borderColor: '#4f46e5' },
+      completed: { backgroundColor: '#10b981', borderColor: '#059669' },
       cancelled: { backgroundColor: '#ef4444', borderColor: '#dc2626' },
       'no-show': { backgroundColor: '#f59e0b', borderColor: '#d97706' },
+      confirmed: { backgroundColor: '#8b5cf6', borderColor: '#7c3aed' },
     };
 
-    const color = colors[event.appointment.status] || colors.scheduled;
+    const color = colors[event.appointment.status as keyof typeof colors] || colors.scheduled;
 
     return {
       style: {
@@ -171,6 +179,8 @@ export function CalendarPage() {
         color: 'white',
         fontSize: '0.875rem',
         padding: '4px 8px',
+        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+        fontWeight: '500',
       },
     };
   };
@@ -189,19 +199,19 @@ export function CalendarPage() {
             setFormData({
               patientId: '',
               dateTime: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
-              type: 'consultation',
+              type: 'initial',
               notes: '',
             });
             setShowDialog(true);
           }}
-          className="bg-gray-900 hover:bg-gray-900 text-white rounded-full px-6"
+          className="bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white rounded-full px-6 shadow-lg"
         >
           <Plus className="h-5 w-5 mr-2" />
           New Appointment
         </Button>
       </div>
 
-      <Card className="rounded-3xl p-6 shadow-sm">
+      <Card className="rounded-3xl p-6 shadow-xl overflow-hidden">
         <div style={{ height: 'calc(100vh - 250px)', minHeight: '600px' }}>
           <Calendar
             localizer={localizer}
@@ -222,21 +232,20 @@ export function CalendarPage() {
       </Card>
 
       <Dialog open={showDialog} onOpenChange={(open) => !loading && setShowDialog(open)}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle>
+        <DialogContent className="max-w-lg rounded-3xl">
+          <DialogHeader className="border-b border-gray-200 pb-4">
+            <DialogTitle className="text-xl font-bold text-gray-900">
               {selectedEvent ? 'Edit Appointment' : 'New Appointment'}
             </DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <Label htmlFor="patientId">Patient *</Label>
+          <form onSubmit={handleSubmit} className="space-y-5 pt-4">
+            <div className="space-y-2">
+              <Label htmlFor="patientId" className="text-sm font-semibold text-gray-700">
+                Patient <span className="text-red-500">*</span>
+              </Label>
               <Select
-                id="patientId"
                 value={formData.patientId}
-                onChange={(e) => setFormData({ ...formData, patientId: e.target.value })}
-                required
-                className="rounded-2xl"
+                onValueChange={(value) => setFormData({ ...formData, patientId: value })}
               >
                 <option value="">Select a patient</option>
                 {patients.map((patient) => (
@@ -247,52 +256,57 @@ export function CalendarPage() {
               </Select>
             </div>
 
-            <div>
-              <Label htmlFor="dateTime">Date & Time *</Label>
+            <div className="space-y-2">
+              <Label htmlFor="dateTime" className="text-sm font-semibold text-gray-700">
+                Date & Time <span className="text-red-500">*</span>
+              </Label>
               <Input
                 id="dateTime"
                 type="datetime-local"
                 value={formData.dateTime}
                 onChange={(e) => setFormData({ ...formData, dateTime: e.target.value })}
                 required
-                className="rounded-2xl"
+                className="rounded-xl border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent"
               />
             </div>
 
-            <div>
-              <Label htmlFor="type">Appointment Type *</Label>
+            <div className="space-y-2">
+              <Label htmlFor="type" className="text-sm font-semibold text-gray-700">
+                Appointment Type <span className="text-red-500">*</span>
+              </Label>
               <Select
-                id="type"
                 value={formData.type}
-                onChange={(e) => setFormData({ ...formData, type: e.target.value as any })}
-                required
-                className="rounded-2xl"
+                onValueChange={(value) => setFormData({ ...formData, type: value as any })}
               >
-                <option value="consultation">Consultation</option>
-                <option value="follow-up">Follow-up</option>
                 <option value="initial">Initial Assessment</option>
-                <option value="emergency">Emergency</option>
+                <option value="follow-up">Follow-up</option>
+                <option value="assessment">Assessment</option>
+                <option value="therapy">Therapy</option>
+                <option value="other">Other</option>
               </Select>
             </div>
 
-            <div>
-              <Label htmlFor="notes">Notes</Label>
+            <div className="space-y-2">
+              <Label htmlFor="notes" className="text-sm font-semibold text-gray-700">
+                Notes
+              </Label>
               <Textarea
                 id="notes"
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                 rows={3}
-                className="rounded-2xl"
+                className="rounded-xl border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+                placeholder="Add any additional notes..."
               />
             </div>
 
-            <div className="flex gap-2 justify-end pt-4">
+            <div className="flex gap-2 justify-end pt-6 border-t border-gray-200">
               {selectedEvent && (
                 <Button
                   type="button"
                   variant="destructive"
                   onClick={handleDelete}
-                  className="rounded-full mr-auto"
+                  className="rounded-full mr-auto bg-red-500 hover:bg-red-600 text-white"
                   disabled={loading}
                 >
                   Delete
@@ -302,7 +316,7 @@ export function CalendarPage() {
                 type="button"
                 variant="outline"
                 onClick={() => setShowDialog(false)}
-                className="rounded-full"
+                className="rounded-full border-gray-300 text-gray-700 hover:bg-gray-50"
                 disabled={loading}
               >
                 Cancel
@@ -310,7 +324,7 @@ export function CalendarPage() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="rounded-full bg-gray-900 hover:bg-gray-900"
+                className="rounded-full bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white shadow-lg"
               >
                 {loading ? 'Saving...' : selectedEvent ? 'Update' : 'Create'}
               </Button>

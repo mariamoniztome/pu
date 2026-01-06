@@ -1,0 +1,238 @@
+/* Calendar Custom Styling */
+
+.rbc-calendar {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+/* Calendar Header */
+.rbc-toolbar {
+  padding: 1rem 0;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.rbc-toolbar button {
+  padding: 0.5rem 1rem;
+  background-color: #f3f4f6;
+  border: none;
+  border-radius: 9999px;
+  color: #374151;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.rbc-toolbar button:hover {
+  background-color: #e5e7eb;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+}
+
+.rbc-toolbar button.rbc-active {
+  background: linear-gradient(to right, #1f2937, #111827);
+  color: #e5e7eb!important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.rbc-toolbar-label {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111827;
+  flex-grow: 1;
+}
+
+/* Calendar Grid */
+.rbc-header {
+  padding: 1rem 0.5rem;
+  font-weight: 600;
+  color: #4b5563;
+  border-bottom: 2px solid #e5e7eb;
+  background-color: #f9fafb;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rbc-today {
+  background-color: #f0f4ff;
+}
+
+.rbc-off-range {
+  background-color: #f9fafb;
+}
+
+.rbc-day-bg,
+.rbc-time-slot {
+  border-color: #e5e7eb;
+}
+
+.rbc-date-cell {
+  padding: 0.5rem;
+  text-align: right;
+}
+
+.rbc-date-cell > a {
+  color: #374151;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.rbc-date-cell.rbc-now > a {
+  color: #1f2937;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+/* Events */
+.rbc-event {
+  padding: 2px 6px !important;
+  border-radius: 6px;
+  border: none !important;
+  font-size: 0.75rem;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.rbc-event:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.rbc-event-label {
+  font-size: 0.7rem;
+}
+
+.rbc-event-content {
+  font-size: 0.75rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Selected Event */
+.rbc-selected {
+  background-color: rgba(31, 41, 55, 0.9) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.rbc-event-label,
+.rbc-event-content {
+  color: white;
+}
+
+/* Month View */
+.rbc-month-view {
+  border: none;
+  border-radius: 12px;
+}
+
+.rbc-month-row {
+  min-height: 100px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.rbc-date-cell {
+  padding: 0.75rem;
+}
+
+/* Agenda View */
+.rbc-agenda-view {
+  border: none;
+}
+
+.rbc-agenda-view table.rbc-agenda-table {
+  width: 100%;
+}
+
+.rbc-agenda-view table.rbc-agenda-table tbody > tr > td {
+  padding: 0.75rem;
+  vertical-align: top;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.rbc-agenda-view table.rbc-agenda-table tbody > tr > td + td {
+  border-left: 1px solid #e5e7eb;
+}
+
+.rbc-agenda-date-cell {
+  white-space: nowrap;
+}
+
+.rbc-agenda-time-cell {
+  white-space: nowrap;
+  color: #6b7280;
+  font-weight: 500;
+  font-size: 0.875rem;
+}
+
+/* Week/Day View */
+.rbc-time-view {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.rbc-time-header {
+  background-color: #f9fafb;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.rbc-time-header-gutter {
+  background-color: #f9fafb;
+}
+
+.rbc-time-content {
+  border-radius: 0 0 12px 12px;
+}
+
+.rbc-current-time-indicator {
+  background-color: #ef4444;
+  height: 2px;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.5);
+}
+
+/* Slot Selection */
+.rbc-slot-selection {
+  background-color: rgba(99, 102, 241, 0.2);
+  border: 2px dashed #6366f1;
+}
+
+/* Time Slots */
+.rbc-time-slot {
+  height: 40px;
+}
+
+/* Show more link */
+.rbc-show-more {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  background-color: #e0e7ff;
+  color: #4c1d95;
+  font-weight: 500;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rbc-show-more:hover {
+  background-color: #c7d2fe;
+}
+
+.rbc-overlay {
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  border: none;
+  background-color: white;
+  padding: 1rem;
+}
+
+.rbc-overlay-header {
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: #111827;
+}

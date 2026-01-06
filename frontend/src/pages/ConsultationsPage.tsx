@@ -43,7 +43,7 @@ export function ConsultationsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-gradient-to-r from-white/60 to-white/40 backdrop-blur-sm rounded-3xl p-6 border border-white/50 shadow-xl shadow-red-100/50 flex justify-between items-center">
+    <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-slate-800">Sessions</h1>
           <p className="text-slate-600 mt-1">Clinical session records</p>
