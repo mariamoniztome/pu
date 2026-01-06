@@ -13,6 +13,7 @@ import {
   Menu,
 } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { Chatbot } from './Chatbot';
 
 const navItems = [
   { to: '/', label: 'Dashboard', icon: Home },
@@ -116,6 +117,9 @@ export function Layout() {
           </div>
         </main>
       </div>
+
+      {/* Chatbot Widget */}
+      <Chatbot />
     </div>
   );
 }

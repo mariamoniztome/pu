@@ -9,6 +9,7 @@ import appointmentRoutes from './routes/appointmentRoutes.js';
 import consultationRoutes from './routes/consultationRoutes.js';
 import externalReportRoutes from './routes/externalReportRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
+import chatbotRoutes from './routes/chatbotRoutes.js';
 
 dotenv.config();
 
@@ -35,6 +36,7 @@ app.get('/', (req, res) => {
       consultations: '/api/consultations',
       externalReports: '/api/external-reports',
       payments: '/api/payments',
+      chatbot: '/api/chatbot',
     },
   });
 });
@@ -43,6 +45,7 @@ app.use('/api/patients', patientRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/consultations', consultationRoutes);
 app.use('/api/external-reports', externalReportRoutes);
+app.use('/api/chatbot', chatbotRoutes);
 app.use('/api/payments', paymentRoutes);
 
 app.use(errorHandler);
