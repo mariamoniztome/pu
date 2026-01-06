@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Global styles for custom scrollbar */
+::-webkit-scrollbar {
+    width: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: lightgray;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: darkgray;
+}
 
 .scrollbar::-webkit-scrollbar-button {
   display: none;
