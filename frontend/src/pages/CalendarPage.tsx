@@ -38,7 +38,6 @@ export function CalendarPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [showDialog, setShowDialog] = useState(false);
-  const [selectedSlot, setSelectedSlot] = useState<{ start: Date; end: Date } | null>(null);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -86,7 +85,6 @@ export function CalendarPage() {
   }, [appointments]);
 
   const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
-    setSelectedSlot(slotInfo);
     setSelectedEvent(null);
     setFormData({
       patientId: '',
@@ -99,7 +97,6 @@ export function CalendarPage() {
 
   const handleSelectEvent = (event: CalendarEvent) => {
     setSelectedEvent(event);
-    setSelectedSlot(null);
     setFormData({
       patientId: typeof event.appointment.patient === 'string' ? event.appointment.patient : event.appointment.patient._id,
       dateTime: format(new Date(event.appointment.dateTime), "yyyy-MM-dd'T'HH:mm"),
@@ -194,7 +191,6 @@ export function CalendarPage() {
         </div>
         <Button
           onClick={() => {
-            setSelectedSlot(null);
             setSelectedEvent(null);
             setFormData({
               patientId: '',

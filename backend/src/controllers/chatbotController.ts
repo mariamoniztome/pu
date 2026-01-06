@@ -105,11 +105,11 @@ export const sendMessage = async (req: ChatRequest, res: Response): Promise<void
       if (context) {
         conversation.context = {
           topic: context.topic,
-          appointmentId: context.appointmentId 
-            ? new mongoose.Types.ObjectId(context.appointmentId) 
+          appointmentId: context.appointmentId  
+            ? (new mongoose.Types.ObjectId(context.appointmentId) as any) 
             : conversation.context.appointmentId,
           consultationId: context.consultationId 
-            ? new mongoose.Types.ObjectId(context.consultationId) 
+            ? (new mongoose.Types.ObjectId(context.consultationId) as any) 
             : conversation.context.consultationId,
         };
       }

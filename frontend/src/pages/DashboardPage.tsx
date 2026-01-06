@@ -114,25 +114,6 @@ export function DashboardPage() {
 
   const insurancePatients = patients.length > 0 ? Math.floor(patients.length * 0.6) : 0;
 
-  // Filter patients based on selected filter
-  const getFilteredPatients = () => {
-    switch (patientFilter) {
-      case 'new':
-        return newPatients;
-      case 'insurance':
-        return patients.filter((p) => {
-          // Simple check: consider patient as insurance if they have all contact info
-          return p.email && p.address && p.phone;
-        });
-      case 'all':
-      default:
-        return patients;
-    }
-  };
-
-  const filteredPatients = getFilteredPatients();
-  const displayPatientCount = filteredPatients.length;
-
   // Get calendar days with appointment indicators based on filter
   const getDaysWithAppointments = () => {
     const today = new Date();
@@ -221,6 +202,14 @@ export function DashboardPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-1">Dashboard</h1>
           <p className="text-red-500">Error loading data: {error}</p>
         </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="text-lg text-slate-600">Loading dashboard...</div>
       </div>
     );
   }
