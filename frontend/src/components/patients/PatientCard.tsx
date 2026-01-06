@@ -14,15 +14,15 @@ export function PatientCard({ patient, onEdit, onDelete }: PatientCardProps) {
     (new Date().getTime() - new Date(patient.dateOfBirth).getTime()) / (365.25 * 24 * 60 * 60 * 1000)
   );
 
-  const genderColors = {
-    male: 'bg-gradient-to-r from-primary-300 to-primary-400 text-white',
-    female: 'bg-gradient-to-r from-peach-300 to-peach-400 text-white',
-    other: 'bg-gradient-to-r from-lavender-300 to-lavender-400 text-white',
+const genderColors = {
+    male: 'bg-blue-200 text-gray-900',
+    female: 'bg-pink-200 text-gray-900',
+    other: 'bg-purple-200 text-gray-900',
   };
 
   return (
     <Card className="hover:scale-105 transition-transform duration-200">
-      <CardHeader className="bg-gradient-to-br from-sand-50 to-transparent">
+      <CardHeader className="p-4 rounded-t-lg">
         <CardTitle className="flex items-center justify-between">
           <span className="text-lg text-slate-800">{`${patient.firstName} ${patient.lastName}`}</span>
           <span className={`text-xs capitalize font-medium px-3 py-1.5 rounded-xl ${genderColors[patient.gender as keyof typeof genderColors]}`}>

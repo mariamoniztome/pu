@@ -104,7 +104,7 @@ export function ConsultationForm({ consultation, onClose }: ConsultationFormProp
 
   return (
       <Dialog open={true} onOpenChange={onClose}>
-        <DialogHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-peach-50 to-transparent">
+        <DialogHeader className="flex flex-row items-center justify-between bg-gradient-to-r from-red-50 to-transparent">
           <DialogTitle className="text-slate-800">
             {consultation ? 'Edit Session' : 'New Session Record'}
           </DialogTitle>
@@ -254,7 +254,7 @@ export function ConsultationForm({ consultation, onClose }: ConsultationFormProp
             </div>
 
             {error && (
-              <div className="text-sm text-peach-700 bg-peach-50 p-3 rounded-2xl border border-peach-200">
+              <div className="text-sm text-red-700 bg-red-50 p-3 rounded-2xl border border-red-200">
                 {error}
               </div>
             )}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Plus, Grid3x3, Table as TableIcon, Search } from 'lucide-react';
+import { Plus, Grid3x3, Table as TableIcon, Search, Edit, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { AgGridReact } from 'ag-grid-react';
 import { ColDef } from 'ag-grid-community';
@@ -118,18 +118,21 @@ export function PatientsPage() {
     {
       headerName: 'Actions',
       cellRenderer: (params: any) => (
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <button
+            className='mt-2'
+            title='Edit'
             onClick={() => handleEdit(params.data)}
-            className="text-blue-600 hover:text-blue-800 text-sm"
           >
-            Edit
+            <Edit className="h-4 w-4 mr-1 text-blue-500 hover:text-blue-700" />
           </button>
           <button
+            className='mt-2'
+            title='Delete'
             onClick={() => handleDelete(params.data._id)}
-            className="text-red-600 hover:text-red-800 text-sm"
           >
-            Delete
+            <Trash2 className="h-4 w-4 mr-1 text-red-500 hover:text-red-700" />
+            
           </button>
         </div>
       ),
@@ -159,7 +162,7 @@ export function PatientsPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-1">Patients</h1>
           <p className="text-gray-500">Manage patient records</p>
         </div>
-        <Button onClick={() => setShowForm(true)} className="bg-black hover:bg-gray-900 text-white rounded-full px-6">
+        <Button onClick={() => setShowForm(true)} className="bg-gray-900 hover:bg-gray-900 text-white rounded-full px-6">
           <Plus className="h-5 w-5 mr-2" />
           Add Patient
         </Button>
@@ -177,7 +180,7 @@ export function PatientsPage() {
               className="pl-11 rounded-2xl border-gray-200"
             />
           </div>
-          <Button onClick={handleSearch} className="rounded-2xl bg-primary-500 hover:bg-primary-600 text-white">
+          <Button onClick={handleSearch} className="rounded-2xl bg-gray-900 hover:bg-gray-800 text-white">
             Search
           </Button>
         </div>
@@ -216,11 +219,37 @@ export function PatientsPage() {
         </div>
       ) : (
         <Card className="shadow-sm">
-          <CardHeader>
+          <CardHeader className="flex flex-row justify-between items-center">
             <CardTitle className="text-gray-900">Patient List</CardTitle>
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-2xl"
+              onClick={() => {
+                const csvData = patients.map(p => ({
+                  Name: `${p.firstName} ${p.lastName}`,
+                  'Date of Birth': new Date(p.dateOfBirth).toLocaleDateString(),
+                  Gender: p.gender,
+                  Email: p.email || '',
+                  Phone: p.phone,
+                }));
+                const csv = [
+                  Object.keys(csvData[0]).join(','),
+                  ...csvData.map(row => Object.values(row).join(','))
+                ].join('\n');
+                const blob = new Blob([csv], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'patients.csv';
+                a.click();
+              }}
+            >
+              Export to CSV
+            </Button>
           </CardHeader>
           <CardContent>
-            <div className="ag-theme-alpine rounded-2xl overflow-hidden" style={{ height: 600, width: '100%' }}>
+            <div className="ag-theme-alpine rounded-lg overflow-hidden" style={{ height: 600, width: '100%' }}>
               <AgGridReact
                 rowData={patients}
                 columnDefs={columnDefs}
@@ -230,34 +259,6 @@ export function PatientsPage() {
                 enableCellTextSelection={true}
                 ensureDomOrder={true}
               />
-            </div>
-            <div className="mt-4 flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                className="rounded-2xl"
-                onClick={() => {
-                  const csvData = patients.map(p => ({
-                    Name: `${p.firstName} ${p.lastName}`,
-                    'Date of Birth': new Date(p.dateOfBirth).toLocaleDateString(),
-                    Gender: p.gender,
-                    Email: p.email || '',
-                    Phone: p.phone,
-                  }));
-                  const csv = [
-                    Object.keys(csvData[0]).join(','),
-                    ...csvData.map(row => Object.values(row).join(','))
-                  ].join('\n');
-                  const blob = new Blob([csv], { type: 'text/csv' });
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement('a');
-                  a.href = url;
-                  a.download = 'patients.csv';
-                  a.click();
-                }}
-              >
-                Export to CSV
-              </Button>
             </div>
           </CardContent>
         </Card>

@@ -236,7 +236,7 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
             </div>
 
             {error && (
-              <div className="text-sm text-peach-700 bg-peach-50 p-3 rounded-2xl border border-peach-200">
+              <div className="text-sm text-red-700 bg-red-50 p-3 rounded-2xl border border-red-200">
                 {error}
               </div>
             )}

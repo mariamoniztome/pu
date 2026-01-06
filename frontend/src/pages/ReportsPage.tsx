@@ -37,15 +37,15 @@ export function ReportsPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'bg-gradient-to-r from-sage-200 to-sage-300 text-sage-800';
+        return 'bg-green-100 text-green-800';
       case 'in-progress':
-        return 'bg-gradient-to-r from-primary-200 to-primary-300 text-primary-800';
+        return 'bg-blue-100 text-blue-800';
       case 'requested':
-        return 'bg-gradient-to-r from-sand-200 to-sand-300 text-sand-800';
+        return 'bg-yellow-100 text-yellow-800';
       case 'delivered':
-        return 'bg-gradient-to-r from-lavender-200 to-lavender-300 text-lavender-800';
+        return 'bg-purple-100 text-purple-800';
       default:
-        return 'bg-gradient-to-r from-sand-200 to-sand-300 text-sand-800';
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -60,7 +60,7 @@ export function ReportsPage() {
           <h1 className="text-3xl font-bold text-slate-800">Reports</h1>
           <p className="text-slate-600 mt-1">External reports for institutions</p>
         </div>
-        <Button onClick={() => setShowForm(true)} className="rounded-full bg-black hover:bg-gray-900"
+        <Button onClick={() => setShowForm(true)} className="rounded-full bg-gray-900 hover:bg-gray-900"
 >
           <Plus className="h-5 w-5 mr-2" />
           New Report
@@ -76,7 +76,7 @@ export function ReportsPage() {
                 <span className={`text-xs capitalize font-medium px-3 py-1.5 rounded-xl ${getStatusColor(report.status)}`}>
                   {report.status}
                 </span>
-                <span className="text-xs capitalize font-medium px-3 py-1.5 rounded-xl bg-gradient-to-r from-peach-100 to-peach-200 text-peach-800">
+                <span className="text-xs capitalize font-medium px-3 py-1.5 rounded-xl bg-gradient-to-r from-red-100 to-red-200 text-red-800">
                   {report.reportType}
                 </span>
               </div>

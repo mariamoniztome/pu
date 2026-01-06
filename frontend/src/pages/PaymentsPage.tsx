@@ -43,13 +43,13 @@ export function PaymentsPage() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "paid":
-        return "bg-gradient-to-r from-sage-200 to-sage-300 text-sage-800";
+        return 'bg-green-100 text-green-800';
       case "partial":
-        return "bg-gradient-to-r from-sand-200 to-sand-300 text-sand-800";
+        return 'bg-blue-100 text-blue-800';
       case "unpaid":
-        return "bg-gradient-to-r from-peach-200 to-peach-300 text-peach-800";
+        return 'bg-red-100 text-red-800';
       default:
-        return "bg-gradient-to-r from-sand-200 to-sand-300 text-sand-800";
+        return 'bg-gray-100 text-gray-800';
     }
   };
 
@@ -70,7 +70,7 @@ export function PaymentsPage() {
         </div>
         <Button
           onClick={() => setShowForm(true)}
-          className="rounded-full bg-black hover:bg-gray-900"
+          className="rounded-full bg-gray-900 hover:bg-gray-900"
         >
           <Plus className="h-5 w-5 mr-2" />
           Record Payment

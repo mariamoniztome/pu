@@ -194,7 +194,7 @@ export function CalendarPage() {
             });
             setShowDialog(true);
           }}
-          className="bg-black hover:bg-gray-900 text-white rounded-full px-6"
+          className="bg-gray-900 hover:bg-gray-900 text-white rounded-full px-6"
         >
           <Plus className="h-5 w-5 mr-2" />
           New Appointment
@@ -310,7 +310,7 @@ export function CalendarPage() {
               <Button
                 type="submit"
                 disabled={loading}
-                className="rounded-full bg-black hover:bg-gray-900"
+                className="rounded-full bg-gray-900 hover:bg-gray-900"
               >
                 {loading ? 'Saving...' : selectedEvent ? 'Update' : 'Create'}
               </Button>
