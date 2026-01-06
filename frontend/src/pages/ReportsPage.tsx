@@ -60,7 +60,8 @@ export function ReportsPage() {
           <h1 className="text-3xl font-bold text-slate-800">Reports</h1>
           <p className="text-slate-600 mt-1">External reports for institutions</p>
         </div>
-        <Button onClick={() => setShowForm(true)}>
+        <Button onClick={() => setShowForm(true)} className="rounded-full bg-black hover:bg-gray-900"
+>
           <Plus className="h-5 w-5 mr-2" />
           New Report
         </Button>
@@ -72,10 +73,10 @@ export function ReportsPage() {
             <CardHeader>
               <CardTitle className="text-lg">{getPatientName(report)}</CardTitle>
               <div className="flex items-center gap-2 mt-1">
-                <span className={`text-xs font-medium px-3 py-1.5 rounded-xl ${getStatusColor(report.status)}`}>
+                <span className={`text-xs capitalize font-medium px-3 py-1.5 rounded-xl ${getStatusColor(report.status)}`}>
                   {report.status}
                 </span>
-                <span className="text-xs font-medium px-3 py-1.5 rounded-xl bg-gradient-to-r from-peach-100 to-peach-200 text-peach-800">
+                <span className="text-xs capitalize font-medium px-3 py-1.5 rounded-xl bg-gradient-to-r from-peach-100 to-peach-200 text-peach-800">
                   {report.reportType}
                 </span>
               </div>

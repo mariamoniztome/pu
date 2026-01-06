@@ -1,11 +1,16 @@
-import { useState, useEffect } from 'react';
-import { Plus, DollarSign } from 'lucide-react';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { paymentsApi } from '../api';
-import { Payment } from '../types/payment';
-import { PaymentForm } from '../components/PaymentForm';
-import { PaymentCharts } from '../components/PaymentCharts';
+import { useState, useEffect } from "react";
+import { Plus, DollarSign } from "lucide-react";
+import { Button } from "../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { paymentsApi } from "../api";
+import { Payment } from "../types/payment";
+import { PaymentForm } from "../components/PaymentForm";
+import { PaymentCharts } from "../components/PaymentCharts";
 
 export function PaymentsPage() {
   const [payments, setPayments] = useState<Payment[]>([]);
@@ -23,7 +28,7 @@ export function PaymentsPage() {
       const data = await paymentsApi.getAll();
       setPayments(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.error('Failed to load payments:', error);
+      console.error("Failed to load payments:", error);
       setPayments([]);
     } finally {
       setLoading(false);
@@ -31,25 +36,29 @@ export function PaymentsPage() {
   };
 
   const getPatientName = (payment: Payment) => {
-    if (typeof payment.patient === 'string') return 'Unknown';
+    if (typeof payment.patient === "string") return "Unknown";
     return `${payment.patient.firstName} ${payment.patient.lastName}`;
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'paid':
-        return 'bg-gradient-to-r from-sage-200 to-sage-300 text-sage-800';
-      case 'partial':
-        return 'bg-gradient-to-r from-sand-200 to-sand-300 text-sand-800';
-      case 'unpaid':
-        return 'bg-gradient-to-r from-peach-200 to-peach-300 text-peach-800';
+      case "paid":
+        return "bg-gradient-to-r from-sage-200 to-sage-300 text-sage-800";
+      case "partial":
+        return "bg-gradient-to-r from-sand-200 to-sand-300 text-sand-800";
+      case "unpaid":
+        return "bg-gradient-to-r from-peach-200 to-peach-300 text-peach-800";
       default:
-        return 'bg-gradient-to-r from-sand-200 to-sand-300 text-sand-800';
+        return "bg-gradient-to-r from-sand-200 to-sand-300 text-sand-800";
     }
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center h-64">Loading payments...</div>;
+    return (
+      <div className="flex justify-center items-center h-64">
+        Loading payments...
+      </div>
+    );
   }
 
   return (
@@ -59,7 +68,10 @@ export function PaymentsPage() {
           <h1 className="text-3xl font-bold text-slate-800">Payments</h1>
           <p className="text-slate-600 mt-1">Financial records and invoices</p>
         </div>
-        <Button onClick={() => setShowForm(true)}>
+        <Button
+          onClick={() => setShowForm(true)}
+          className="rounded-full bg-black hover:bg-gray-900"
+        >
           <Plus className="h-5 w-5 mr-2" />
           Record Payment
         </Button>
@@ -68,7 +80,9 @@ export function PaymentsPage() {
       <PaymentCharts />
 
       <div>
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Recent Payments</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-4">
+          Recent Payments
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {payments.map((payment) => (
             <Card key={payment._id}>
@@ -77,38 +91,45 @@ export function PaymentsPage() {
                   <span>{getPatientName(payment)}</span>
                   <DollarSign className="h-5 w-5 text-slate-400" />
                 </CardTitle>
-                <span className={`text-xs font-medium px-3 py-1.5 rounded-xl ${getStatusColor(payment.status)} w-fit`}>
+                <span
+                  className={`text-xs font-medium px-3 py-1.5 rounded-xl capitalize ${getStatusColor(
+                    payment.status
+                  )} w-fit`}
+                >
                   {payment.status}
                 </span>
               </CardHeader>
               <CardContent className="space-y-2">
                 {payment.invoiceNumber && (
                   <div className="text-sm">
-                    <span className="font-medium">Invoice:</span> {payment.invoiceNumber}
+                    <span className="font-medium">Invoice:</span>{" "}
+                    {payment.invoiceNumber}
                   </div>
                 )}
                 <div className="text-sm">
-                  <span className="font-medium">Amount:</span>{' '}
+                  <span className="font-medium">Amount:</span>{" "}
                   {payment.currency} {payment.amount.toFixed(2)}
                 </div>
                 <div className="text-sm">
-                  <span className="font-medium">Paid:</span>{' '}
-                  {payment.currency} {payment.amountPaid.toFixed(2)}
+                  <span className="font-medium">Paid:</span> {payment.currency}{" "}
+                  {payment.amountPaid.toFixed(2)}
                 </div>
                 {payment.amountPaid < payment.amount && (
                   <div className="text-sm text-red-600">
-                    <span className="font-medium">Balance:</span>{' '}
-                    {payment.currency} {(payment.amount - payment.amountPaid).toFixed(2)}
+                    <span className="font-medium">Balance:</span>{" "}
+                    {payment.currency}{" "}
+                    {(payment.amount - payment.amountPaid).toFixed(2)}
                   </div>
                 )}
                 {payment.paymentMethod && (
                   <div className="text-sm">
-                    <span className="font-medium">Method:</span> {payment.paymentMethod}
+                    <span className="font-medium">Method:</span>{" "}
+                    {payment.paymentMethod}
                   </div>
                 )}
                 {payment.paymentDate && (
                   <div className="text-sm">
-                    <span className="font-medium">Date:</span>{' '}
+                    <span className="font-medium">Date:</span>{" "}
                     {new Date(payment.paymentDate).toLocaleDateString()}
                   </div>
                 )}

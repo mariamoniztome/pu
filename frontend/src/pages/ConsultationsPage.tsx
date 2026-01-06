@@ -48,7 +48,7 @@ export function ConsultationsPage() {
           <h1 className="text-3xl font-bold text-slate-800">Sessions</h1>
           <p className="text-slate-600 mt-1">Clinical session records</p>
         </div>
-        <Button onClick={() => setShowForm(true)}>
+        <Button onClick={() => setShowForm(true)} className="rounded-full bg-black hover:bg-gray-900">
           <Plus className="h-5 w-5 mr-2" />
           New Session
         </Button>

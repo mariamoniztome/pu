@@ -1,51 +1,10 @@
-import { useEffect, useState } from 'react';
-import { Users, Calendar, FileText, Plus, Bell, Search, ChevronLeft, ChevronRight, Check, Clock } from 'lucide-react';
+import { useState } from 'react';
+import { Users, Calendar, FileText, Plus, ChevronLeft, ChevronRight, Check, Clock } from 'lucide-react';
 import { Card } from '../components/ui/card';
-import { patientsApi, appointmentsApi, consultationsApi, paymentsApi, PaymentStats } from '../api';
 import { Button } from '../components/ui/button';
-import { QuickActionsDialog } from '../components/QuickActionsDialog';
-import { LastActionHighlight } from '../components/LastActionHighlight';
 
 export function DashboardPage() {
-  const [stats, setStats] = useState({
-    totalPatients: 0,
-    totalAppointments: 0,
-    totalConsultations: 0,
-    paymentStats: null as PaymentStats | null,
-  });
-
   const [currentMonth] = useState(new Date());
-
-  useEffect(() => {
-    loadStats();
-  }, []);
-
-  const loadStats = async () => {
-    try {
-      const [patients, appointments, consultations, paymentStats] = await Promise.all([
-        patientsApi.getAll(),
-        appointmentsApi.getAll(),
-        consultationsApi.getAll(),
-        paymentsApi.getStats(),
-      ]);
-
-      setStats({
-        totalPatients: Array.isArray(patients) ? patients.length : 0,
-        totalAppointments: Array.isArray(appointments) ? appointments.length : 0,
-        totalConsultations: Array.isArray(consultations) ? consultations.length : 0,
-        paymentStats: paymentStats || null,
-      });
-    } catch (error) {
-      console.error('Failed to load stats:', error);
-      setStats({
-        totalPatients: 0,
-        totalAppointments: 0,
-        totalConsultations: 0,
-        paymentStats: null,
-      });
-    }
-  };
-
   const getDaysInMonth = () => {
     const year = currentMonth.getFullYear();
     const month = currentMonth.getMonth();
@@ -72,30 +31,6 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4 flex-1 max-w-xl">
-          <div className="relative flex-1">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search"
-              className="w-full pl-12 pr-4 py-3 rounded-full border-2 border-lilac-100 bg-white/70 backdrop-blur-sm shadow-sm focus:ring-2 focus:ring-lilac-300 focus:bg-white/90 transition-all duration-300"
-            />
-          </div>
-        </div>
-        <div className="flex items-center gap-4">
-          <button className="p-3 rounded-full bg-white/70 backdrop-blur-sm hover:bg-white/90 shadow-lg transition-all duration-300">
-            <Bell className="h-5 w-5 text-gray-600" />
-          </button>
-          <div className="flex items-center gap-3 bg-white/70 backdrop-blur-sm rounded-full px-5 py-2 shadow-lg">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary-300 to-lilac-300 flex items-center justify-center shadow-md">
-              <span className="text-white text-sm font-semibold">DL</span>
-            </div>
-            <span className="text-sm font-medium text-gray-800">Dr Luke</span>
-          </div>
-        </div>
-      </div>
-
       <div>
         <h1 className="text-3xl font-bold text-gray-900 mb-1">
           Good morning, <span className="text-gray-700">Dr Luke</span>
@@ -133,7 +68,7 @@ export function DashboardPage() {
             </Card>
           </div>
 
-          <Card className="rounded-5xl p-8 shadow-xl">
+          <Card className="rounded-5xl p-8 shadow-xl h-[600px]">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <div className="flex items-center gap-2 mb-2">
@@ -250,27 +185,8 @@ export function DashboardPage() {
               ))}
             </div>
           </Card>
-
-          <Card className="rounded-5xl p-8 shadow-xl bg-gradient-to-br from-amber-50/80 via-primary-50/80 to-lilac-50/80 border-white/60 backdrop-blur-sm">
-            <div className="mb-3 text-xs font-bold text-gray-600 uppercase tracking-wide">
-              MUST TO READ
-            </div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">
-              Patient testing tracker feature
-            </h3>
-            <p className="text-sm text-gray-600 mb-5">
-              How to enhance your documental work
-            </p>
-            <button className="w-12 h-12 bg-gradient-to-r from-gray-800 to-gray-900 rounded-full flex items-center justify-center hover:from-gray-900 hover:to-black transition-all duration-300 shadow-xl">
-              <ChevronRight className="h-5 w-5 text-white" />
-            </button>
-          </Card>
-
-          <LastActionHighlight />
         </div>
       </div>
-
-      <QuickActionsDialog />
     </div>
   );
 }

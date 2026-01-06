@@ -25,7 +25,7 @@ export function PatientCard({ patient, onEdit, onDelete }: PatientCardProps) {
       <CardHeader className="bg-gradient-to-br from-sand-50 to-transparent">
         <CardTitle className="flex items-center justify-between">
           <span className="text-lg text-slate-800">{`${patient.firstName} ${patient.lastName}`}</span>
-          <span className={`text-xs font-medium px-3 py-1.5 rounded-xl ${genderColors[patient.gender as keyof typeof genderColors]}`}>
+          <span className={`text-xs capitalize font-medium px-3 py-1.5 rounded-xl ${genderColors[patient.gender as keyof typeof genderColors]}`}>
             {patient.gender}
           </span>
         </CardTitle>

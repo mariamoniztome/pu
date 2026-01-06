@@ -73,7 +73,7 @@ export function AppointmentsPage() {
           <Card key={appointment._id}>
             <CardHeader>
               <CardTitle className="text-lg">{getPatientName(appointment)}</CardTitle>
-              <span className={`text-xs font-medium px-3 py-1.5 rounded-xl ${getStatusColor(appointment.status)} w-fit`}>
+              <span className={`text-xs capitalize font-medium px-3 py-1.5 rounded-xl ${getStatusColor(appointment.status)} w-fit`}>
                 {appointment.status}
               </span>
             </CardHeader>
