@@ -46,12 +46,14 @@ const DialogContent = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "relative bg-white rounded-3xl shadow-lg w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto",
+      "relative bg-white rounded-3xl shadow-lg w-[45rem] max-h-[90vh] overflow-hidden flex flex-col",
       className
     )}
     {...props}
   >
-    {children}
+    <div className="overflow-y-auto flex-1">
+      {children}
+    </div>
   </div>
 ))
 DialogContent.displayName = "DialogContent"
@@ -62,7 +64,7 @@ const DialogHeader = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "flex flex-col space-y-1.5 text-center sm:text-left mb-4",
+      "flex flex-col space-y-1.5 text-center sm:text-left mb-4 px-12 pt-12",
       className
     )}
     {...props}

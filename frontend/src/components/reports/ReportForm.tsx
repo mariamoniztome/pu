@@ -121,10 +121,8 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
               <div>
                 <Label htmlFor="patient">Patient *</Label>
                 <Select
-                  id="patient"
                   value={formData.patient}
-                  onChange={(e) => setFormData({ ...formData, patient: e.target.value })}
-                  required
+                  onValueChange={(value) => setFormData({ ...formData, patient: value })}
                 >
                   <option value="">Select a patient</option>
                   {patients.map((patient) => (
@@ -137,10 +135,8 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
               <div>
                 <Label htmlFor="reportType">Report Type *</Label>
                 <Select
-                  id="reportType"
                   value={formData.reportType}
-                  onChange={(e) => setFormData({ ...formData, reportType: e.target.value as any })}
-                  required
+                  onValueChange={(value) => setFormData({ ...formData, reportType: value as any })}
                 >
                   <option value="court">Court</option>
                   <option value="school">School</option>
@@ -195,10 +191,8 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
               <div>
                 <Label htmlFor="status">Status *</Label>
                 <Select
-                  id="status"
                   value={formData.status}
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value as any })}
-                  required
+                  onValueChange={(value) => setFormData({ ...formData, status: value as any })}
                 >
                   <option value="requested">Requested</option>
                   <option value="in-progress">In Progress</option>

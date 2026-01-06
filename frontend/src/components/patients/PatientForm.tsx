@@ -100,11 +100,11 @@ export function PatientForm({ patient, open, onClose }: PatientFormProps) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent>
         <DialogHeader>
           <DialogTitle>{patient ? 'Edit Patient' : 'Add New Patient'}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 px-12 pb-12">
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="firstName">First Name *</Label>
@@ -140,10 +140,8 @@ export function PatientForm({ patient, open, onClose }: PatientFormProps) {
               <div>
                 <Label htmlFor="gender">Gender *</Label>
                 <Select
-                  id="gender"
                   value={formData.gender}
-                  onChange={(e) => setFormData({ ...formData, gender: e.target.value as any })}
-                  required
+                  onValueChange={(value: string) => setFormData({ ...formData, gender: value as 'male' | 'female' | 'other' })}
                 >
                   <option value="male">Male</option>
                   <option value="female">Female</option>

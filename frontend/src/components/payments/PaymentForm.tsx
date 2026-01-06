@@ -109,10 +109,8 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
             <div>
               <Label htmlFor="patient">Patient *</Label>
               <Select
-                id="patient"
                 value={formData.patient}
-                onChange={(e) => setFormData({ ...formData, patient: e.target.value })}
-                required
+                onValueChange={(value) => setFormData({ ...formData, patient: value })}
               >
                 <option value="">Select a patient</option>
                 {patients.map((patient) => (
@@ -151,10 +149,8 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
               <div>
                 <Label htmlFor="currency">Currency *</Label>
                 <Select
-                  id="currency"
                   value={formData.currency}
-                  onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
-                  required
+                  onValueChange={(value) => setFormData({ ...formData, currency: value })}
                 >
                   <option value="USD">USD</option>
                   <option value="EUR">EUR</option>
@@ -177,13 +173,12 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
               <div>
                 <Label htmlFor="paymentMethod">Payment Method</Label>
                 <Select
-                  id="paymentMethod"
                   value={formData.paymentMethod}
-                  onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value as any })}
+                  onValueChange={(value) => setFormData({ ...formData, paymentMethod: value as any })}
                 >
                   <option value="">Select method</option>
                   <option value="cash">Cash</option>
-                  <option value="card">Dialog</option>
+                  <option value="card">Card</option>
                   <option value="transfer">Transfer</option>
                   <option value="check">Check</option>
                   <option value="insurance">Insurance</option>

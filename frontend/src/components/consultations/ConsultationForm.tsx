@@ -118,10 +118,8 @@ export function ConsultationForm({ consultation, onClose }: ConsultationFormProp
               <div className="col-span-2">
                 <Label htmlFor="patient">Patient *</Label>
                 <Select
-                  id="patient"
                   value={formData.patient}
-                  onChange={(e) => setFormData({ ...formData, patient: e.target.value })}
-                  required
+                  onValueChange={(value) => setFormData({ ...formData, patient: value })}
                 >
                   <option value="">Select a patient</option>
                   {patients.map((patient) => (
