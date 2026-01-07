@@ -4,8 +4,11 @@ import dotenv from 'dotenv';
 import connectDB from './config/database.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
+import authRoutes from './routes/authRoutes.js';
 import patientRoutes from './routes/patientRoutes.js';
 import appointmentRoutes from './routes/appointmentRoutes.js';
+import clientRoutes from './routes/clientRoutes.js';
+import organizationRoutes from './routes/organizationRoutes.js';
 import consultationRoutes from './routes/consultationRoutes.js';
 import externalReportRoutes from './routes/externalReportRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
@@ -28,11 +31,13 @@ app.use('/uploads', express.static('uploads'));
 
 app.get('/', (req, res) => {
   res.json({
-    message: 'Psychology Clinic Management API',
-    version: '1.0.0',
+    message: 'Psychology Clinic Management API - Multi-Tenant',
+    version: '2.0.0',
     endpoints: {
-      patients: '/api/patients',
-      appointments: '/api/appointments',
+      auth: '/api/auth',
+      organizations: '/api/organizations/:orgId',
+      clients: '/api/:orgId/clients',
+      appointments: '/api/:orgId/appointments',
       consultations: '/api/consultations',
       externalReports: '/api/external-reports',
       payments: '/api/payments',
@@ -41,8 +46,13 @@ app.get('/', (req, res) => {
   });
 });
 
-app.use('/api/patients', patientRoutes);
-app.use('/api/appointments', appointmentRoutes);
+// Rotas públicas
+app.use('/api/auth', authRoutes);
+
+// Rotas protegidas
+app.use('/api/organizations', organizationRoutes);
+app.use('/api', clientRoutes);
+app.use('/api', appointmentRoutes);
 app.use('/api/consultations', consultationRoutes);
 app.use('/api/external-reports', externalReportRoutes);
 app.use('/api/chatbot', chatbotRoutes);
@@ -58,6 +68,7 @@ const startServer = async () => {
       console.log(`\n🚀 Server is running on port ${PORT}`);
       console.log(`📡 API available at: http://localhost:${PORT}`);
       console.log(`🌐 Frontend URL: ${process.env.FRONTEND_URL || 'http://localhost:5173'}`);
+      console.log(`🔐 Multi-Tenant Authentication enabled`);
       console.log('\n✨ Ready to accept requests!\n');
     });
   } catch (error) {
