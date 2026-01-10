@@ -1,62 +1,61 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, Types } from 'mongoose';
 
 export interface IAppointment extends Document {
-  organizationId: mongoose.Types.ObjectId;
-  therapist: mongoose.Types.ObjectId;
-  client: mongoose.Types.ObjectId;
-  startTime: Date;
-  endTime: Date;
-  type: 'in-person' | 'video' | 'phone';
-  status: 'scheduled' | 'completed' | 'cancelled' | 'no-show';
+  patient: Types.ObjectId;
+  dateTime: Date;
+  duration: number;
+  type: 'initial' | 'follow-up' | 'assessment' | 'therapy' | 'other';
+  status: 'scheduled' | 'confirmed' | 'completed' | 'cancelled' | 'no-show';
   notes?: string;
-  videoLink?: string;
+  reminderSent: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
 
 const appointmentSchema = new Schema<IAppointment>(
   {
-    organizationId: {
+    patient: {
       type: Schema.Types.ObjectId,
-      ref: 'Organization',
-      required: true,
-      index: true,
+      ref: 'Patient',
+      required: [true, 'Patient reference is required'],
     },
-    therapist: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
-    client: {
-      type: Schema.Types.ObjectId,
-      ref: 'Client',
-      required: true,
-    },
-    startTime: {
+    dateTime: {
       type: Date,
-      required: true,
+      required: [true, 'Appointment date and time is required'],
     },
-    endTime: {
-      type: Date,
-      required: true,
+    duration: {
+      type: Number,
+      required: [true, 'Duration is required'],
+      default: 60,
+      min: [15, 'Duration must be at least 15 minutes'],
+      max: [480, 'Duration cannot exceed 8 hours'],
     },
     type: {
       type: String,
-      enum: ['in-person', 'video', 'phone'],
-      default: 'in-person',
+      enum: ['initial', 'follow-up', 'assessment', 'therapy', 'other'],
+      default: 'follow-up',
     },
     status: {
       type: String,
-      enum: ['scheduled', 'completed', 'cancelled', 'no-show'],
+      enum: ['scheduled', 'confirmed', 'completed', 'cancelled', 'no-show'],
       default: 'scheduled',
     },
-    notes: String,
-    videoLink: String,
+    notes: {
+      type: String,
+      trim: true,
+    },
+    reminderSent: {
+      type: Boolean,
+      default: false,
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
-appointmentSchema.index({ organizationId: 1, therapist: 1, startTime: 1 });
-appointmentSchema.index({ organizationId: 1, client: 1 });
+appointmentSchema.index({ patient: 1, dateTime: -1 });
+appointmentSchema.index({ dateTime: 1 });
+appointmentSchema.index({ status: 1 });
 
 export default mongoose.model<IAppointment>('Appointment', appointmentSchema);
