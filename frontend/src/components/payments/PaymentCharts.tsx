@@ -1,5 +1,8 @@
+import { useState, useEffect } from 'react';
 import { Card } from '../ui/card';
 import { DollarSign, TrendingUp, TrendingDown, Calendar } from 'lucide-react';
+import { paymentsApi } from '../../api';
+import { Payment } from '../../types/payment';
 
 interface ChartData {
   label: string;
@@ -8,23 +11,98 @@ interface ChartData {
 }
 
 export function PaymentCharts() {
-  const monthlyData: ChartData[] = [
-    { label: 'Jan', value: 12500, percentage: 80 },
-    { label: 'Feb', value: 15000, percentage: 95 },
-    { label: 'Mar', value: 13800, percentage: 88 },
-    { label: 'Apr', value: 16200, percentage: 100 },
-    { label: 'May', value: 14500, percentage: 90 },
-    { label: 'Jun', value: 17800, percentage: 110 },
-  ];
+  const [payments, setPayments] = useState<Payment[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const stats = {
-    totalRevenue: 89800,
-    paidInvoices: 45,
-    pendingInvoices: 8,
-    avgPaymentTime: '12 days',
+  useEffect(() => {
+    loadPayments();
+  }, []);
+
+  const loadPayments = async () => {
+    try {
+      const data = await paymentsApi.getAll();
+      setPayments(Array.isArray(data) ? data : []);
+    } catch (error) {
+      console.error('Failed to load payments:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const maxValue = Math.max(...monthlyData.map(d => d.value));
+  // Calculate statistics from backend data
+  const totalRevenue = payments.reduce((sum, p) => sum + p.amount, 0);
+  const paidInvoices = payments.filter(p => p.status === 'paid').length;
+  const pendingInvoices = payments.filter(p => p.status === 'unpaid').length;
+  
+  // Calculate average payment time (simplified - using payment dates)
+  const paymentsWithDates = payments.filter(p => p.paymentDate);
+  const avgPaymentTime = paymentsWithDates.length > 0 
+    ? Math.round(paymentsWithDates.reduce((sum, p) => {
+        const created = new Date(p.createdAt || p.paymentDate!);
+        const paid = new Date(p.paymentDate!);
+        return sum + Math.abs(paid.getTime() - created.getTime()) / (1000 * 60 * 60 * 24);
+      }, 0) / paymentsWithDates.length)
+    : 0;
+
+  // Group payments by month for chart
+  const monthlyData: ChartData[] = [];
+  const now = new Date();
+  for (let i = 5; i >= 0; i--) {
+    const month = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const monthPayments = payments.filter(p => {
+      const paymentDate = new Date(p.paymentDate || p.createdAt);
+      return paymentDate.getMonth() === month.getMonth() && 
+             paymentDate.getFullYear() === month.getFullYear();
+    });
+    const monthTotal = monthPayments.reduce((sum, p) => sum + p.amountPaid, 0);
+    const monthLabel = month.toLocaleDateString('en-US', { month: 'short' });
+    monthlyData.push({
+      label: monthLabel,
+      value: monthTotal,
+      percentage: monthTotal > 0 ? 100 : 0
+    });
+  }
+
+  // Normalize percentages to max value
+  const maxValue = Math.max(...monthlyData.map(d => d.value), 1);
+  monthlyData.forEach(d => {
+    d.percentage = Math.round((d.value / maxValue) * 100);
+  });
+
+  // Calculate payment methods distribution
+  const paymentMethods: Record<string, number> = {};
+  payments.forEach(p => {
+    if (p.paymentMethod) {
+      paymentMethods[p.paymentMethod] = (paymentMethods[p.paymentMethod] || 0) + p.amountPaid;
+    }
+  });
+
+  const paymentMethodsArray = Object.entries(paymentMethods).map(([method, amount]) => ({
+    method,
+    amount,
+    percentage: totalRevenue > 0 ? Math.round((amount / totalRevenue) * 100) : 0
+  }));
+
+  // Calculate payment status distribution
+  const paidAmount = payments.filter(p => p.status === 'paid').reduce((sum, p) => sum + p.amount, 0);
+  const partialAmount = payments.filter(p => p.status === 'partial').reduce((sum, p) => sum + p.amount, 0);
+  const unpaidAmount = payments.filter(p => p.status === 'unpaid').reduce((sum, p) => sum + p.amount, 0);
+  const totalAmount = paidAmount + partialAmount + unpaidAmount;
+
+  const paidPercentage = totalAmount > 0 ? Math.round((paidAmount / totalAmount) * 100) : 0;
+  const partialPercentage = totalAmount > 0 ? Math.round((partialAmount / totalAmount) * 100) : 0;
+  const unpaidPercentage = totalAmount > 0 ? Math.round((unpaidAmount / totalAmount) * 100) : 0;
+
+  const stats = {
+    totalRevenue,
+    paidInvoices,
+    pendingInvoices,
+    avgPaymentTime: `${avgPaymentTime} days`,
+  };
+
+  if (loading) {
+    return <div className="text-center py-8 text-gray-500">Loading payment statistics...</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -43,7 +121,12 @@ export function PaymentCharts() {
           </div>
           <div className="flex items-center gap-2 text-sm">
             <TrendingUp className="h-4 w-4 text-green-600" />
-            <span className="text-green-600 font-semibold">+12.5%</span>
+              <span className="text-green-600 font-semibold">
+                {monthlyData.length > 1 && monthlyData[monthlyData.length - 1].value > monthlyData[monthlyData.length - 2].value ? '+' : ''}
+                {monthlyData.length > 1 
+                  ? Math.round(((monthlyData[monthlyData.length - 1].value - monthlyData[monthlyData.length - 2].value) / (monthlyData[monthlyData.length - 2].value || 1)) * 100)
+                  : 0}%
+              </span>
             <span className="text-gray-500">vs last month</span>
           </div>
         </Card>
@@ -60,7 +143,9 @@ export function PaymentCharts() {
           </div>
           <div className="flex items-center gap-2 text-sm">
             <span className="text-gray-600">Success rate: </span>
-            <span className="text-gray-900 font-semibold">84.9%</span>
+            <span className="text-gray-900 font-semibold">
+              {payments.length > 0 ? Math.round((paidInvoices / payments.length) * 100) : 0}%
+            </span>
           </div>
         </Card>
 
@@ -76,7 +161,9 @@ export function PaymentCharts() {
           </div>
           <div className="flex items-center gap-2 text-sm">
             <span className="text-gray-600">Total value: </span>
-            <span className="text-gray-900 font-semibold">$8,400</span>
+            <span className="text-gray-900 font-semibold">
+              ${payments.filter(p => p.status === 'unpaid').reduce((sum, p) => sum + p.amount, 0).toLocaleString()}
+            </span>
           </div>
         </Card>
 
@@ -92,8 +179,8 @@ export function PaymentCharts() {
           </div>
           <div className="flex items-center gap-2 text-sm">
             <TrendingDown className="h-4 w-4 text-green-600" />
-            <span className="text-green-600 font-semibold">-3 days</span>
-            <span className="text-gray-500">improved</span>
+            <span className="text-green-600 font-semibold">optimized</span>
+            <span className="text-gray-500">payment time</span>
           </div>
         </Card>
       </div>
@@ -128,25 +215,24 @@ export function PaymentCharts() {
         <Card className="p-6">
           <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Methods</h3>
           <div className="space-y-3">
-            {[
-              { method: 'Credit Card', percentage: 45, amount: 40410 },
-              { method: 'Cash', percentage: 30, amount: 26940 },
-              { method: 'Bank Transfer', percentage: 20, amount: 17960 },
-              { method: 'Insurance', percentage: 5, amount: 4490 },
-            ].map((item) => (
-              <div key={item.method}>
-                <div className="flex items-center justify-between text-sm mb-1">
-                  <span className="text-gray-700">{item.method}</span>
-                  <span className="font-semibold text-gray-900">${item.amount.toLocaleString()}</span>
+            {paymentMethodsArray.length > 0 ? (
+              paymentMethodsArray.map((item) => (
+                <div key={item.method}>
+                  <div className="flex items-center justify-between text-sm mb-1">
+                    <span className="text-gray-700 capitalize">{item.method}</span>
+                    <span className="font-semibold text-gray-900">${item.amount.toLocaleString()}</span>
+                  </div>
+                  <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div
+                      className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary-400 to-lilac-400 rounded-full"
+                      style={{ width: `${item.percentage}%` }}
+                    />
+                  </div>
                 </div>
-                <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <div
-                    className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary-400 to-lilac-400 rounded-full"
-                    style={{ width: `${item.percentage}%` }}
-                  />
-                </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="text-sm text-gray-500 text-center py-4">No payment methods recorded yet</p>
+            )}
           </div>
         </Card>
 
@@ -171,7 +257,7 @@ export function PaymentCharts() {
                   stroke="url(#gradient)"
                   strokeWidth="8"
                   strokeDasharray="251.2"
-                  strokeDashoffset="62.8"
+                  strokeDashoffset={251.2 * (1 - paidPercentage / 100)}
                   strokeLinecap="round"
                 />
                 <defs>
@@ -182,22 +268,22 @@ export function PaymentCharts() {
                 </defs>
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-3xl font-bold text-gray-900">75%</span>
+                <span className="text-3xl font-bold text-gray-900">{paidPercentage}%</span>
                 <span className="text-sm text-gray-600">Paid</span>
               </div>
             </div>
           </div>
           <div className="grid grid-cols-3 gap-4 mt-4">
             <div className="text-center">
-              <div className="text-lg font-bold text-gray-900">75%</div>
+              <div className="text-lg font-bold text-gray-900">{paidPercentage}%</div>
               <div className="text-xs text-green-600">Paid</div>
             </div>
             <div className="text-center">
-              <div className="text-lg font-bold text-gray-900">15%</div>
+              <div className="text-lg font-bold text-gray-900">{partialPercentage}%</div>
               <div className="text-xs text-amber-600">Partial</div>
             </div>
             <div className="text-center">
-              <div className="text-lg font-bold text-gray-900">10%</div>
+              <div className="text-lg font-bold text-gray-900">{unpaidPercentage}%</div>
               <div className="text-xs text-red-600">Unpaid</div>
             </div>
           </div>

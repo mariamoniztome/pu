@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Users, Calendar, FileText, Plus, ChevronLeft, ChevronRight, Check, Clock } from 'lucide-react';
+import { Calendar, Plus, ChevronLeft, ChevronRight, Check, Clock, Video } from 'lucide-react';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { DashboardChart } from '../components/shared/DashboardChart';
 import { AppointmentForm } from '../components/appointments/AppointmentForm';
+import { ConsultationForm } from '../components/consultations/ConsultationForm';
 import { appointmentsApi, patientsApi } from '../api';
 import { Appointment } from '../types/appointment';
 import { Patient } from '../types/patient';
@@ -18,6 +19,8 @@ export function DashboardPage() {
   const [patientFilter, setPatientFilter] = useState<'all' | 'new' | 'insurance'>('all');
   const [calendarFilter, setCalendarFilter] = useState<'weekly' | 'monthly' | 'all-time'>('monthly');
   const [isAppointmentDialogOpen, setIsAppointmentDialogOpen] = useState(false);
+  const [isConsultationDialogOpen, setIsConsultationDialogOpen] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,6 +42,15 @@ export function DashboardPage() {
     };
 
     fetchData();
+  }, []);
+
+  // Update clock every second
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    return () => clearInterval(timer);
   }, []);
 
   const getDaysInMonth = () => {
@@ -225,29 +237,32 @@ export function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <div className="grid grid-cols-2 gap-6">
+          <div className="flex items-center gap-6">
             <Card className="bg-gradient-to-br from-primary-200 to-primary-300 border-0 rounded-5xl p-8 relative overflow-hidden shadow-2xl hover:shadow-primary-300/40 transition-all duration-300">
-              <div className="relative z-10">
-                <button className="mb-4 w-14 h-14 bg-gray-900 rounded-full flex items-center justify-center hover:bg-gray-800 transition-all duration-300 shadow-xl">
-                  <FileText className="h-6 w-6 text-white" />
-                </button>
-                <h3 className="text-2xl font-bold text-gray-900 mb-1">Write Prescription</h3>
-                <p className="text-sm text-gray-700">to patient</p>
-                <div className="mt-4 text-xs font-semibold text-gray-700 bg-white/40 backdrop-blur-sm inline-block px-4 py-2 rounded-full">
-                  TEMPLATE
+              <div className="relative z-10 text-center">
+                <div className="mb-4 w-14 h-14 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center shadow-lg mx-auto">
+                  <Clock className="h-7 w-7 text-gray-800" />
+                </div>
+                <div className="text-2xl font-bold text-gray-900 mb-1">
+                  {currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                </div>
+                <div className="text-sm text-gray-700">
+                  {currentTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                 </div>
               </div>
             </Card>
 
-            <Card className="bg-gradient-to-br from-lilac-200 to-lilac-300 border-0 rounded-5xl p-8 relative overflow-hidden shadow-2xl hover:shadow-lilac-300/40 transition-all duration-300">
-              <div className="relative z-10">
-                <div className="mb-4 w-14 h-14 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center shadow-lg">
-                  <Users className="h-7 w-7 text-lilac-700" />
+            <Card className="flex-1 bg-gradient-to-br from-lilac-200 to-lilac-300 border-0 rounded-5xl p-8 relative overflow-hidden shadow-2xl hover:shadow-lilac-300/40 transition-all duration-300">
+              <div className="relative z-10 text-center">
+                <div className="mb-4 w-14 h-14 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center shadow-lg mx-auto">
+                  <Video className="h-7 w-7 text-lilac-700" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-1">Anna Jonson</h3>
-                <p className="text-sm text-gray-700">Continue to fill out new patient profile</p>
-                <div className="mt-4 text-xs font-semibold text-gray-700 bg-white/40 backdrop-blur-sm inline-block px-4 py-2 rounded-full">
-                  REMINDER
+                <h3 className="text-2xl font-bold text-gray-900 mb-1">Online Session</h3>
+                <p className="text-sm text-gray-700 mb-4">Video consultation ready</p>
+                <div className="flex gap-2 justify-center">
+                  <div className="text-xs font-semibold text-gray-700 bg-white/40 backdrop-blur-sm px-4 py-2 rounded-full">
+                    AVAILABLE
+                  </div>
                 </div>
               </div>
             </Card>
@@ -360,39 +375,6 @@ export function DashboardPage() {
               </div>
             </div>
 
-            <div className="mb-4 flex gap-2">
-              <button
-                onClick={() => setCalendarFilter('weekly')}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-300 shadow-lg ${
-                  calendarFilter === 'weekly'
-                    ? 'bg-gradient-to-r from-gray-800 to-gray-900 text-white'
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                Weekly
-              </button>
-              <button
-                onClick={() => setCalendarFilter('monthly')}
-                className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-300 ${
-                  calendarFilter === 'monthly'
-                    ? 'bg-gradient-to-r from-gray-800 to-gray-900 text-white shadow-lg'
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                Monthly
-              </button>
-              <button
-                onClick={() => setCalendarFilter('all-time')}
-                className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-300 ${
-                  calendarFilter === 'all-time'
-                    ? 'bg-gradient-to-r from-gray-800 to-gray-900 text-white shadow-lg'
-                    : 'text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                All time
-              </button>
-            </div>
-
             <div className="grid grid-cols-7 gap-2 mb-2">
               {weekDays.map((day) => (
                 <div key={day} className="text-xs text-gray-500 text-center font-medium">
@@ -471,6 +453,19 @@ export function DashboardPage() {
             <DialogTitle>Add New Appointment</DialogTitle>
           </DialogHeader>
           <AppointmentForm onClose={handleAppointmentFormClose} />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isConsultationDialogOpen} onOpenChange={setIsConsultationDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>New Consultation Session</DialogTitle>
+          </DialogHeader>
+          <ConsultationForm 
+            onClose={() => {
+              setIsConsultationDialogOpen(false);
+            }} 
+          />
         </DialogContent>
       </Dialog>
     </div>

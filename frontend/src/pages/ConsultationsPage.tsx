@@ -7,7 +7,6 @@ import { Consultation } from '../types/consultation';
 import { ConsultationForm } from '../components/consultations/ConsultationForm';
 import { ConsultationTemplates } from '../components/consultations/ConsultationTemplates';
 import { ConsultationChecklist } from '../components/consultations/ConsultationChecklist';
-import { ChangeHistory } from '../components/shared/ChangeHistory';
 
 export function ConsultationsPage() {
   const [consultations, setConsultations] = useState<Consultation[]>([]);
@@ -97,7 +96,6 @@ export function ConsultationsPage() {
 
         <div className="space-y-6">
           <ConsultationChecklist />
-          <ChangeHistory />
         </div>
       </div>
 

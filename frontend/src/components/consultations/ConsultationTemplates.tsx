@@ -15,26 +15,7 @@ interface Template {
 }
 
 export function ConsultationTemplates({ onSelectTemplate }: { onSelectTemplate?: (content: string) => void }) {
-  const [templates, setTemplates] = useState<Template[]>([
-    {
-      id: '1',
-      title: 'Initial Assessment',
-      content: 'Patient presents with... History reveals... Mental status examination shows... Diagnosis: ... Treatment plan: ...',
-      category: 'consultation',
-    },
-    {
-      id: '2',
-      title: 'Follow-up Session',
-      content: 'Patient reports... Progress since last session... Current symptoms... Adjusted treatment: ...',
-      category: 'consultation',
-    },
-    {
-      id: '3',
-      title: 'Progress Report',
-      content: 'Patient Name: ...\nSession Number: ...\nDate: ...\n\nProgress Summary:\n...\n\nRecommendations:\n...',
-      category: 'report',
-    },
-  ]);
+  const [templates, setTemplates] = useState<Template[]>([]);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
@@ -88,16 +69,17 @@ export function ConsultationTemplates({ onSelectTemplate }: { onSelectTemplate?:
       </div>
 
       <div className="grid grid-cols-1 gap-3">
-        {templates.map((template) => (
-          <Card key={template.id} className="p-4 hover:shadow-lg transition-all duration-300">
-            <div className="flex items-start justify-between">
-              <div className="flex items-start gap-3 flex-1">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-200 to-lilac-200 flex items-center justify-center flex-shrink-0">
-                  <FileText className="h-5 w-5 text-gray-800" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h4 className="font-semibold text-gray-900 mb-1">{template.title}</h4>
-                  <p className="text-sm text-gray-600 line-clamp-2">{template.content}</p>
+        {templates.length > 0 ? (
+          templates.map((template) => (
+            <Card key={template.id} className="p-4 hover:shadow-lg transition-all duration-300">
+              <div className="flex items-start justify-between">
+                <div className="flex items-start gap-3 flex-1">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-200 to-lilac-200 flex items-center justify-center flex-shrink-0">
+                    <FileText className="h-5 w-5 text-gray-800" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-semibold text-gray-900 mb-1">{template.title}</h4>
+                    <p className="text-sm text-gray-600 line-clamp-2">{template.content}</p>
                   <span className="inline-block mt-2 text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
                     {template.category}
                   </span>
@@ -128,7 +110,16 @@ export function ConsultationTemplates({ onSelectTemplate }: { onSelectTemplate?:
               </div>
             </div>
           </Card>
-        ))}
+        ))
+        ) : (
+          <Card className="p-8">
+            <div className="text-center text-gray-500">
+              <FileText className="h-12 w-12 mx-auto mb-3 text-gray-300" />
+              <p className="font-medium">No templates yet</p>
+              <p className="text-sm mt-1">Create your first template to get started</p>
+            </div>
+          </Card>
+        )}
       </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
