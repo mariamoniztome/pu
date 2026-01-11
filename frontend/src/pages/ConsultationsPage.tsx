@@ -7,8 +7,10 @@ import { Consultation } from '../types/consultation';
 import { ConsultationForm } from '../components/consultations/ConsultationForm';
 import { ConsultationTemplates } from '../components/consultations/ConsultationTemplates';
 import { ConsultationChecklist } from '../components/consultations/ConsultationChecklist';
+import { useTranslation } from '../hooks/useTranslation';
 
 export function ConsultationsPage() {
+  const { t } = useTranslation();
   const [consultations, setConsultations] = useState<Consultation[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);

@@ -11,12 +11,14 @@ import { patientsApi } from '../api';
 import { Patient } from '../types/patient';
 import { PatientForm } from '../components/patients/PatientForm';
 import { PatientCard } from '../components/patients/PatientCard';
+import { useTranslation } from '../hooks/useTranslation';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 type ViewMode = 'grid' | 'table';
 
 export function PatientsPage() {
+  const { t } = useTranslation();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
   const [viewMode, setViewMode] = useState<ViewMode>('grid');

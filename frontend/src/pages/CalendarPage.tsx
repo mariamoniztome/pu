@@ -27,6 +27,7 @@ import { Textarea } from "../components/ui/textarea";
 import { appointmentsApi, patientsApi } from "../api";
 import { Appointment } from "../types/appointment";
 import { Patient } from "../types/patient";
+import { useTranslation } from "../hooks/useTranslation";
 
 const locales = {
   "en-US": enUS,
@@ -46,6 +47,7 @@ interface CalendarEvent extends Event {
 }
 
 export function CalendarPage() {
+  const { t } = useTranslation();
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [showDialog, setShowDialog] = useState(false);

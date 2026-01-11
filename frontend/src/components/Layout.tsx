@@ -14,20 +14,24 @@ import {
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { Chatbot } from './Chatbot';
+import { LanguageSwitcher } from './LanguageSwitcher';
+import { useTranslation } from '../hooks/useTranslation';
 
-const navItems = [
-  { to: '/', label: 'Dashboard', icon: Home },
-  { to: '/patients', label: 'Patients', icon: Users },
-  { to: '/appointments', label: 'Appointments', icon: CalendarClock },
-  { to: '/calendar', label: 'Calendar', icon: CalendarDays },
-  { to: '/consultations', label: 'Sessions', icon: FileText },
-  { to: '/reports', label: 'Reports', icon: FileBarChart },
-  { to: '/payments', label: 'Payments', icon: DollarSign },
+const getNavItems = (t: any) => [
+  { to: '/', label: t('navigation.dashboard'), icon: Home },
+  { to: '/patients', label: t('navigation.patients'), icon: Users },
+  { to: '/appointments', label: t('navigation.appointments'), icon: CalendarClock },
+  { to: '/calendar', label: t('navigation.calendar'), icon: CalendarDays },
+  { to: '/consultations', label: t('navigation.consultations'), icon: FileText },
+  { to: '/reports', label: t('navigation.reports'), icon: FileBarChart },
+  { to: '/payments', label: t('navigation.payments'), icon: DollarSign },
 ];
 
 export function Layout() {
+  const { t } = useTranslation();
   const location = useLocation();
   const [isExpanded, setIsExpanded] = useState(true);
+  const navItems = getNavItems(t);
 
   const isRouteActive = (to: string) => {
     if (to === '/') return location.pathname === '/';
@@ -81,10 +85,10 @@ export function Layout() {
           <div className="px-3 pb-6 space-y-2">
             <button
               className="flex items-center gap-3 px-4 py-4 rounded-3xl text-sm font-medium transition-all duration-300 w-full text-gray-600 hover:bg-white/60 hover:text-gray-900"
-              title={!isExpanded ? 'Settings' : undefined}
+              title={!isExpanded ? t('navigation.settings') : undefined}
             >
               <Settings className="h-5 w-5" />
-              {isExpanded && <span>Settings</span>}
+              {isExpanded && <span>{t('navigation.settings')}</span>}
             </button>
 
             <button
@@ -113,6 +117,9 @@ export function Layout() {
           )}
         >
           <div className="max-w-7xl mx-auto">
+            <div className="flex justify-end mb-6">
+              <LanguageSwitcher />
+            </div>
             <Outlet />
           </div>
         </main>

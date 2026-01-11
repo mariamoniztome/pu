@@ -10,8 +10,10 @@ import {
 import { externalReportsApi } from "../api";
 import { ExternalReport } from "../types/reports";
 import { ReportForm } from "../components/reports/ReportForm";
+import { useTranslation } from "../hooks/useTranslation";
 
 export function ReportsPage() {
+  const { t } = useTranslation();
   const [reports, setReports] = useState<ExternalReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);

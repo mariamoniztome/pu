@@ -9,15 +9,16 @@ import { ConsultationForm } from '../components/consultations/ConsultationForm';
 import { appointmentsApi, patientsApi } from '../api';
 import { Appointment } from '../types/appointment';
 import { Patient } from '../types/patient';
+import { useTranslation } from '../hooks/useTranslation';
 
 export function DashboardPage() {
+  const { t } = useTranslation();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [patientFilter, setPatientFilter] = useState<'all' | 'new' | 'insurance'>('all');
-  const [calendarFilter, setCalendarFilter] = useState<'weekly' | 'monthly' | 'all-time'>('monthly');
   const [isAppointmentDialogOpen, setIsAppointmentDialogOpen] = useState(false);
   const [isConsultationDialogOpen, setIsConsultationDialogOpen] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -143,27 +144,27 @@ export function DashboardPage() {
       // Check if appointment matches the calendar filter
       let shouldInclude = false;
 
-      switch (calendarFilter) {
-        case 'weekly':
-          // Show appointments from this week
-          const weekStart = new Date(today);
-          weekStart.setDate(today.getDate() - today.getDay());
-          const weekEnd = new Date(weekStart);
-          weekEnd.setDate(weekStart.getDate() + 6);
+      // switch (calendarFilter) {
+      //   case 'weekly':
+      //     // Show appointments from this week
+      //     const weekStart = new Date(today);
+      //     weekStart.setDate(today.getDate() - today.getDay());
+      //     const weekEnd = new Date(weekStart);
+      //     weekEnd.setDate(weekStart.getDate() + 6);
 
-          shouldInclude = aptDate >= weekStart && aptDate <= weekEnd;
-          break;
+      //     shouldInclude = aptDate >= weekStart && aptDate <= weekEnd;
+      //     break;
 
-        case 'monthly':
-          // Show appointments from this month
-          shouldInclude = aptYear === year && aptMonth === month;
-          break;
+      //   case 'monthly':
+      //     // Show appointments from this month
+      //     shouldInclude = aptYear === year && aptMonth === month;
+      //     break;
 
-        case 'all-time':
-          // Show all appointments
-          shouldInclude = true;
-          break;
-      }
+      //   case 'all-time':
+      //     // Show all appointments
+      //     shouldInclude = true;
+      //     break;
+      // }
 
       if (shouldInclude) {
         daysWithAppointments[aptDay] = (daysWithAppointments[aptDay] || 0) + 1;
@@ -237,7 +238,7 @@ export function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <div className="flex items-center gap-6">
+          <div className="flex flex-row-reverse items-center gap-6">
             <Card className="bg-gradient-to-br from-primary-200 to-primary-300 border-0 rounded-5xl p-8 relative overflow-hidden shadow-2xl hover:shadow-primary-300/40 transition-all duration-300">
               <div className="relative z-10 text-center">
                 <div className="mb-4 w-14 h-14 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center shadow-lg mx-auto">

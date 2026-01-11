@@ -11,8 +11,10 @@ import { paymentsApi } from "../api";
 import { Payment } from "../types/payment";
 import { PaymentForm } from "../components/payments/PaymentForm";
 import { PaymentCharts } from "../components/payments/PaymentCharts";
+import { useTranslation } from "../hooks/useTranslation";
 
 export function PaymentsPage() {
+  const { t } = useTranslation();
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
