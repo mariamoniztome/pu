@@ -10,6 +10,8 @@ export interface IReportAttachment {
 }
 
 export interface IExternalReport extends Document {
+  organization: Types.ObjectId;
+  doctor: Types.ObjectId;
   patient: Types.ObjectId;
   reportType: 'court' | 'school' | 'employer' | 'insurance' | 'medical' | 'other';
   recipientName: string;
@@ -40,6 +42,16 @@ const reportAttachmentSchema = new Schema<IReportAttachment>(
 
 const externalReportSchema = new Schema<IExternalReport>(
   {
+    organization: {
+      type: Schema.Types.ObjectId,
+      ref: 'Organization',
+      required: [true, 'Organization reference is required'],
+    },
+    doctor: {
+      type: Schema.Types.ObjectId,
+      ref: 'Doctor',
+      required: [true, 'Doctor reference is required'],
+    },
     patient: {
       type: Schema.Types.ObjectId,
       ref: 'Patient',
@@ -97,6 +109,8 @@ const externalReportSchema = new Schema<IExternalReport>(
   }
 );
 
+externalReportSchema.index({ organization: 1, requestDate: -1 });
+externalReportSchema.index({ organization: 1, doctor: 1 });
 externalReportSchema.index({ patient: 1, requestDate: -1 });
 externalReportSchema.index({ status: 1 });
 externalReportSchema.index({ reportType: 1 });

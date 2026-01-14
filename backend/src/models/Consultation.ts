@@ -10,6 +10,8 @@ export interface IAttachment {
 }
 
 export interface IConsultation extends Document {
+  organization: Types.ObjectId;
+  doctor: Types.ObjectId;
   patient: Types.ObjectId;
   appointment?: Types.ObjectId;
   date: Date;
@@ -40,6 +42,16 @@ const attachmentSchema = new Schema<IAttachment>(
 
 const consultationSchema = new Schema<IConsultation>(
   {
+    organization: {
+      type: Schema.Types.ObjectId,
+      ref: 'Organization',
+      required: [true, 'Organization reference is required'],
+    },
+    doctor: {
+      type: Schema.Types.ObjectId,
+      ref: 'Doctor',
+      required: [true, 'Doctor reference is required'],
+    },
     patient: {
       type: Schema.Types.ObjectId,
       ref: 'Patient',
@@ -95,6 +107,8 @@ const consultationSchema = new Schema<IConsultation>(
   }
 );
 
+consultationSchema.index({ organization: 1, date: -1 });
+consultationSchema.index({ organization: 1, doctor: 1 });
 consultationSchema.index({ patient: 1, date: -1 });
 consultationSchema.index({ patient: 1, sessionNumber: 1 });
 

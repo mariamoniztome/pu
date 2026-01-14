@@ -9,8 +9,12 @@ import {
   deleteReportAttachment,
 } from '../controllers/externalReportController.js';
 import { upload, handleMulterError } from '../middleware/upload.js';
+import { authenticate } from '../middleware/auth.js';
 
 const router = Router();
+
+// All report routes require authentication
+router.use(authenticate);
 
 router.get('/', getAllReports);
 router.get('/patient/:patientId', getReportsByPatient);

@@ -9,8 +9,12 @@ import {
   deleteConsultationAttachment,
 } from '../controllers/consultationController.js';
 import { upload, handleMulterError } from '../middleware/upload.js';
+import { authenticate } from '../middleware/auth.js';
 
 const router = Router();
+
+// All consultation routes require authentication
+router.use(authenticate);
 
 router.get('/', getAllConsultations);
 router.get('/patient/:patientId', getConsultationsByPatient);

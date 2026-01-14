@@ -5,8 +5,12 @@ import {
   getAllConversations,
   closeConversation,
 } from '../controllers/chatbotController.js';
+import { authenticate } from '../middleware/auth.js';
 
 const router = express.Router();
+
+// All chatbot routes require authentication
+router.use(authenticate);
 
 // Send a message to the chatbot
 router.post('/message', sendMessage);

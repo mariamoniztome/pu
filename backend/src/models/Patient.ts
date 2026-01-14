@@ -1,6 +1,8 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document, Types } from 'mongoose';
 
 export interface IPatient extends Document {
+  organization: Types.ObjectId;
+  doctor: Types.ObjectId;
   firstName: string;
   lastName: string;
   dateOfBirth: Date;
@@ -22,6 +24,16 @@ export interface IPatient extends Document {
 
 const patientSchema = new Schema<IPatient>(
   {
+    organization: {
+      type: Schema.Types.ObjectId,
+      ref: 'Organization',
+      required: [true, 'Organization reference is required'],
+    },
+    doctor: {
+      type: Schema.Types.ObjectId,
+      ref: 'Doctor',
+      required: [true, 'Doctor reference is required'],
+    },
     firstName: {
       type: String,
       required: [true, 'First name is required'],
@@ -79,7 +91,8 @@ const patientSchema = new Schema<IPatient>(
   }
 );
 
-patientSchema.index({ firstName: 1, lastName: 1 });
+patientSchema.index({ organization: 1, firstName: 1, lastName: 1 });
+patientSchema.index({ organization: 1, doctor: 1 });
 patientSchema.index({ email: 1 });
 
 export default mongoose.model<IPatient>('Patient', patientSchema);

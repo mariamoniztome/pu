@@ -7,6 +7,8 @@ export interface IMessage {
 }
 
 export interface IConversation extends Document {
+  organization: mongoose.Schema.Types.ObjectId;
+  doctor: mongoose.Schema.Types.ObjectId;
   patientId?: mongoose.Schema.Types.ObjectId;
   sessionId: string;
   messages: IMessage[];
@@ -41,6 +43,16 @@ const messageSchema = new Schema<IMessage>(
 
 const conversationSchema = new Schema<IConversation>(
   {
+    organization: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Organization',
+      required: [true, 'Organization reference is required'],
+    },
+    doctor: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Doctor',
+      required: [true, 'Doctor reference is required'],
+    },
     patientId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Patient',
@@ -73,6 +85,7 @@ const conversationSchema = new Schema<IConversation>(
 );
 
 // Index for faster queries
+conversationSchema.index({ organization: 1, doctor: 1 });
 conversationSchema.index({ sessionId: 1 });
 conversationSchema.index({ patientId: 1, createdAt: -1 });
 conversationSchema.index({ 'context.appointmentId': 1 });

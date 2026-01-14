@@ -1,26 +1,44 @@
-import { useState, useEffect } from 'react';
-import { Calendar, Plus, ChevronLeft, ChevronRight, Check, Clock, Video } from 'lucide-react';
-import { Card } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
-import { DashboardChart } from '../components/shared/DashboardChart';
-import { AppointmentForm } from '../components/appointments/AppointmentForm';
-import { ConsultationForm } from '../components/consultations/ConsultationForm';
-import { appointmentsApi, patientsApi } from '../api';
-import { Appointment } from '../types/appointment';
-import { Patient } from '../types/patient';
-import { useTranslation } from '../hooks/useTranslation';
+import { useState, useEffect } from "react";
+import {
+  Calendar,
+  Plus,
+  ChevronLeft,
+  ChevronRight,
+  Check,
+  Clock,
+  Video,
+} from "lucide-react";
+import { Card } from "../components/ui/card";
+import { Button } from "../components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "../components/ui/dialog";
+import { DashboardChart } from "../components/shared/DashboardChart";
+import { AppointmentForm } from "../components/appointments/AppointmentForm";
+import { ConsultationForm } from "../components/consultations/ConsultationForm";
+import { appointmentsApi, patientsApi } from "../api";
+import { Appointment } from "../types/appointment";
+import { Patient } from "../types/patient";
+import { useTranslation } from "../hooks/useTranslation";
+import { useAuth } from "../contexts/AuthContext";
 
 export function DashboardPage() {
   const { t } = useTranslation();
+  const { doctor } = useAuth();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [patientFilter, setPatientFilter] = useState<'all' | 'new' | 'insurance'>('all');
+  const [patientFilter, setPatientFilter] = useState<
+    "all" | "new" | "insurance"
+  >("all");
   const [isAppointmentDialogOpen, setIsAppointmentDialogOpen] = useState(false);
-  const [isConsultationDialogOpen, setIsConsultationDialogOpen] = useState(false);
+  const [isConsultationDialogOpen, setIsConsultationDialogOpen] =
+    useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
@@ -35,8 +53,8 @@ export function DashboardPage() {
         setPatients(patientsData);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load data');
-        console.error('Error fetching dashboard data:', err);
+        setError(err instanceof Error ? err.message : "Failed to load data");
+        console.error("Error fetching dashboard data:", err);
       } finally {
         setLoading(false);
       }
@@ -66,11 +84,15 @@ export function DashboardPage() {
   };
 
   const handlePreviousMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1));
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1)
+    );
   };
 
   const handleNextMonth = () => {
-    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1));
+    setCurrentMonth(
+      new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1)
+    );
   };
 
   const handleAppointmentFormClose = () => {
@@ -84,15 +106,18 @@ export function DashboardPage() {
       const data = await appointmentsApi.getAll();
       setAppointments(data);
     } catch (err) {
-      console.error('Error fetching appointments:', err);
+      console.error("Error fetching appointments:", err);
     }
   };
 
   const { daysInMonth, startingDayOfWeek } = getDaysInMonth();
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-  const monthName = currentMonth.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  const monthName = currentMonth.toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+  });
 
-  const weekDays = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
+  const weekDays = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
 
   // Filter today's appointments
   const today = new Date();
@@ -108,15 +133,15 @@ export function DashboardPage() {
     .map((apt) => ({
       _id: apt._id,
       name:
-        typeof apt.patient === 'string'
+        typeof apt.patient === "string"
           ? apt.patient
           : `${apt.patient.firstName} ${apt.patient.lastName}`,
-      time: new Date(apt.dateTime).toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
+      time: new Date(apt.dateTime).toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
       }),
       type: apt.type,
-      completed: apt.status === 'completed',
+      completed: apt.status === "completed",
     }));
 
   const newPatients = patients.filter((p) => {
@@ -125,20 +150,15 @@ export function DashboardPage() {
     return createdDate > oneWeekAgo;
   });
 
-  const insurancePatients = patients.length > 0 ? Math.floor(patients.length * 0.6) : 0;
+  const insurancePatients =
+    patients.length > 0 ? Math.floor(patients.length * 0.6) : 0;
 
   // Get calendar days with appointment indicators based on filter
   const getDaysWithAppointments = () => {
-    const today = new Date();
-    const year = currentMonth.getFullYear();
-    const month = currentMonth.getMonth();
-
     const daysWithAppointments: Record<number, number> = {};
 
     appointments.forEach((apt) => {
       const aptDate = new Date(apt.dateTime);
-      const aptYear = aptDate.getFullYear();
-      const aptMonth = aptDate.getMonth();
       const aptDay = aptDate.getDate();
 
       // Check if appointment matches the calendar filter
@@ -199,7 +219,8 @@ export function DashboardPage() {
       return { percentage: 0, isIncrease: lastWeekPatients > 0 };
     }
 
-    const change = ((lastWeekPatients - prevWeekPatients) / prevWeekPatients) * 100;
+    const change =
+      ((lastWeekPatients - prevWeekPatients) / prevWeekPatients) * 100;
     return {
       percentage: Math.abs(Math.round(change)),
       isIncrease: change > 0,
@@ -212,8 +233,12 @@ export function DashboardPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-1">{t('dashboard.title')}</h1>
-          <p className="text-red-500">{t('dashboard.errorLoading', { error })}</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-1">
+            {t("dashboard.title")}
+          </h1>
+          <p className="text-red-500">
+            {t("dashboard.errorLoading", { error })}
+          </p>
         </div>
       </div>
     );
@@ -222,7 +247,9 @@ export function DashboardPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="text-lg text-slate-600">{t('dashboard.loadingDashboard')}</div>
+        <div className="text-lg text-slate-600">
+          {t("dashboard.loadingDashboard")}
+        </div>
       </div>
     );
   }
@@ -231,38 +258,52 @@ export function DashboardPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900 mb-1">
-          {t('dashboard.greeting', { name: <span className="text-gray-700">Dr Luke</span> })}
+          {t("dashboard.greeting", {
+            name: 
+                `${doctor?.firstName} ${doctor?.lastName}`
+              
+          })}
         </h1>
-        <p className="text-gray-500">{t('dashboard.subtitle')}</p>
+        <p className="text-gray-500">{t("dashboard.subtitle")}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
-          <div className="flex flex-row-reverse items-center gap-6">
-            <Card className="bg-gradient-to-br from-primary-200 to-primary-300 border-0 rounded-5xl p-8 relative overflow-hidden shadow-2xl hover:shadow-primary-300/40 transition-all duration-300">
-              <div className="relative z-10 text-center">
+          <div className="flex flex-row-reverse items-stretch gap-6">
+            <Card className="flex-1 bg-gradient-to-br from-primary-200 to-primary-300 border-0 rounded-5xl p-8 relative overflow-hidden shadow-2xl hover:shadow-primary-300/40 transition-all duration-300">
+              <div className="relative z-10 text-center h-full flex flex-col justify-center">
                 <div className="mb-4 w-14 h-14 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center shadow-lg mx-auto">
                   <Clock className="h-7 w-7 text-gray-800" />
                 </div>
-                <div className="text-2xl font-bold text-gray-900 mb-1">
-                  {currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                <div className="text-6xl font-bold text-gray-900 mb-1">
+                  {currentTime.toLocaleTimeString("en-US", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
                 </div>
                 <div className="text-sm text-gray-700">
-                  {currentTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                  {currentTime.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })}
                 </div>
               </div>
             </Card>
 
             <Card className="flex-1 bg-gradient-to-br from-lilac-200 to-lilac-300 border-0 rounded-5xl p-8 relative overflow-hidden shadow-2xl hover:shadow-lilac-300/40 transition-all duration-300">
-              <div className="relative z-10 text-center">
+              <div className="relative z-10 text-center h-full flex flex-col justify-center">
                 <div className="mb-4 w-14 h-14 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center shadow-lg mx-auto">
                   <Video className="h-7 w-7 text-lilac-700" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-1">{t('dashboard.onlineSession')}</h3>
-                <p className="text-sm text-gray-700 mb-4">{t('dashboard.videoConsultationReady')}</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-1">
+                  {t("dashboard.onlineSession")}
+                </h3>
+                <p className="text-sm text-gray-700 mb-4">
+                  {t("dashboard.videoConsultationReady")}
+                </p>
                 <div className="flex gap-2 justify-center">
                   <div className="text-xs font-semibold text-gray-700 bg-white/40 backdrop-blur-sm px-4 py-2 rounded-full">
-                    {t('dashboard.available')}
+                    {t("dashboard.available")}
                   </div>
                 </div>
               </div>
@@ -274,78 +315,97 @@ export function DashboardPage() {
               <div>
                 <div className="flex items-center gap-2 mb-2">
                   <Calendar className="h-5 w-5 text-gray-600" />
-                  <h2 className="text-xl font-bold text-gray-900">{appointments.length}</h2>
-                  <span className="text-sm text-primary-600 font-semibold">{t('dashboard.todayIncrease', { percentage: 2 })}</span>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    {appointments.length}
+                  </h2>
+                  <span className="text-sm text-primary-600 font-semibold">
+                    {t("dashboard.todayIncrease", { percentage: 2 })}
+                  </span>
                 </div>
-                <p className="text-sm text-gray-500">{t('dashboard.patientAppointments')}</p>
+                <p className="text-sm text-gray-500">
+                  {t("dashboard.patientAppointments")}
+                </p>
               </div>
-              <Button 
+              <Button
                 onClick={() => setIsAppointmentDialogOpen(true)}
                 className="bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white shadow-xl"
               >
                 <Plus className="h-5 w-5 mr-2" />
-                {t('dashboard.addNewAppointment')}
+                {t("dashboard.addNewAppointment")}
               </Button>
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">{t('dashboard.patientStatistics')}</h3>
+              <h3 className="text-lg font-semibold text-gray-900">
+                {t("dashboard.patientStatistics")}
+              </h3>
               <div className="flex items-center gap-3">
                 <button
-                  onClick={() => setPatientFilter('all')}
+                  onClick={() => setPatientFilter("all")}
                   className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
-                    patientFilter === 'all'
-                      ? 'bg-gradient-to-r from-lilac-200 to-lilac-300 text-gray-800 shadow-md'
-                      : 'text-gray-600 hover:bg-white/60 backdrop-blur-sm'
+                    patientFilter === "all"
+                      ? "bg-gradient-to-r from-lilac-200 to-lilac-300 text-gray-800 shadow-md"
+                      : "text-gray-600 hover:bg-white/60 backdrop-blur-sm"
                   }`}
                 >
-                  {t('dashboard.allPatients')}
+                  {t("dashboard.allPatients")}
                 </button>
                 <button
-                  onClick={() => setPatientFilter('new')}
+                  onClick={() => setPatientFilter("new")}
                   className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                    patientFilter === 'new'
-                      ? 'bg-gradient-to-r from-lilac-200 to-lilac-300 text-gray-800 shadow-md'
-                      : 'text-gray-600 hover:bg-white/60 backdrop-blur-sm'
+                    patientFilter === "new"
+                      ? "bg-gradient-to-r from-lilac-200 to-lilac-300 text-gray-800 shadow-md"
+                      : "text-gray-600 hover:bg-white/60 backdrop-blur-sm"
                   }`}
                 >
-                  {t('dashboard.newPatients')}
+                  {t("dashboard.newPatients")}
                 </button>
                 <button
-                  onClick={() => setPatientFilter('insurance')}
+                  onClick={() => setPatientFilter("insurance")}
                   className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                    patientFilter === 'insurance'
-                      ? 'bg-gradient-to-r from-lilac-200 to-lilac-300 text-gray-800 shadow-md'
-                      : 'text-gray-600 hover:bg-white/60 backdrop-blur-sm'
+                    patientFilter === "insurance"
+                      ? "bg-gradient-to-r from-lilac-200 to-lilac-300 text-gray-800 shadow-md"
+                      : "text-gray-600 hover:bg-white/60 backdrop-blur-sm"
                   }`}
                 >
-                  {t('dashboard.insurance')}
+                  {t("dashboard.insurance")}
                 </button>
               </div>
 
               <div className="grid grid-cols-2 gap-4 py-4">
                 <div>
                   <div className="text-4xl font-bold text-gray-900 mb-1">
-                    {patientFilter === 'new'
+                    {patientFilter === "new"
                       ? newPatients.length
-                      : patientFilter === 'insurance'
+                      : patientFilter === "insurance"
                       ? insurancePatients
                       : patients.length}
                   </div>
                   <div className="text-sm text-gray-500 flex items-center gap-1">
-                    {patientFilter === 'all'
-                      ? 'Total patients'
-                      : patientFilter === 'new'
-                      ? 'New patients'
-                      : 'Insurance patients'}
-                    <span className={weekChange.isIncrease ? 'text-green-500' : 'text-red-500'}>
-                      {weekChange.isIncrease ? '↑' : '↓'} {weekChange.percentage}% week
+                    {patientFilter === "all"
+                      ? "Total patients"
+                      : patientFilter === "new"
+                      ? "New patients"
+                      : "Insurance patients"}
+                    <span
+                      className={
+                        weekChange.isIncrease
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }
+                    >
+                      {weekChange.isIncrease ? "↑" : "↓"}{" "}
+                      {weekChange.percentage}% week
                     </span>
                   </div>
                 </div>
                 <div>
-                  <div className="text-4xl font-bold text-gray-900 mb-1">{insurancePatients}</div>
-                  <div className="text-sm text-gray-500">Insurance patients</div>
+                  <div className="text-4xl font-bold text-gray-900 mb-1">
+                    {insurancePatients}
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    Insurance patients
+                  </div>
                 </div>
               </div>
 
@@ -359,15 +419,17 @@ export function DashboardPage() {
         <div className="space-y-6">
           <Card className="rounded-5xl p-6 shadow-xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900">{monthName}</h3>
+              <h3 className="text-lg font-semibold text-gray-900">
+                {monthName}
+              </h3>
               <div className="flex items-center gap-2">
-                <button 
+                <button
                   onClick={handlePreviousMonth}
                   className="p-2 hover:bg-white/60 backdrop-blur-sm rounded-full transition-all duration-300"
                 >
                   <ChevronLeft className="h-4 w-4 text-gray-600" />
                 </button>
-                <button 
+                <button
                   onClick={handleNextMonth}
                   className="p-2 hover:bg-white/60 backdrop-blur-sm rounded-full transition-all duration-300"
                 >
@@ -378,14 +440,19 @@ export function DashboardPage() {
 
             <div className="grid grid-cols-7 gap-2 mb-2">
               {weekDays.map((day) => (
-                <div key={day} className="text-xs text-gray-500 text-center font-medium">
+                <div
+                  key={day}
+                  className="text-xs text-gray-500 text-center font-medium"
+                >
                   {day}
                 </div>
               ))}
             </div>
 
             <div className="grid grid-cols-7 gap-2">
-              {Array.from({ length: startingDayOfWeek === 0 ? 6 : startingDayOfWeek - 1 }).map((_, i) => (
+              {Array.from({
+                length: startingDayOfWeek === 0 ? 6 : startingDayOfWeek - 1,
+              }).map((_, i) => (
                 <div key={`empty-${i}`} />
               ))}
               {days.map((day) => {
@@ -396,12 +463,18 @@ export function DashboardPage() {
                   <button
                     key={day}
                     className={`aspect-square flex flex-col items-center justify-center text-sm rounded-lg hover:bg-gray-100 transition-all duration-300 relative ${
-                      isToday ? 'bg-gray-900 text-white hover:bg-gray-800' : 'text-gray-700'
+                      isToday
+                        ? "bg-gray-900 text-white hover:bg-gray-800"
+                        : "text-gray-700"
                     }`}
                   >
                     {day}
                     {hasAppointments > 0 && (
-                      <span className={`absolute bottom-1 w-1.5 h-1.5 rounded-full ${isToday ? 'bg-white' : 'bg-primary-500'}`} />
+                      <span
+                        className={`absolute bottom-1 w-1.5 h-1.5 rounded-full ${
+                          isToday ? "bg-white" : "bg-primary-500"
+                        }`}
+                      />
                     )}
                   </button>
                 );
@@ -410,24 +483,40 @@ export function DashboardPage() {
           </Card>
 
           <Card className="rounded-5xl p-6 shadow-xl">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Today's Schedule</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Today's Schedule
+            </h3>
             <div className="space-y-3">
               {todayAppointments.length > 0 ? (
                 todayAppointments.map((apt, idx) => (
-                  <div key={idx} className="flex items-center gap-3 p-4 rounded-4xl hover:bg-white/60 backdrop-blur-sm transition-all duration-300">
+                  <div
+                    key={idx}
+                    className="flex items-center gap-3 p-4 rounded-4xl hover:bg-white/60 backdrop-blur-sm transition-all duration-300"
+                  >
                     <div className="w-11 h-11 rounded-full bg-gradient-to-br from-primary-200 to-lilac-200 flex items-center justify-center flex-shrink-0 shadow-md">
                       <span className="text-sm font-semibold text-gray-800">
-                        {apt.name.split(' ').map(n => n[0]).join('')}
+                        {apt.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")}
                       </span>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="font-semibold text-sm text-gray-900">{apt.name}</div>
+                      <div className="font-semibold text-sm text-gray-900">
+                        {apt.name}
+                      </div>
                       <div className="text-xs text-gray-500">{apt.type}</div>
                     </div>
-                    <div className="text-sm font-medium text-gray-700">{apt.time}</div>
-                    <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg ${
-                      apt.completed ? 'bg-gradient-to-r from-primary-400 to-primary-500' : 'bg-gradient-to-r from-gray-700 to-gray-900'
-                    }`}>
+                    <div className="text-sm font-medium text-gray-700">
+                      {apt.time}
+                    </div>
+                    <div
+                      className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg ${
+                        apt.completed
+                          ? "bg-gradient-to-r from-primary-400 to-primary-500"
+                          : "bg-gradient-to-r from-gray-700 to-gray-900"
+                      }`}
+                    >
                       {apt.completed ? (
                         <Check className="h-4 w-4 text-white" />
                       ) : (
@@ -439,8 +528,12 @@ export function DashboardPage() {
               ) : (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <Calendar className="h-12 w-12 text-gray-300 mb-3" />
-                  <p className="text-gray-500 font-medium">No appointments scheduled for today</p>
-                  <p className="text-gray-400 text-sm mt-1">Your schedule is clear!</p>
+                  <p className="text-gray-500 font-medium">
+                    No appointments scheduled for today
+                  </p>
+                  <p className="text-gray-400 text-sm mt-1">
+                    Your schedule is clear!
+                  </p>
                 </div>
               )}
             </div>
@@ -448,7 +541,10 @@ export function DashboardPage() {
         </div>
       </div>
 
-      <Dialog open={isAppointmentDialogOpen} onOpenChange={setIsAppointmentDialogOpen}>
+      <Dialog
+        open={isAppointmentDialogOpen}
+        onOpenChange={setIsAppointmentDialogOpen}
+      >
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>Add New Appointment</DialogTitle>
@@ -457,15 +553,18 @@ export function DashboardPage() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={isConsultationDialogOpen} onOpenChange={setIsConsultationDialogOpen}>
+      <Dialog
+        open={isConsultationDialogOpen}
+        onOpenChange={setIsConsultationDialogOpen}
+      >
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>New Consultation Session</DialogTitle>
           </DialogHeader>
-          <ConsultationForm 
+          <ConsultationForm
             onClose={() => {
               setIsConsultationDialogOpen(false);
-            }} 
+            }}
           />
         </DialogContent>
       </Dialog>

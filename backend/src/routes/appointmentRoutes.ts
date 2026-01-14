@@ -8,8 +8,12 @@ import {
   deleteAppointment,
   getUpcomingAppointments,
 } from '../controllers/appointmentController.js';
+import { authenticate } from '../middleware/auth.js';
 
 const router = Router();
+
+// All appointment routes require authentication
+router.use(authenticate);
 
 router.get('/', getAllAppointments);
 router.get('/upcoming', getUpcomingAppointments);

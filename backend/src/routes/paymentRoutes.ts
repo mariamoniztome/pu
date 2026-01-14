@@ -9,8 +9,12 @@ import {
   getPaymentStats,
 } from '../controllers/paymentController.js';
 import { upload, handleMulterError } from '../middleware/upload.js';
+import { authenticate } from '../middleware/auth.js';
 
 const router = Router();
+
+// All payment routes require authentication
+router.use(authenticate);
 
 router.get('/', getAllPayments);
 router.get('/stats', getPaymentStats);

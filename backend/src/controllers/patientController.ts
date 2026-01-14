@@ -3,7 +3,18 @@ import Patient from '../models/Patient.js';
 
 export const getAllPatients = async (req: Request, res: Response) => {
   try {
-    const patients = await Patient.find().sort({ createdAt: -1 });
+    // Filter by organization
+    const filter: any = { organization: req.organization._id };
+    
+    // If organization doesn't allow data sharing, filter by doctor
+    if (!req.organization.settings.allowDataSharing) {
+      filter.doctor = req.doctor._id;
+    } else if (!req.doctor.permissions.canViewAllPatients) {
+      // If data sharing is allowed but doctor doesn't have permission, show only their patients
+      filter.doctor = req.doctor._id;
+    }
+    
+    const patients = await Patient.find(filter).sort({ createdAt: -1 });
     res.json(patients);
   } catch (error: any) {
     res.status(500).json({ error: 'Failed to fetch patients', message: error.message });
@@ -12,7 +23,17 @@ export const getAllPatients = async (req: Request, res: Response) => {
 
 export const getPatientById = async (req: Request, res: Response) => {
   try {
-    const patient = await Patient.findById(req.params.id);
+    const filter: any = { 
+      _id: req.params.id, 
+      organization: req.organization._id 
+    };
+    
+    // If organization doesn't allow data sharing, ensure it's the doctor's patient
+    if (!req.organization.settings.allowDataSharing && !req.doctor.permissions.canViewAllPatients) {
+      filter.doctor = req.doctor._id;
+    }
+    
+    const patient = await Patient.findOne(filter);
     if (!patient) {
       return res.status(404).json({ error: 'Patient not found' });
     }
@@ -24,7 +45,14 @@ export const getPatientById = async (req: Request, res: Response) => {
 
 export const createPatient = async (req: Request, res: Response) => {
   try {
-    const patient = new Patient(req.body);
+    // Add organization and doctor to patient data
+    const patientData = {
+      ...req.body,
+      organization: req.organization._id,
+      doctor: req.doctor._id,
+    };
+    
+    const patient = new Patient(patientData);
     await patient.save();
     res.status(201).json(patient);
   } catch (error: any) {
@@ -34,9 +62,24 @@ export const createPatient = async (req: Request, res: Response) => {
 
 export const updatePatient = async (req: Request, res: Response) => {
   try {
-    const patient = await Patient.findByIdAndUpdate(
-      req.params.id,
-      req.body,
+    const filter: any = { 
+      _id: req.params.id, 
+      organization: req.organization._id 
+    };
+    
+    // If organization doesn't allow data sharing, ensure it's the doctor's patient
+    if (!req.organization.settings.allowDataSharing && !req.doctor.permissions.canViewAllPatients) {
+      filter.doctor = req.doctor._id;
+    }
+    
+    // Don't allow changing organization or doctor through this endpoint
+    const updateData = { ...req.body };
+    delete updateData.organization;
+    delete updateData.doctor;
+    
+    const patient = await Patient.findOneAndUpdate(
+      filter,
+      updateData,
       { new: true, runValidators: true }
     );
     if (!patient) {
@@ -50,7 +93,17 @@ export const updatePatient = async (req: Request, res: Response) => {
 
 export const deletePatient = async (req: Request, res: Response) => {
   try {
-    const patient = await Patient.findByIdAndDelete(req.params.id);
+    const filter: any = { 
+      _id: req.params.id, 
+      organization: req.organization._id 
+    };
+    
+    // If organization doesn't allow data sharing, ensure it's the doctor's patient
+    if (!req.organization.settings.allowDataSharing && !req.doctor.permissions.canViewAllPatients) {
+      filter.doctor = req.doctor._id;
+    }
+    
+    const patient = await Patient.findOneAndDelete(filter);
     if (!patient) {
       return res.status(404).json({ error: 'Patient not found' });
     }
@@ -67,14 +120,22 @@ export const searchPatients = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Search query is required' });
     }
 
-    const patients = await Patient.find({
+    const filter: any = {
+      organization: req.organization._id,
       $or: [
         { firstName: { $regex: q, $options: 'i' } },
         { lastName: { $regex: q, $options: 'i' } },
         { email: { $regex: q, $options: 'i' } },
         { phone: { $regex: q, $options: 'i' } },
       ],
-    }).sort({ createdAt: -1 });
+    };
+    
+    // If organization doesn't allow data sharing, filter by doctor
+    if (!req.organization.settings.allowDataSharing && !req.doctor.permissions.canViewAllPatients) {
+      filter.doctor = req.doctor._id;
+    }
+
+    const patients = await Patient.find(filter).sort({ createdAt: -1 });
 
     res.json(patients);
   } catch (error: any) {

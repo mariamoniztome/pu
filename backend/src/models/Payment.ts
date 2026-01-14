@@ -10,6 +10,8 @@ export interface IReceiptAttachment {
 }
 
 export interface IPayment extends Document {
+  organization: Types.ObjectId;
+  doctor: Types.ObjectId;
   patient: Types.ObjectId;
   consultation?: Types.ObjectId;
   appointment?: Types.ObjectId;
@@ -40,6 +42,16 @@ const receiptAttachmentSchema = new Schema<IReceiptAttachment>(
 
 const paymentSchema = new Schema<IPayment>(
   {
+    organization: {
+      type: Schema.Types.ObjectId,
+      ref: 'Organization',
+      required: [true, 'Organization reference is required'],
+    },
+    doctor: {
+      type: Schema.Types.ObjectId,
+      ref: 'Doctor',
+      required: [true, 'Doctor reference is required'],
+    },
     patient: {
       type: Schema.Types.ObjectId,
       ref: 'Patient',
@@ -96,6 +108,8 @@ const paymentSchema = new Schema<IPayment>(
   }
 );
 
+paymentSchema.index({ organization: 1, createdAt: -1 });
+paymentSchema.index({ organization: 1, doctor: 1 });
 paymentSchema.index({ patient: 1, createdAt: -1 });
 paymentSchema.index({ status: 1 });
 paymentSchema.index({ consultation: 1 });

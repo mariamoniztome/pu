@@ -7,8 +7,12 @@ import {
   deletePatient,
   searchPatients,
 } from '../controllers/patientController.js';
+import { authenticate } from '../middleware/auth.js';
 
 const router = Router();
+
+// All patient routes require authentication
+router.use(authenticate);
 
 router.get('/', getAllPatients);
 router.get('/search', searchPatients);

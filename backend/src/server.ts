@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import connectDB from './config/database.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
+import authRoutes from './routes/authRoutes.js';
 import patientRoutes from './routes/patientRoutes.js';
 import appointmentRoutes from './routes/appointmentRoutes.js';
 import consultationRoutes from './routes/consultationRoutes.js';
@@ -31,6 +32,7 @@ app.get('/', (req, res) => {
     message: 'Psychology Clinic Management API',
     version: '1.0.0',
     endpoints: {
+      auth: '/api/auth',
       patients: '/api/patients',
       appointments: '/api/appointments',
       consultations: '/api/consultations',
@@ -41,6 +43,7 @@ app.get('/', (req, res) => {
   });
 });
 
+app.use('/api/auth', authRoutes);
 app.use('/api/patients', patientRoutes);
 app.use('/api/appointments', appointmentRoutes);
 app.use('/api/consultations', consultationRoutes);

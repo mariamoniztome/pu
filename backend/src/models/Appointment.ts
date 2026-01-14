@@ -1,6 +1,8 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
 
 export interface IAppointment extends Document {
+  organization: Types.ObjectId;
+  doctor: Types.ObjectId;
   patient: Types.ObjectId;
   dateTime: Date;
   duration: number;
@@ -14,6 +16,16 @@ export interface IAppointment extends Document {
 
 const appointmentSchema = new Schema<IAppointment>(
   {
+    organization: {
+      type: Schema.Types.ObjectId,
+      ref: 'Organization',
+      required: [true, 'Organization reference is required'],
+    },
+    doctor: {
+      type: Schema.Types.ObjectId,
+      ref: 'Doctor',
+      required: [true, 'Doctor reference is required'],
+    },
     patient: {
       type: Schema.Types.ObjectId,
       ref: 'Patient',
@@ -54,8 +66,9 @@ const appointmentSchema = new Schema<IAppointment>(
   }
 );
 
+appointmentSchema.index({ organization: 1, dateTime: 1 });
+appointmentSchema.index({ organization: 1, doctor: 1, dateTime: 1 });
 appointmentSchema.index({ patient: 1, dateTime: -1 });
-appointmentSchema.index({ dateTime: 1 });
 appointmentSchema.index({ status: 1 });
 
 export default mongoose.model<IAppointment>('Appointment', appointmentSchema);
