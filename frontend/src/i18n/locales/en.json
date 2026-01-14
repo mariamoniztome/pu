@@ -21,7 +21,24 @@
     "previous": "Previous",
     "submit": "Submit",
     "actions": "Actions",
-    "noData": "No data available"
+    "noData": "No data available",
+    "unknownPatient": "Unknown",
+    "minutes": "minutes",
+    "date": "Date",
+    "time": "Time",
+    "duration": "Duration",
+    "type": "Type",
+    "notes": "Notes",
+    "status": "Status",
+    "saving": "Saving...",
+    "update": "Update",
+    "schedule": "Schedule",
+    "male": "Male",
+    "female": "Female",
+    "other": "Other",
+    "required": "*",
+    "grid": "Grid",
+    "table": "Table"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -43,10 +60,25 @@
     "revenueToday": "Revenue Today",
     "recentActivity": "Recent Activity",
     "appointmentStatus": "Appointment Status",
-    "paymentStats": "Payment Statistics"
+    "paymentStats": "Payment Statistics",
+    "greeting": "Good morning, {{name}}",
+    "subtitle": "Have great and productive day",
+    "loadingDashboard": "Loading dashboard...",
+    "errorLoading": "Error loading data: {{error}}",
+    "onlineSession": "Online Session",
+    "videoConsultationReady": "Video consultation ready",
+    "available": "AVAILABLE",
+    "patientAppointments": "Patient appointments",
+    "todayIncrease": "↑ {{percentage}}% today",
+    "addNewAppointment": "Add new appointment",
+    "patientStatistics": "Patient statistics",
+    "allPatients": "All patients",
+    "newPatients": "New patients",
+    "insurance": "Insurance"
   },
   "patients": {
     "title": "Patients",
+    "subtitle": "Manage patient records",
     "addPatient": "Add Patient",
     "editPatient": "Edit Patient",
     "deletePatient": "Delete Patient",
@@ -66,11 +98,32 @@
     "createdAt": "Created",
     "updatedAt": "Last Updated",
     "viewDetails": "View Details",
-    "noPatients": "No patients found"
+    "noPatients": "No patients found",
+    "loadingPatients": "Loading patients...",
+    "searchPlaceholder": "Search patients by name, email, or phone...",
+    "foundPatients": "Found {{count}} patient(s)",
+    "confirmDelete": "Are you sure you want to delete this patient?",
+    "deletedSuccessfully": "Patient deleted successfully",
+    "failedToDelete": "Failed to delete patient",
+    "updatedSuccessfully": "Patient updated successfully",
+    "createdSuccessfully": "Patient created successfully",
+    "failedToSave": "Failed to save patient",
+    "addNewPatient": "Add New Patient",
+    "selectGender": "Select gender",
+    "columns": {
+      "name": "Name",
+      "dateOfBirth": "Date of Birth",
+      "gender": "Gender",
+      "email": "Email",
+      "phone": "Phone",
+      "actions": "Actions"
+    }
   },
   "appointments": {
     "title": "Appointments",
+    "subtitle": "Manage appointment schedules",
     "addAppointment": "Add Appointment",
+    "scheduleAppointment": "Schedule Appointment",
     "editAppointment": "Edit Appointment",
     "deleteAppointment": "Delete Appointment",
     "appointmentDetails": "Appointment Details",
@@ -87,11 +140,41 @@
     "cancelled": "Cancelled",
     "noAppointments": "No appointments found",
     "upcomingAppointments": "Upcoming Appointments",
-    "pastAppointments": "Past Appointments"
+    "pastAppointments": "Past Appointments",
+    "loadingAppointments": "Loading appointments...",
+    "confirmed": "Confirmed",
+    "noShow": "No-show",
+    "scheduleNewAppointment": "Schedule New Appointment",
+    "patient": "Patient",
+    "selectPatient": "Select a patient",
+    "dateTime": "Date & Time",
+    "durationMinutes": "Duration (minutes)",
+    "selectType": "Select a type",
+    "selectStatus": "Select a status",
+    "notesPlaceholder": "Any additional notes about this appointment...",
+    "requiredFields": "Please fill in all required fields.",
+    "failedToSave": "Failed to save appointment",
+    "type": {
+      "initial": "Initial",
+      "followUp": "Follow-up",
+      "assessment": "Assessment",
+      "therapy": "Therapy",
+      "other": "Other"
+    },
+    "status": {
+      "scheduled": "Scheduled",
+      "confirmed": "Confirmed",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "noShow": "No-show"
+    }
   },
   "consultations": {
     "title": "Consultations",
+    "sessionsTitle": "Sessions",
+    "sessionsSubtitle": "Clinical session records",
     "addConsultation": "Add Consultation",
+    "newSession": "New Session",
     "editConsultation": "Edit Consultation",
     "deleteConsultation": "Delete Consultation",
     "consultationDetails": "Consultation Details",
@@ -104,11 +187,18 @@
     "notes": "Notes",
     "followUp": "Follow-up Required",
     "followUpDate": "Follow-up Date",
-    "noConsultations": "No consultations found"
+    "noConsultations": "No consultations found",
+    "loadingConsultations": "Loading consultations...",
+    "sessionNumber": "Session #{{number}}",
+    "chiefComplaint": "Chief Complaint",
+    "sessionNotes": "Session Notes",
+    "attachments": "{{count}} attachment(s)"
   },
   "reports": {
     "title": "Reports",
+    "subtitle": "External reports for institutions",
     "generateReport": "Generate Report",
+    "newReport": "New Report",
     "reportType": "Report Type",
     "dateRange": "Date Range",
     "from": "From",
@@ -117,11 +207,20 @@
     "uploadReport": "Upload Report",
     "reportFile": "Report File",
     "description": "Description",
-    "noReports": "No reports found"
+    "noReports": "No reports found",
+    "loadingReports": "Loading reports...",
+    "status": {
+      "completed": "Completed",
+      "inProgress": "In Progress",
+      "requested": "Requested",
+      "delivered": "Delivered"
+    }
   },
   "payments": {
     "title": "Payments",
+    "subtitle": "Financial records and invoices",
     "addPayment": "Add Payment",
+    "recordPayment": "Record Payment",
     "paymentDetails": "Payment Details",
     "amount": "Amount",
     "paymentMethod": "Payment Method",
@@ -133,7 +232,11 @@
     "invoiceNumber": "Invoice Number",
     "description": "Description",
     "totalRevenue": "Total Revenue",
-    "noPayments": "No payments found"
+    "noPayments": "No payments found",
+    "loadingPayments": "Loading payments...",
+    "recentPayments": "Recent Payments",
+    "partial": "Partial",
+    "unpaid": "Unpaid"
   },
   "calendar": {
     "title": "Calendar",
@@ -144,7 +247,14 @@
     "newEvent": "New Event",
     "eventTitle": "Event Title",
     "eventDate": "Event Date",
-    "eventTime": "Event Time"
+    "eventTime": "Event Time",
+    "failedToLoad": "Failed to load calendar data",
+    "appointmentUpdated": "Appointment updated successfully",
+    "appointmentCreated": "Appointment created successfully",
+    "appointmentDeleted": "Appointment deleted successfully",
+    "failedToSave": "Failed to save appointment",
+    "failedToDelete": "Failed to delete appointment",
+    "confirmDelete": "Are you sure you want to delete this appointment?"
   },
   "forms": {
     "validation": {
@@ -170,5 +280,13 @@
   "language": {
     "english": "English",
     "portuguese": "Português (Portugal)"
+  },
+  "chatbot": {
+    "supportChat": "Support Chat",
+    "supportAgent": "Support Agent",
+    "welcomeTitle": "Welcome to Support Chat",
+    "welcomeMessage": "I'm here to help with appointments, consultations, payments, and general guidance.",
+    "typePlaceholder": "Type your message...",
+    "errorMessage": "Sorry, I encountered an error. Please try again."
   }
 }

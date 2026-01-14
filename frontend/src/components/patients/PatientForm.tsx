@@ -8,6 +8,7 @@ import { Textarea } from '../ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { patientsApi } from '../../api';
 import { Patient } from '../../types/patient';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface PatientFormProps {
   patient?: Patient | null;
@@ -16,6 +17,7 @@ interface PatientFormProps {
 }
 
 export function PatientForm({ patient, open, onClose }: PatientFormProps) {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -83,16 +85,16 @@ export function PatientForm({ patient, open, onClose }: PatientFormProps) {
 
       if (patient) {
         await patientsApi.update(patient._id, data);
-        toast.success('Patient updated successfully');
+        toast.success(t('patients.updatedSuccessfully'));
       } else {
         await patientsApi.create(data);
-        toast.success('Patient created successfully');
+        toast.success(t('patients.createdSuccessfully'));
       }
 
       onClose();
     } catch (err: any) {
-      toast.error(err.message || 'Failed to save patient');
-      setError(err.message || 'Failed to save patient');
+      toast.error(err.message || t('patients.failedToSave'));
+      setError(err.message || t('patients.failedToSave'));
     } finally {
       setLoading(false);
     }
@@ -102,12 +104,12 @@ export function PatientForm({ patient, open, onClose }: PatientFormProps) {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{patient ? 'Edit Patient' : 'Add New Patient'}</DialogTitle>
+          <DialogTitle>{patient ? t('patients.editPatient') : t('patients.addNewPatient')}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 px-12 pb-12">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="firstName">First Name *</Label>
+                <Label htmlFor="firstName">{t('patients.firstName')} {t('common.required')}</Label>
                 <Input
                   id="firstName"
                   value={formData.firstName}
@@ -116,7 +118,7 @@ export function PatientForm({ patient, open, onClose }: PatientFormProps) {
                 />
               </div>
               <div>
-                <Label htmlFor="lastName">Last Name *</Label>
+                <Label htmlFor="lastName">{t('patients.lastName')} {t('common.required')}</Label>
                 <Input
                   id="lastName"
                   value={formData.lastName}
@@ -128,7 +130,7 @@ export function PatientForm({ patient, open, onClose }: PatientFormProps) {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="dateOfBirth">Date of Birth *</Label>
+                <Label htmlFor="dateOfBirth">{t('patients.dateOfBirth')} {t('common.required')}</Label>
                 <Input
                   id="dateOfBirth"
                   type="date"
@@ -138,14 +140,14 @@ export function PatientForm({ patient, open, onClose }: PatientFormProps) {
                 />
               </div>
               <div>
-                <Label htmlFor="gender">Gender *</Label>
+                <Label htmlFor="gender">{t('patients.gender')} {t('common.required')}</Label>
                 <Select
                   value={formData.gender}
                   onValueChange={(value: string) => setFormData({ ...formData, gender: value as 'male' | 'female' | 'other' })}
                 >
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
+                  <option value="male">{t('common.male')}</option>
+                  <option value="female">{t('common.female')}</option>
+                  <option value="other">{t('common.other')}</option>
                 </Select>
               </div>
             </div>

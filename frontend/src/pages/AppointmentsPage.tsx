@@ -32,7 +32,7 @@ export function AppointmentsPage() {
   };
 
   const getPatientName = (appointment: Appointment) => {
-    if (typeof appointment.patient === 'string') return 'Unknown';
+    if (typeof appointment.patient === 'string') return t('common.unknownPatient');
     return `${appointment.patient.firstName} ${appointment.patient.lastName}`;
   };
 
@@ -54,19 +54,19 @@ export function AppointmentsPage() {
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center h-64">Loading appointments...</div>;
+    return <div className="flex justify-center items-center h-64">{t('appointments.loadingAppointments')}</div>;
   }
 
   return (
     <div className="space-y-6">
     <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-slate-800">Appointments</h1>
-          <p className="text-slate-600 mt-1">Manage appointment schedules</p>
+          <h1 className="text-3xl font-bold text-slate-800">{t('appointments.title')}</h1>
+          <p className="text-slate-600 mt-1">{t('appointments.subtitle')}</p>
         </div>
         <Button onClick={() => setShowForm(true)} className="rounded-full bg-gray-900 hover:bg-black">
           <Plus className="h-5 w-5 mr-2" />
-          Schedule Appointment
+          {t('appointments.scheduleAppointment')}
         </Button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -80,18 +80,18 @@ export function AppointmentsPage() {
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="text-sm">
-                <span className="font-medium">Date:</span>{' '}
+                <span className="font-medium">{t('common.date')}:</span>{' '}
                 {new Date(appointment.dateTime).toLocaleDateString()}
               </div>
               <div className="text-sm">
-                <span className="font-medium">Time:</span>{' '}
+                <span className="font-medium">{t('common.time')}:</span>{' '}
                 {new Date(appointment.dateTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </div>
               <div className="text-sm">
-                <span className="font-medium">Duration:</span> {appointment.duration} minutes
+                <span className="font-medium">{t('common.duration')}:</span> {appointment.duration} {t('common.minutes')}
               </div>
               <div className="text-sm">
-                <span className="font-medium">Type:</span> {appointment.type}
+                <span className="font-medium">{t('common.type')}:</span> {appointment.type}
               </div>
               {appointment.notes && (
                 <div className="text-sm text-slate-600 mt-2">

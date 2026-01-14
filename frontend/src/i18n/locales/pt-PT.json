@@ -21,7 +21,24 @@
     "previous": "Anterior",
     "submit": "Submeter",
     "actions": "Ações",
-    "noData": "Nenhum dado disponível"
+    "noData": "Nenhum dado disponível",
+    "unknownPatient": "Desconhecido",
+    "minutes": "minutos",
+    "date": "Data",
+    "time": "Hora",
+    "duration": "Duração",
+    "type": "Tipo",
+    "notes": "Notas",
+    "status": "Estado",
+    "saving": "A guardar...",
+    "update": "Atualizar",
+    "schedule": "Agendar",
+    "male": "Masculino",
+    "female": "Feminino",
+    "other": "Outro",
+    "required": "*",
+    "grid": "Grelha",
+    "table": "Tabela"
   },
   "navigation": {
     "dashboard": "Painel de Controlo",
@@ -43,10 +60,25 @@
     "revenueToday": "Receita Hoje",
     "recentActivity": "Atividade Recente",
     "appointmentStatus": "Estado das Consultas",
-    "paymentStats": "Estatísticas de Pagamentos"
+    "paymentStats": "Estatísticas de Pagamentos",
+    "greeting": "Bom dia, {{name}}",
+    "subtitle": "Tenha um dia ótimo e produtivo",
+    "loadingDashboard": "A carregar painel...",
+    "errorLoading": "Erro ao carregar dados: {{error}}",
+    "onlineSession": "Sessão Online",
+    "videoConsultationReady": "Consulta por vídeo disponível",
+    "available": "DISPONÍVEL",
+    "patientAppointments": "Consultas de pacientes",
+    "todayIncrease": "↑ {{percentage}}% hoje",
+    "addNewAppointment": "Adicionar nova consulta",
+    "patientStatistics": "Estatísticas de pacientes",
+    "allPatients": "Todos os pacientes",
+    "newPatients": "Novos pacientes",
+    "insurance": "Seguro"
   },
   "patients": {
     "title": "Pacientes",
+    "subtitle": "Gerir registos de pacientes",
     "addPatient": "Adicionar Paciente",
     "editPatient": "Editar Paciente",
     "deletePatient": "Eliminar Paciente",
@@ -66,11 +98,32 @@
     "createdAt": "Criado",
     "updatedAt": "Última Atualização",
     "viewDetails": "Ver Detalhes",
-    "noPatients": "Nenhum paciente encontrado"
+    "noPatients": "Nenhum paciente encontrado",
+    "loadingPatients": "A carregar pacientes...",
+    "searchPlaceholder": "Pesquisar pacientes por nome, email ou telefone...",
+    "foundPatients": "{{count}} paciente(s) encontrado(s)",
+    "confirmDelete": "Tem a certeza que deseja eliminar este paciente?",
+    "deletedSuccessfully": "Paciente eliminado com sucesso",
+    "failedToDelete": "Falha ao eliminar paciente",
+    "updatedSuccessfully": "Paciente atualizado com sucesso",
+    "createdSuccessfully": "Paciente criado com sucesso",
+    "failedToSave": "Falha ao guardar paciente",
+    "addNewPatient": "Adicionar Novo Paciente",
+    "selectGender": "Selecione o género",
+    "columns": {
+      "name": "Nome",
+      "dateOfBirth": "Data de Nascimento",
+      "gender": "Género",
+      "email": "Email",
+      "phone": "Telefone",
+      "actions": "Ações"
+    }
   },
   "appointments": {
     "title": "Consultas",
+    "subtitle": "Gerir marcações de consultas",
     "addAppointment": "Adicionar Consulta",
+    "scheduleAppointment": "Agendar Consulta",
     "editAppointment": "Editar Consulta",
     "deleteAppointment": "Eliminar Consulta",
     "appointmentDetails": "Detalhes da Consulta",
@@ -87,11 +140,41 @@
     "cancelled": "Cancelado",
     "noAppointments": "Nenhuma consulta encontrada",
     "upcomingAppointments": "Consultas Próximas",
-    "pastAppointments": "Consultas Passadas"
+    "pastAppointments": "Consultas Passadas",
+    "loadingAppointments": "A carregar consultas...",
+    "confirmed": "Confirmado",
+    "noShow": "Ausente",
+    "scheduleNewAppointment": "Agendar Nova Consulta",
+    "patient": "Paciente",
+    "selectPatient": "Selecione um paciente",
+    "dateTime": "Data e Hora",
+    "durationMinutes": "Duração (minutos)",
+    "selectType": "Selecione um tipo",
+    "selectStatus": "Selecione um estado",
+    "notesPlaceholder": "Notas adicionais sobre esta consulta...",
+    "requiredFields": "Por favor, preencha todos os campos obrigatórios.",
+    "failedToSave": "Falha ao guardar consulta",
+    "type": {
+      "initial": "Inicial",
+      "followUp": "Seguimento",
+      "assessment": "Avaliação",
+      "therapy": "Terapia",
+      "other": "Outro"
+    },
+    "status": {
+      "scheduled": "Marcado",
+      "confirmed": "Confirmado",
+      "completed": "Concluído",
+      "cancelled": "Cancelado",
+      "noShow": "Ausente"
+    }
   },
   "consultations": {
     "title": "Consultas Médicas",
+    "sessionsTitle": "Sessões",
+    "sessionsSubtitle": "Registos de sessões clínicas",
     "addConsultation": "Adicionar Consulta Médica",
+    "newSession": "Nova Sessão",
     "editConsultation": "Editar Consulta Médica",
     "deleteConsultation": "Eliminar Consulta Médica",
     "consultationDetails": "Detalhes da Consulta Médica",
@@ -104,11 +187,18 @@
     "notes": "Notas",
     "followUp": "Seguimento Necessário",
     "followUpDate": "Data de Seguimento",
-    "noConsultations": "Nenhuma consulta médica encontrada"
+    "noConsultations": "Nenhuma consulta médica encontrada",
+    "loadingConsultations": "A carregar consultas...",
+    "sessionNumber": "Sessão #{{number}}",
+    "chiefComplaint": "Queixa Principal",
+    "sessionNotes": "Notas da Sessão",
+    "attachments": "{{count}} anexo(s)"
   },
   "reports": {
     "title": "Relatórios",
+    "subtitle": "Relatórios externos para instituições",
     "generateReport": "Gerar Relatório",
+    "newReport": "Novo Relatório",
     "reportType": "Tipo de Relatório",
     "dateRange": "Intervalo de Datas",
     "from": "De",
@@ -117,11 +207,20 @@
     "uploadReport": "Carregar Relatório",
     "reportFile": "Ficheiro de Relatório",
     "description": "Descrição",
-    "noReports": "Nenhum relatório encontrado"
+    "noReports": "Nenhum relatório encontrado",
+    "loadingReports": "A carregar relatórios...",
+    "status": {
+      "completed": "Concluído",
+      "inProgress": "Em Progresso",
+      "requested": "Solicitado",
+      "delivered": "Entregue"
+    }
   },
   "payments": {
     "title": "Pagamentos",
+    "subtitle": "Registos financeiros e faturas",
     "addPayment": "Adicionar Pagamento",
+    "recordPayment": "Registar Pagamento",
     "paymentDetails": "Detalhes do Pagamento",
     "amount": "Valor",
     "paymentMethod": "Método de Pagamento",
@@ -133,7 +232,11 @@
     "invoiceNumber": "Número de Fatura",
     "description": "Descrição",
     "totalRevenue": "Receita Total",
-    "noPayments": "Nenhum pagamento encontrado"
+    "noPayments": "Nenhum pagamento encontrado",
+    "loadingPayments": "A carregar pagamentos...",
+    "recentPayments": "Pagamentos Recentes",
+    "partial": "Parcial",
+    "unpaid": "Não Pago"
   },
   "calendar": {
     "title": "Calendário",
@@ -144,7 +247,14 @@
     "newEvent": "Novo Evento",
     "eventTitle": "Título do Evento",
     "eventDate": "Data do Evento",
-    "eventTime": "Hora do Evento"
+    "eventTime": "Hora do Evento",
+    "failedToLoad": "Falha ao carregar dados do calendário",
+    "appointmentUpdated": "Consulta atualizada com sucesso",
+    "appointmentCreated": "Consulta criada com sucesso",
+    "appointmentDeleted": "Consulta eliminada com sucesso",
+    "failedToSave": "Falha ao guardar consulta",
+    "failedToDelete": "Falha ao eliminar consulta",
+    "confirmDelete": "Tem a certeza que deseja eliminar esta consulta?"
   },
   "forms": {
     "validation": {
@@ -170,5 +280,13 @@
   "language": {
     "english": "English",
     "portuguese": "Português (Portugal)"
+  },
+  "chatbot": {
+    "supportChat": "Chat de Suporte",
+    "supportAgent": "Agente de Suporte",
+    "welcomeTitle": "Bem-vindo ao Chat de Suporte",
+    "welcomeMessage": "Estou aqui para ajudar com consultas, pagamentos e orientações gerais.",
+    "typePlaceholder": "Escreva a sua mensagem...",
+    "errorMessage": "Desculpe, ocorreu um erro. Por favor, tente novamente."
   }
 }

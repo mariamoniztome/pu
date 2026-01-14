@@ -82,7 +82,7 @@ export function CalendarPage() {
       setPatients(Array.isArray(patientsData) ? patientsData : []);
     } catch (error) {
       console.error("Failed to load data:", error);
-      toast.error("Failed to load calendar data");
+      toast.error(t('calendar.failedToLoad'));
       setAppointments([]);
       setPatients([]);
     }
@@ -147,10 +147,10 @@ export function CalendarPage() {
 
       if (selectedEvent) {
         await appointmentsApi.update(selectedEvent.id, data);
-        toast.success("Appointment updated successfully");
+        toast.success(t('calendar.appointmentUpdated'));
       } else {
         await appointmentsApi.create(data);
-        toast.success("Appointment created successfully");
+        toast.success(t('calendar.appointmentCreated'));
       }
 
       setShowDialog(false);
@@ -162,7 +162,7 @@ export function CalendarPage() {
         notes: "",
       });
     } catch (err: any) {
-      toast.error(err.message || "Failed to save appointment");
+      toast.error(err.message || t('calendar.failedToSave'));
     } finally {
       setLoading(false);
     }
@@ -171,15 +171,15 @@ export function CalendarPage() {
   const handleDelete = async () => {
     if (!selectedEvent) return;
 
-    if (!confirm("Are you sure you want to delete this appointment?")) return;
+    if (!confirm(t('calendar.confirmDelete'))) return;
 
     try {
       await appointmentsApi.delete(selectedEvent.id);
-      toast.success("Appointment deleted successfully");
+      toast.success(t('calendar.appointmentDeleted'));
       setShowDialog(false);
       loadData();
     } catch (error) {
-      toast.error("Failed to delete appointment");
+      toast.error(t('calendar.failedToDelete'));
     }
   };
 

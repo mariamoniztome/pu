@@ -39,7 +39,7 @@ export function ReportsPage() {
   };
 
   const getPatientName = (report: ExternalReport) => {
-    if (typeof report.patient === "string") return "Unknown";
+    if (typeof report.patient === "string") return t('common.unknownPatient');
     return `${report.patient.firstName} ${report.patient.lastName}`;
   };
 
@@ -61,7 +61,7 @@ export function ReportsPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        Loading reports...
+        {t('reports.loadingReports')}
       </div>
     );
   }
@@ -70,9 +70,9 @@ export function ReportsPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-slate-800">Reports</h1>
+          <h1 className="text-3xl font-bold text-slate-800">{t('reports.title')}</h1>
           <p className="text-slate-600 mt-1">
-            External reports for institutions
+            {t('reports.subtitle')}
           </p>
         </div>
         <Button
@@ -80,7 +80,7 @@ export function ReportsPage() {
           className="rounded-full bg-gray-900 hover:bg-black"
         >
           <Plus className="h-5 w-5 mr-2" />
-          New Report
+          {t('reports.newReport')}
         </Button>
       </div>
 

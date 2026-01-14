@@ -53,7 +53,7 @@ export function PatientsPage() {
       const data = await patientsApi.search(searchQuery);
       const results = Array.isArray(data) ? data : [];
       setPatients(results);
-      toast.success(`Found ${results.length} patient(s)`);
+      toast.success(t('patients.foundPatients', { count: results.length }));
     } catch (error) {
       console.error('Search failed:', error);
       toast.error('Search failed');
@@ -67,14 +67,14 @@ export function PatientsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this patient?')) return;
+    if (!confirm(t('patients.confirmDelete'))) return;
     try {
       await patientsApi.delete(id);
-      toast.success('Patient deleted successfully');
+      toast.success(t('patients.deletedSuccessfully'));
       loadPatients();
     } catch (error) {
       console.error('Failed to delete patient:', error);
-      toast.error('Failed to delete patient');
+      toast.error(t('patients.failedToDelete'));
     }
   };
 
@@ -86,39 +86,39 @@ export function PatientsPage() {
 
   const columnDefs: ColDef<Patient>[] = useMemo(() => [
     {
-      headerName: 'Name',
+      headerName: t('patients.columns.name'),
       valueGetter: (params) => `${params.data?.firstName} ${params.data?.lastName}`,
       filter: true,
       sortable: true,
     },
     {
       field: 'dateOfBirth',
-      headerName: 'Date of Birth',
+      headerName: t('patients.columns.dateOfBirth'),
       filter: 'agDateColumnFilter',
       sortable: true,
       valueFormatter: (params) => new Date(params.value).toLocaleDateString(),
     },
     {
       field: 'gender',
-      headerName: 'Gender',
+      headerName: t('patients.columns.gender'),
       filter: true,
       sortable: true,
       valueFormatter: (params) => params.value.charAt(0).toUpperCase() + params.value.slice(1),
     },
     {
       field: 'email',
-      headerName: 'Email',
+      headerName: t('patients.columns.email'),
       filter: true,
       sortable: true,
     },
     {
       field: 'phone',
-      headerName: 'Phone',
+      headerName: t('patients.columns.phone'),
       filter: true,
       sortable: true,
     },
     {
-      headerName: 'Actions',
+      headerName: t('patients.columns.actions'),
       cellRenderer: (params: any) => (
         <div className="flex gap-2 items-center">
           <button
@@ -152,7 +152,7 @@ export function PatientsPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="text-lg text-slate-600">Loading patients...</div>
+        <div className="text-lg text-slate-600">{t('patients.loadingPatients')}</div>
       </div>
     );
   }
@@ -161,12 +161,12 @@ export function PatientsPage() {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-1">Patients</h1>
-          <p className="text-gray-500">Manage patient records</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-1">{t('patients.title')}</h1>
+          <p className="text-gray-500">{t('patients.subtitle')}</p>
         </div>
         <Button onClick={() => setShowForm(true)} className="bg-gray-900 hover:bg-black text-white rounded-full px-6">
           <Plus className="h-5 w-5 mr-2" />
-          Add Patient
+          {t('patients.addPatient')}
         </Button>
       </div>
 
@@ -175,7 +175,7 @@ export function PatientsPage() {
           <div className="relative flex-1 max-w-md">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="Search patients by name, email, or phone..."
+              placeholder={t('patients.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
@@ -183,7 +183,7 @@ export function PatientsPage() {
             />
           </div>
           <Button onClick={handleSearch} className="rounded-2xl bg-gray-900 hover:bg-gray-800 text-white">
-            Search
+            {t('common.search')}
           </Button>
         </div>
         <div className="flex gap-2">
@@ -194,7 +194,7 @@ export function PatientsPage() {
             className={`rounded-2xl ${viewMode === 'grid' ? 'bg-gray-900 hover:bg-gray-800' : ''}`}
           >
             <Grid3x3 className="h-4 w-4 mr-2" />
-            Grid
+            {t('common.grid')}
           </Button>
           <Button
             variant={viewMode === 'table' ? 'default' : 'outline'}
@@ -203,7 +203,7 @@ export function PatientsPage() {
             className={`rounded-2xl ${viewMode === 'table' ? 'bg-gray-900 hover:bg-gray-800' : ''}`}
           >
             <TableIcon className="h-4 w-4 mr-2" />
-            Table
+            {t('common.table')}
           </Button>
         </div>
       </div>

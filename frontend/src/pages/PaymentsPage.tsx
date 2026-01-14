@@ -38,7 +38,7 @@ export function PaymentsPage() {
   };
 
   const getPatientName = (payment: Payment) => {
-    if (typeof payment.patient === "string") return "Unknown";
+    if (typeof payment.patient === "string") return t('common.unknownPatient');
     return `${payment.patient.firstName} ${payment.patient.lastName}`;
   };
 
@@ -58,7 +58,7 @@ export function PaymentsPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        Loading payments...
+        {t('payments.loadingPayments')}
       </div>
     );
   }
@@ -67,15 +67,15 @@ export function PaymentsPage() {
     <div className="space-y-6">
     <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-slate-800">Payments</h1>
-          <p className="text-slate-600 mt-1">Financial records and invoices</p>
+          <h1 className="text-3xl font-bold text-slate-800">{t('payments.title')}</h1>
+          <p className="text-slate-600 mt-1">{t('payments.subtitle')}</p>
         </div>
         <Button
           onClick={() => setShowForm(true)}
           className="rounded-full bg-gray-900 hover:bg-black"
         >
           <Plus className="h-5 w-5 mr-2" />
-          Record Payment
+          {t('payments.recordPayment')}
         </Button>
       </div>
 
@@ -83,7 +83,7 @@ export function PaymentsPage() {
 
       <div>
         <h2 className="text-xl font-bold text-gray-900 mb-4">
-          Recent Payments
+          {t('payments.recentPayments')}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {payments.map((payment) => (

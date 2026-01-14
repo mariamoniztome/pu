@@ -212,8 +212,8 @@ export function DashboardPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-1">Dashboard</h1>
-          <p className="text-red-500">Error loading data: {error}</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-1">{t('dashboard.title')}</h1>
+          <p className="text-red-500">{t('dashboard.errorLoading', { error })}</p>
         </div>
       </div>
     );
@@ -222,7 +222,7 @@ export function DashboardPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="text-lg text-slate-600">Loading dashboard...</div>
+        <div className="text-lg text-slate-600">{t('dashboard.loadingDashboard')}</div>
       </div>
     );
   }
@@ -231,9 +231,9 @@ export function DashboardPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold text-gray-900 mb-1">
-          Good morning, <span className="text-gray-700">Dr Luke</span>
+          {t('dashboard.greeting', { name: <span className="text-gray-700">Dr Luke</span> })}
         </h1>
-        <p className="text-gray-500">Have great and productive day</p>
+        <p className="text-gray-500">{t('dashboard.subtitle')}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -258,11 +258,11 @@ export function DashboardPage() {
                 <div className="mb-4 w-14 h-14 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center shadow-lg mx-auto">
                   <Video className="h-7 w-7 text-lilac-700" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-1">Online Session</h3>
-                <p className="text-sm text-gray-700 mb-4">Video consultation ready</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-1">{t('dashboard.onlineSession')}</h3>
+                <p className="text-sm text-gray-700 mb-4">{t('dashboard.videoConsultationReady')}</p>
                 <div className="flex gap-2 justify-center">
                   <div className="text-xs font-semibold text-gray-700 bg-white/40 backdrop-blur-sm px-4 py-2 rounded-full">
-                    AVAILABLE
+                    {t('dashboard.available')}
                   </div>
                 </div>
               </div>
@@ -275,21 +275,21 @@ export function DashboardPage() {
                 <div className="flex items-center gap-2 mb-2">
                   <Calendar className="h-5 w-5 text-gray-600" />
                   <h2 className="text-xl font-bold text-gray-900">{appointments.length}</h2>
-                  <span className="text-sm text-primary-600 font-semibold">↑ 2% today</span>
+                  <span className="text-sm text-primary-600 font-semibold">{t('dashboard.todayIncrease', { percentage: 2 })}</span>
                 </div>
-                <p className="text-sm text-gray-500">Patient appointments</p>
+                <p className="text-sm text-gray-500">{t('dashboard.patientAppointments')}</p>
               </div>
               <Button 
                 onClick={() => setIsAppointmentDialogOpen(true)}
                 className="bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white shadow-xl"
               >
                 <Plus className="h-5 w-5 mr-2" />
-                Add new appointment
+                {t('dashboard.addNewAppointment')}
               </Button>
             </div>
 
             <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-900">Patient statistics</h3>
+              <h3 className="text-lg font-semibold text-gray-900">{t('dashboard.patientStatistics')}</h3>
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => setPatientFilter('all')}
@@ -299,7 +299,7 @@ export function DashboardPage() {
                       : 'text-gray-600 hover:bg-white/60 backdrop-blur-sm'
                   }`}
                 >
-                  All
+                  {t('dashboard.allPatients')}
                 </button>
                 <button
                   onClick={() => setPatientFilter('new')}
@@ -309,7 +309,7 @@ export function DashboardPage() {
                       : 'text-gray-600 hover:bg-white/60 backdrop-blur-sm'
                   }`}
                 >
-                  New
+                  {t('dashboard.newPatients')}
                 </button>
                 <button
                   onClick={() => setPatientFilter('insurance')}
@@ -319,7 +319,7 @@ export function DashboardPage() {
                       : 'text-gray-600 hover:bg-white/60 backdrop-blur-sm'
                   }`}
                 >
-                  Insurance
+                  {t('dashboard.insurance')}
                 </button>
               </div>
 

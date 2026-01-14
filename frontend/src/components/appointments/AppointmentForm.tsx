@@ -15,6 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { appointmentsApi, patientsApi } from "../../api";
 import { Appointment } from "../../types/appointment";
 import { Patient } from "../../types/patient";
+import { useTranslation } from "../../hooks/useTranslation";
 
 interface AppointmentFormProps {
   appointment?: Appointment | null;
@@ -25,6 +26,7 @@ export function AppointmentForm({
   appointment,
   onClose,
 }: AppointmentFormProps) {
+  const { t } = useTranslation();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [formData, setFormData] = useState<{
     patient?: string;
@@ -83,7 +85,7 @@ export function AppointmentForm({
     e.preventDefault();
 
     if (!formData.patient || !formData.type || !formData.status) {
-      setError("Please fill in all required fields.");
+      setError(t('appointments.requiredFields'));
       return;
     }
 
@@ -108,7 +110,7 @@ export function AppointmentForm({
 
       onClose();
     } catch (err: any) {
-      setError(err.message || "Failed to save appointment");
+      setError(err.message || t('appointments.failedToSave'));
     } finally {
       setLoading(false);
     }
@@ -119,7 +121,7 @@ export function AppointmentForm({
       <DialogContent>
         <DialogHeader className="flex flex-row items-center justify-between">
           <DialogTitle className="text-slate-800">
-            {appointment ? "Edit Appointment" : "Schedule New Appointment"}
+            {appointment ? t('appointments.editAppointment') : t('appointments.scheduleNewAppointment')}
           </DialogTitle>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-4 w-4" />
@@ -129,7 +131,7 @@ export function AppointmentForm({
         <form onSubmit={handleSubmit} className="space-y-4 px-12 pb-12">
           {/* Patient */}
           <div>
-            <Label>Patient *</Label>
+            <Label>{t('appointments.patient')} {t('common.required')}</Label>
             <Select
               value={formData.patient}
               onValueChange={(value) =>
@@ -137,7 +139,7 @@ export function AppointmentForm({
               }
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select a patient" />
+                <SelectValue placeholder={t('appointments.selectPatient')} />
               </SelectTrigger>
               <SelectContent>
                 {patients.map((patient) => (
@@ -152,7 +154,7 @@ export function AppointmentForm({
           {/* Date & Duration */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label>Date & Time *</Label>
+              <Label>{t('appointments.dateTime')} {t('common.required')}</Label>
               <Input
                 type="datetime-local"
                 value={formData.dateTime}
@@ -164,7 +166,7 @@ export function AppointmentForm({
             </div>
 
             <div>
-              <Label>Duration (minutes) *</Label>
+              <Label>{t('appointments.durationMinutes')} {t('common.required')}</Label>
               <Input
                 type="number"
                 min="15"
@@ -181,7 +183,7 @@ export function AppointmentForm({
           {/* Type & Status */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label>Type *</Label>
+              <Label>{t('common.type')} {t('common.required')}</Label>
               <Select
                 value={formData.type}
                 onValueChange={(value) =>
@@ -192,20 +194,20 @@ export function AppointmentForm({
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a type" />
+                  <SelectValue placeholder={t('appointments.selectType')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="initial">Initial</SelectItem>
-                  <SelectItem value="follow-up">Follow-up</SelectItem>
-                  <SelectItem value="assessment">Assessment</SelectItem>
-                  <SelectItem value="therapy">Therapy</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="initial">{t('appointments.type.initial')}</SelectItem>
+                  <SelectItem value="follow-up">{t('appointments.type.followUp')}</SelectItem>
+                  <SelectItem value="assessment">{t('appointments.type.assessment')}</SelectItem>
+                  <SelectItem value="therapy">{t('appointments.type.therapy')}</SelectItem>
+                  <SelectItem value="other">{t('appointments.type.other')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div>
-              <Label>Status *</Label>
+              <Label>{t('common.status')} {t('common.required')}</Label>
               <Select
                 value={formData.status}
                 onValueChange={(value) =>
@@ -216,14 +218,14 @@ export function AppointmentForm({
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a status" />
+                  <SelectValue placeholder={t('appointments.selectStatus')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="scheduled">Scheduled</SelectItem>
-                  <SelectItem value="confirmed">Confirmed</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                  <SelectItem value="cancelled">Cancelled</SelectItem>
-                  <SelectItem value="no-show">No-show</SelectItem>
+                  <SelectItem value="scheduled">{t('appointments.status.scheduled')}</SelectItem>
+                  <SelectItem value="confirmed">{t('appointments.status.confirmed')}</SelectItem>
+                  <SelectItem value="completed">{t('appointments.status.completed')}</SelectItem>
+                  <SelectItem value="cancelled">{t('appointments.status.cancelled')}</SelectItem>
+                  <SelectItem value="no-show">{t('appointments.status.noShow')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -231,14 +233,14 @@ export function AppointmentForm({
 
           {/* Notes */}
           <div>
-            <Label>Notes</Label>
+            <Label>{t('common.notes')}</Label>
             <Textarea
               value={formData.notes}
               onChange={(e) =>
                 setFormData({ ...formData, notes: e.target.value })
               }
               rows={3}
-              placeholder="Any additional notes about this appointment..."
+              placeholder={t('appointments.notesPlaceholder')}
             />
           </div>
 
@@ -250,10 +252,10 @@ export function AppointmentForm({
 
           <div className="flex gap-2 justify-end pt-4">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? "Saving..." : appointment ? "Update" : "Schedule"}
+              {loading ? t('common.saving') : appointment ? t('common.update') : t('common.schedule')}
             </Button>
           </div>
         </form>

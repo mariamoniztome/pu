@@ -34,24 +34,24 @@ export function ConsultationsPage() {
   };
 
   const getPatientName = (consultation: Consultation) => {
-    if (typeof consultation.patient === 'string') return 'Unknown';
+    if (typeof consultation.patient === 'string') return t('common.unknownPatient');
     return `${consultation.patient.firstName} ${consultation.patient.lastName}`;
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center h-64">Loading consultations...</div>;
+    return <div className="flex justify-center items-center h-64">{t('consultations.loadingConsultations')}</div>;
   }
 
   return (
     <div className="space-y-6">
     <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-slate-800">Sessions</h1>
-          <p className="text-slate-600 mt-1">Clinical session records</p>
+          <h1 className="text-3xl font-bold text-slate-800">{t('consultations.sessionsTitle')}</h1>
+          <p className="text-slate-600 mt-1">{t('consultations.sessionsSubtitle')}</p>
         </div>
         <Button onClick={() => setShowForm(true)} className="rounded-full bg-gray-900 hover:bg-black">
           <Plus className="h-5 w-5 mr-2" />
-          New Session
+          {t('consultations.newSession')}
         </Button>
       </div>
 
@@ -64,7 +64,7 @@ export function ConsultationsPage() {
                   <CardTitle className="text-lg flex items-center justify-between">
                     <span>{getPatientName(consultation)}</span>
                     <span className="text-sm font-normal text-slate-500">
-                      Session #{consultation.sessionNumber}
+                      {t('consultations.sessionNumber', { number: consultation.sessionNumber })}
                     </span>
                   </CardTitle>
                   <div className="text-sm text-slate-500">
@@ -74,18 +74,18 @@ export function ConsultationsPage() {
                 <CardContent className="space-y-3">
                   {consultation.chiefComplaint && (
                     <div>
-                      <div className="text-sm font-medium text-slate-700">Chief Complaint:</div>
+                      <div className="text-sm font-medium text-slate-700">{t('consultations.chiefComplaint')}:</div>
                       <div className="text-sm text-slate-600">{consultation.chiefComplaint}</div>
                     </div>
                   )}
                   <div>
-                    <div className="text-sm font-medium text-slate-700">Session Notes:</div>
+                    <div className="text-sm font-medium text-slate-700">{t('consultations.sessionNotes')}:</div>
                     <div className="text-sm text-slate-600 line-clamp-3">{consultation.sessionNotes}</div>
                   </div>
                   {consultation.attachments.length > 0 && (
                     <div className="flex items-center text-sm text-slate-500">
                       <FileText className="h-4 w-4 mr-1" />
-                      {consultation.attachments.length} attachment(s)
+                      {t('consultations.attachments', { count: consultation.attachments.length })}
                     </div>
                   )}
                 </CardContent>

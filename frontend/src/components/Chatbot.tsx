@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Send, X, MessageCircle, Minimize2, Maximize2 } from 'lucide-react';
 import { sendChatMessage, closeConversation } from '../api/chatbot';
 import { ChatMessage } from '../api/chatbot';
+import { useTranslation } from '../hooks/useTranslation';
 
 interface ChatbotProps {
   sessionId?: string;
@@ -14,6 +15,7 @@ interface ChatbotProps {
 }
 
 export function Chatbot({ sessionId: initialSessionId, patientId, context }: ChatbotProps) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -58,7 +60,7 @@ export function Chatbot({ sessionId: initialSessionId, patientId, context }: Cha
       console.error('Error sending message:', error);
       const errorMessage: ChatMessage = {
         role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.',
+        content: t('chatbot.errorMessage'),
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -92,7 +94,7 @@ export function Chatbot({ sessionId: initialSessionId, patientId, context }: Cha
         aria-label="Open chatbot"
       >
         <MessageCircle className="w-5 h-5" />
-        <span className="text-sm font-medium">Support Chat</span>
+        <span className="text-sm font-medium">{t('chatbot.supportChat')}</span>
       </button>
     );
   }
@@ -107,7 +109,7 @@ export function Chatbot({ sessionId: initialSessionId, patientId, context }: Cha
       <div className="bg-gradient-to-r from-primary-500 to-lilac-500 text-white p-4 rounded-t-2xl flex items-center justify-between">
         <div className="flex items-center gap-2">
           <MessageCircle className="w-5 h-5" />
-          <h2 className="text-lg font-bold">Support Agent</h2>
+          <h2 className="text-lg font-bold">{t('chatbot.supportAgent')}</h2>
         </div>
         <div className="flex gap-2">
           <button
@@ -134,9 +136,9 @@ export function Chatbot({ sessionId: initialSessionId, patientId, context }: Cha
             {messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center text-gray-500">
                 <MessageCircle className="w-12 h-12 mb-4 text-lilac-300" />
-                <h3 className="font-semibold mb-2">Welcome to Support Chat</h3>
+                <h3 className="font-semibold mb-2">{t('chatbot.welcomeTitle')}</h3>
                 <p className="text-sm">
-                  I'm here to help with appointments, consultations, payments, and general guidance.
+                  {t('chatbot.welcomeMessage')}
                 </p>
               </div>
             ) : (
@@ -190,7 +192,7 @@ export function Chatbot({ sessionId: initialSessionId, patientId, context }: Cha
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="Type your message..."
+                placeholder={t('chatbot.typePlaceholder')}
                 disabled={isLoading}
                 className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none disabled:bg-gray-100"
                 rows={2}
