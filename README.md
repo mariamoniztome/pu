@@ -76,12 +76,24 @@ See [frontend/README.md](frontend/README.md) for detailed setup instructions.
 - Multer for file uploads
 - CORS enabled
 
-## Documentation
+## 📚 Documentation
 
+Comprehensive documentation is available for all aspects of the project:
+
+### Getting Started
+- [**QUICK_REFERENCE.md**](QUICK_REFERENCE.md) - Fast lookup for common tasks and commands
+- [**DOCUMENTATION.md**](DOCUMENTATION.md) - Complete project documentation with architecture and setup
+
+### Detailed Guides
+- [**API_REFERENCE.md**](API_REFERENCE.md) - Complete API endpoint reference with examples
+- [**DEVELOPMENT_GUIDE.md**](DEVELOPMENT_GUIDE.md) - Guide for developers contributing to the project
+- [**DEPLOYMENT_GUIDE.md**](DEPLOYMENT_GUIDE.md) - Production deployment and operations guide
+- [**CREDENTIALS_AND_JWT_GUIDE.md**](CREDENTIALS_AND_JWT_GUIDE.md) - Security and authentication details
+- [**MULTI_TENANCY_README.md**](MULTI_TENANCY_README.md) - Multi-tenancy architecture
+
+### Component-Specific
 - [Frontend README](frontend/README.md) - Frontend setup and development
 - [Backend README](backend/README.md) - Backend setup and API documentation
-- [Project Overview](PROJECT_OVERVIEW.md) - Detailed project information
-- [Quick Start Guide](QUICK_START.md) - Step-by-step setup guide
 
 ## Development Workflow
 
