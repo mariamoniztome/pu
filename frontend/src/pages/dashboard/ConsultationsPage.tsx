@@ -34,8 +34,12 @@ export function ConsultationsPage() {
   };
 
   const getPatientName = (consultation: Consultation) => {
-    if (typeof consultation.patient === 'string') return t('common.unknownPatient');
-    return `${consultation.patient.firstName} ${consultation.patient.lastName}`;
+  if (!consultation.patient || typeof consultation.patient === 'string') {
+      return t('common.unknownPatient');
+    }
+    const { firstName = '', lastName = '' } = consultation.patient;
+    const name = `${firstName} ${lastName}`.trim();
+    return name || t('common.unknownPatient');
   };
 
   if (loading) {

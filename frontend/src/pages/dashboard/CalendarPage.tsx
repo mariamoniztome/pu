@@ -93,7 +93,9 @@ export function CalendarPage() {
       const patientName =
         typeof apt.patient === "string"
           ? apt.patient
-          : `${apt.patient.firstName} ${apt.patient.lastName}`;
+          : apt.patient
+          ? `${apt.patient.firstName} ${apt.patient.lastName}`
+          : "Unknown Patient";
 
       return {
         id: apt._id,
@@ -122,7 +124,7 @@ export function CalendarPage() {
       patientId:
         typeof event.appointment.patient === "string"
           ? event.appointment.patient
-          : event.appointment.patient._id,
+          : event.appointment.patient?._id || "",
       dateTime: format(
         new Date(event.appointment.dateTime),
         "yyyy-MM-dd'T'HH:mm"

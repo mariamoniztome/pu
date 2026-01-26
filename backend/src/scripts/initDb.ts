@@ -50,7 +50,7 @@ const testUsers = [
       specialization: 'Clinical Psychology',
       role: 'owner' as const,
     },
-    createSampleData: false,
+    createSampleData: true,
   },
   {
     organizationName: 'Test Clinic Admin',
@@ -64,7 +64,7 @@ const testUsers = [
       specialization: 'Neuropsychology',
       role: 'admin' as const,
     },
-    createSampleData: false,
+    createSampleData: true,
   },
   {
     organizationName: 'Solo Psychology Practice',
@@ -78,7 +78,7 @@ const testUsers = [
       specialization: 'Cognitive Psychology',
       role: 'owner' as const,
     },
-    createSampleData: false,
+    createSampleData: true,
   },
   {
     organizationName: 'Multi Doctor Wellness Clinic',
@@ -92,7 +92,7 @@ const testUsers = [
       specialization: 'Child Psychology',
       role: 'member' as const,
     },
-    createSampleData: false,
+    createSampleData: true,
   },
 ];
 

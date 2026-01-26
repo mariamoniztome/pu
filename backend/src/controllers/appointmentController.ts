@@ -1,9 +1,15 @@
 import { Request, Response } from 'express';
 import Appointment from '../models/Appointment.js';
+import {
+  addOrganizationContext,
+  buildOrganizationFilter,
+  sanitizeUpdateData,
+} from '../utils/multiTenancy.js';
 
 export const getAllAppointments = async (req: Request, res: Response) => {
   try {
-    const appointments = await Appointment.find()
+    const filter = buildOrganizationFilter(req);
+    const appointments = await Appointment.find(filter)
       .populate('patient', 'firstName lastName email phone')
       .sort({ dateTime: -1 });
     res.json(appointments);
@@ -14,7 +20,8 @@ export const getAllAppointments = async (req: Request, res: Response) => {
 
 export const getAppointmentById = async (req: Request, res: Response) => {
   try {
-    const appointment = await Appointment.findById(req.params.id)
+    const filter = buildOrganizationFilter(req, { _id: req.params.id });
+    const appointment = await Appointment.findOne(filter)
       .populate('patient', 'firstName lastName email phone');
     if (!appointment) {
       return res.status(404).json({ error: 'Appointment not found' });
@@ -27,7 +34,8 @@ export const getAppointmentById = async (req: Request, res: Response) => {
 
 export const getAppointmentsByPatient = async (req: Request, res: Response) => {
   try {
-    const appointments = await Appointment.find({ patient: req.params.patientId })
+    const filter = buildOrganizationFilter(req, { patient: req.params.patientId });
+    const appointments = await Appointment.find(filter)
       .populate('patient', 'firstName lastName email phone')
       .sort({ dateTime: -1 });
     res.json(appointments);
@@ -38,7 +46,8 @@ export const getAppointmentsByPatient = async (req: Request, res: Response) => {
 
 export const createAppointment = async (req: Request, res: Response) => {
   try {
-    const appointment = new Appointment(req.body);
+    const appointmentData = addOrganizationContext(req, req.body);
+    const appointment = new Appointment(appointmentData);
     await appointment.save();
     await appointment.populate('patient', 'firstName lastName email phone');
     res.status(201).json(appointment);
@@ -49,9 +58,11 @@ export const createAppointment = async (req: Request, res: Response) => {
 
 export const updateAppointment = async (req: Request, res: Response) => {
   try {
-    const appointment = await Appointment.findByIdAndUpdate(
-      req.params.id,
-      req.body,
+    const filter = buildOrganizationFilter(req, { _id: req.params.id });
+    const updateData = sanitizeUpdateData(req.body);
+    const appointment = await Appointment.findOneAndUpdate(
+      filter,
+      updateData,
       { new: true, runValidators: true }
     ).populate('patient', 'firstName lastName email phone');
 
@@ -66,7 +77,8 @@ export const updateAppointment = async (req: Request, res: Response) => {
 
 export const deleteAppointment = async (req: Request, res: Response) => {
   try {
-    const appointment = await Appointment.findByIdAndDelete(req.params.id);
+    const filter = buildOrganizationFilter(req, { _id: req.params.id });
+    const appointment = await Appointment.findOneAndDelete(filter);
     if (!appointment) {
       return res.status(404).json({ error: 'Appointment not found' });
     }
@@ -79,10 +91,11 @@ export const deleteAppointment = async (req: Request, res: Response) => {
 export const getUpcomingAppointments = async (req: Request, res: Response) => {
   try {
     const now = new Date();
-    const appointments = await Appointment.find({
+    const filter = buildOrganizationFilter(req, {
       dateTime: { $gte: now },
       status: { $in: ['scheduled', 'confirmed'] },
-    })
+    });
+    const appointments = await Appointment.find(filter)
       .populate('patient', 'firstName lastName email phone')
       .sort({ dateTime: 1 })
       .limit(20);

@@ -32,8 +32,12 @@ export function AppointmentsPage() {
   };
 
   const getPatientName = (appointment: Appointment) => {
-    if (typeof appointment.patient === 'string') return t('common.unknownPatient');
-    return `${appointment.patient.firstName} ${appointment.patient.lastName}`;
+    if (!appointment.patient || typeof appointment.patient === 'string') {
+      return t('common.unknownPatient');
+    }
+    const { firstName = '', lastName = '' } = appointment.patient;
+    const name = `${firstName} ${lastName}`.trim();
+    return name || t('common.unknownPatient');
   };
 
   const getStatusColor = (status: string) => {

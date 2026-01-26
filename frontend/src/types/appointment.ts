@@ -2,7 +2,7 @@ import { Patient } from "./patient";
 
 export interface Appointment {
   _id: string;
-  patient: Patient | string;
+  patient: Patient | string | null;
   dateTime: string;
   duration: number;
   type: 'initial' | 'follow-up' | 'assessment' | 'therapy' | 'other';

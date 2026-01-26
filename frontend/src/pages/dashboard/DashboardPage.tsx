@@ -136,7 +136,9 @@ export function DashboardPage() {
       name:
         typeof apt.patient === "string"
           ? apt.patient
-          : `${apt.patient.firstName} ${apt.patient.lastName}`,
+          : apt.patient
+          ? `${apt.patient.firstName} ${apt.patient.lastName}`
+          : t("dashboard.unknownPatient"),
       time: new Date(apt.dateTime).toLocaleTimeString("en-US", {
         hour: "2-digit",
         minute: "2-digit",

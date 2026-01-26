@@ -38,8 +38,12 @@ export function PaymentsPage() {
   };
 
   const getPatientName = (payment: Payment) => {
-    if (typeof payment.patient === "string") return t('common.unknownPatient');
-    return `${payment.patient.firstName} ${payment.patient.lastName}`;
+    if (!payment.patient || typeof payment.patient === 'string') {
+      return t('common.unknownPatient');
+    }
+    const { firstName = '', lastName = '' } = payment.patient;
+    const name = `${firstName} ${lastName}`.trim();
+    return name || t('common.unknownPatient');
   };
 
   const getStatusColor = (status: string) => {

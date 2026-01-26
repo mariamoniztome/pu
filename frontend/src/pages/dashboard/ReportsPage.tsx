@@ -39,8 +39,12 @@ export function ReportsPage() {
   };
 
   const getPatientName = (report: ExternalReport) => {
-    if (typeof report.patient === "string") return t('common.unknownPatient');
-    return `${report.patient.firstName} ${report.patient.lastName}`;
+   if (!report.patient || typeof report.patient === 'string') {
+      return t('common.unknownPatient');
+    }
+    const { firstName = '', lastName = '' } = report.patient;
+    const name = `${firstName} ${lastName}`.trim();
+    return name || t('common.unknownPatient');
   };
 
   const getStatusColor = (status: string) => {

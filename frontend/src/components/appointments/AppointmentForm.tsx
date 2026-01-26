@@ -59,7 +59,7 @@ export function AppointmentForm({
         patient:
           typeof appointment.patient === "string"
             ? appointment.patient
-            : appointment.patient._id,
+            : appointment.patient?._id,
         dateTime,
         duration: appointment.duration.toString(),
         type: appointment.type,
