@@ -3,10 +3,16 @@ import axios from "axios";
 // Creates an Axios instance with default configuration
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
   withCredentials: false,
+});
+
+// Request interceptor to set appropriate Content-Type
+api.interceptors.request.use((config) => {
+  // Don't set Content-Type for FormData - let the browser handle it
+  if (!(config.data instanceof FormData)) {
+    config.headers["Content-Type"] = "application/json";
+  }
+  return config;
 });
 
 // Response interceptor to handle errors globally

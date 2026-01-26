@@ -52,7 +52,10 @@ export const createConsultation = async (req: Request, res: Response) => {
   try {
     const consultationData = addOrganizationContext(req, req.body);
 
+    console.log('=== CREATE CONSULTATION ===');
+    console.log('Files received:', req.files?.length || 0);
     if (req.files && Array.isArray(req.files) && req.files.length > 0) {
+      console.log('Files:', req.files.map(f => f.filename));
       consultationData.attachments = req.files.map((file: Express.Multer.File) => ({
         filename: file.filename,
         originalName: file.originalname,
@@ -61,8 +64,10 @@ export const createConsultation = async (req: Request, res: Response) => {
         path: file.path.replace(/\\/g, '/'),
         uploadedAt: new Date(),
       }));
+      console.log('Attachments added:', consultationData.attachments.length);
     } else {
       consultationData.attachments = [];
+      console.log('No files received');
     }
 
     const consultation = new Consultation(consultationData);

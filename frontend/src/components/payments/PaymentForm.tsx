@@ -96,6 +96,11 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
     try {
       const formDataToSend = new FormData();
 
+      console.log('=== PAYMENT FORM SUBMIT ===');
+      console.log('File selected:', file);
+      console.log('File name:', file?.name);
+      console.log('File size:', file?.size);
+
       formDataToSend.append("patient", formData.patient);
       formDataToSend.append("amount", formData.amount);
       formDataToSend.append("currency", formData.currency);
@@ -121,7 +126,10 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
       }
 
       if (file) {
+        console.log('Appending file to FormData:', file.name);
         formDataToSend.append("receipt", file);
+      } else {
+        console.log('No file selected - skipping file upload');
       }
 
       if (payment) {
@@ -300,7 +308,13 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
                 type="file"
                 className="hidden"
                 accept=".pdf,.jpg,.jpeg,.png"
-                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                onChange={(e) => {
+                  const selectedFile = e.target.files?.[0] || null;
+                  console.log('File input changed:', selectedFile);
+                  console.log('File name:', selectedFile?.name);
+                  console.log('File size:', selectedFile?.size);
+                  setFile(selectedFile);
+                }}
               />
             </label>
           </div>

@@ -27,15 +27,6 @@ export function PaymentsPage() {
     loadPayments();
   }, []);
 
-  useEffect(() => {
-    if (viewPayment) {
-      console.log('=== PAYMENT DETAILS DIALOG OPENED ===');
-      console.log('Full payment object:', viewPayment);
-      console.log('Receipt attachment:', viewPayment.receiptAttachment);
-      console.log('Receipt exists?:', !!viewPayment.receiptAttachment);
-    }
-  }, [viewPayment]);
-
   const loadPayments = async () => {
     try {
       setLoading(true);

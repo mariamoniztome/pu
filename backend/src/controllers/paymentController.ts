@@ -54,7 +54,12 @@ export const createPayment = async (req: Request, res: Response) => {
   try {
     const paymentData = addOrganizationContext(req, req.body);
 
+    console.log('=== CREATE PAYMENT ===');
+    console.log('req.file:', req.file);
+    console.log('req.files:', req.files);
+
     if (req.file) {
+      console.log('File received:', req.file.filename, req.file.path);
       paymentData.receiptAttachment = {
         filename: req.file.filename,
         originalName: req.file.originalname,
@@ -63,6 +68,9 @@ export const createPayment = async (req: Request, res: Response) => {
         path: req.file.path.replace(/\\/g, '/'),
         uploadedAt: new Date(),
       };
+      console.log('Receipt attachment set:', paymentData.receiptAttachment);
+    } else {
+      console.log('No file received');
     }
 
     const payment = new Payment(paymentData);
