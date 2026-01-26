@@ -58,7 +58,7 @@ export const createConsultation = async (req: Request, res: Response) => {
         originalName: file.originalname,
         mimetype: file.mimetype,
         size: file.size,
-        path: file.path,
+        path: file.path.replace(/\\/g, '/'),
         uploadedAt: new Date(),
       }));
     } else {
@@ -85,7 +85,7 @@ export const updateConsultation = async (req: Request, res: Response) => {
         originalName: file.originalname,
         mimetype: file.mimetype,
         size: file.size,
-        path: file.path,
+        path: file.path.replace(/\\/g, '/'),
         uploadedAt: new Date(),
       }));
 

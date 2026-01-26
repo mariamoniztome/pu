@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, DollarSign, FileText, Eye, Edit, X } from "lucide-react";
+import { Plus, DollarSign, FileText, Eye, Edit, X, Download } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import {
   Card,
@@ -26,6 +26,15 @@ export function PaymentsPage() {
   useEffect(() => {
     loadPayments();
   }, []);
+
+  useEffect(() => {
+    if (viewPayment) {
+      console.log('=== PAYMENT DETAILS DIALOG OPENED ===');
+      console.log('Full payment object:', viewPayment);
+      console.log('Receipt attachment:', viewPayment.receiptAttachment);
+      console.log('Receipt exists?:', !!viewPayment.receiptAttachment);
+    }
+  }, [viewPayment]);
 
   const loadPayments = async () => {
     try {
@@ -200,7 +209,7 @@ export function PaymentsPage() {
 
       {viewPayment && (
         <Dialog open onOpenChange={() => setViewPayment(null)}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
             <DialogHeader className="flex flex-row items-center justify-between">
               <DialogTitle className="text-2xl">
                 {t('payments.details')} - {getPatientName(viewPayment)}
@@ -280,18 +289,38 @@ export function PaymentsPage() {
                         </div>
                       </div>
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                    >
-                      <a
-                        href={`http://localhost:5000/${viewPayment.receiptAttachment.path}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
                       >
-                        {t('common.view')}
-                      </a>
-                    </Button>
+                        <a
+                          href={`http://localhost:5000/${viewPayment.receiptAttachment.path}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center"
+                        >
+                          <Eye className="h-4 w-4 mr-1" />
+                          {t('common.view')}
+                        </a>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          if (viewPayment.receiptAttachment) {
+                            const link = document.createElement('a');
+                            link.href = `http://localhost:5000/${viewPayment.receiptAttachment.path}`;
+                            link.download = viewPayment.receiptAttachment.originalName;
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                          }
+                        }}
+                      >
+                        <Download className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               )}

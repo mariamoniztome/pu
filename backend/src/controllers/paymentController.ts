@@ -60,7 +60,7 @@ export const createPayment = async (req: Request, res: Response) => {
         originalName: req.file.originalname,
         mimetype: req.file.mimetype,
         size: req.file.size,
-        path: req.file.path,
+        path: req.file.path.replace(/\\/g, '/'),
         uploadedAt: new Date(),
       };
     }
@@ -96,7 +96,7 @@ export const updatePayment = async (req: Request, res: Response) => {
         originalName: req.file.originalname,
         mimetype: req.file.mimetype,
         size: req.file.size,
-        path: req.file.path,
+        path: req.file.path.replace(/\\/g, '/'),
         uploadedAt: new Date(),
       };
     }

@@ -58,7 +58,7 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
         patient:
           typeof payment.patient === "string"
             ? payment.patient
-            : payment.patient._id,
+            : payment.patient?._id || "",
         amount: payment.amount.toString(),
         currency: payment.currency,
         amountPaid: payment.amountPaid.toString(),

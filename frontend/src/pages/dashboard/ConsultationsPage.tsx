@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, FileText, Eye, Edit, X } from 'lucide-react';
+import { Plus, FileText, Eye, Edit, X, Download } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '../../components/ui/card';
 import { consultationsApi } from '../../api';
@@ -231,18 +231,36 @@ export function ConsultationsPage() {
                             </div>
                           </div>
                         </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                        >
-                          <a
-                            href={`http://localhost:5000/${attachment.path}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
                           >
-                            {t('common.view')}
-                          </a>
-                        </Button>
+                            <a
+                              href={`http://localhost:5000/${attachment.path}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex items-center"
+                            >
+                              <Eye className="h-4 w-4 mr-1" />
+                              {t('common.view')}
+                            </a>
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              const link = document.createElement('a');
+                              link.href = `http://localhost:5000/${attachment.path}`;
+                              link.download = attachment.originalName;
+                              document.body.appendChild(link);
+                              link.click();
+                              document.body.removeChild(link);
+                            }}
+                          >
+                            <Download className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
                     ))}
                   </div>
