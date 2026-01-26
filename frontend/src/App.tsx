@@ -3,17 +3,17 @@ import { Toaster } from 'sonner';
 import { AuthProvider } from './contexts/AuthContext';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { Layout } from './components/Layout';
-import { LoginPage } from './pages/LoginPage';
-import { RegisterPage } from './pages/RegisterPage';
-import { DashboardPage } from './pages/DashboardPage';
-import { PatientsPage } from './pages/PatientsPage';
-import { AppointmentsPage } from './pages/AppointmentsPage';
-import { CalendarPage } from './pages/CalendarPage';
-import { ConsultationsPage } from './pages/ConsultationsPage';
-import { ReportsPage } from './pages/ReportsPage';
-import { PaymentsPage } from './pages/PaymentsPage';
-import { DoctorsPage } from './pages/DoctorsPage';
-import { SettingsPage } from './pages/SettingsPage';
+import { LoginPage } from './pages/auth/LoginPage';
+import { RegisterPage } from './pages/auth/RegisterPage';
+import { DashboardPage } from './pages/dashboard/DashboardPage';
+import { PatientsPage } from './pages/dashboard/PatientsPage';
+import { AppointmentsPage } from './pages/dashboard/AppointmentsPage';
+import { CalendarPage } from './pages/dashboard/CalendarPage';
+import { ConsultationsPage } from './pages/dashboard/ConsultationsPage';
+import { ReportsPage } from './pages/dashboard/ReportsPage';
+import { PaymentsPage } from './pages/dashboard/PaymentsPage';
+import { DoctorsPage } from './pages/dashboard/DoctorsPage';
+import { SettingsPage } from './pages/dashboard/SettingsPage';
 
 function App() {
   return (

@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import { Plus, FileText } from "lucide-react";
-import { Button } from "../components/ui/button";
+import { Button } from "../../components/ui/button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "../components/ui/card";
-import { externalReportsApi } from "../api";
-import { ExternalReport } from "../types/reports";
-import { ReportForm } from "../components/reports/ReportForm";
-import { useTranslation } from "../hooks/useTranslation";
+} from "../../components/ui/card";
+import { externalReportsApi } from "../../api";
+import { ExternalReport } from "../../types/reports";
+import { ReportForm } from "../../components/reports/ReportForm";
+import { useTranslation } from "../../hooks/useTranslation";
 
 export function ReportsPage() {
   const { t } = useTranslation();

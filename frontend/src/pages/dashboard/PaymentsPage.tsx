@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
 import { Plus, DollarSign } from "lucide-react";
-import { Button } from "../components/ui/button";
+import { Button } from "../../components/ui/button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "../components/ui/card";
-import { paymentsApi } from "../api";
-import { Payment } from "../types/payment";
-import { PaymentForm } from "../components/payments/PaymentForm";
-import { PaymentCharts } from "../components/payments/PaymentCharts";
-import { useTranslation } from "../hooks/useTranslation";
+} from "../../components/ui/card";
+import { paymentsApi } from "../../api";
+import { Payment } from "../../types/payment";
+import { PaymentForm } from "../../components/payments/PaymentForm";
+import { PaymentCharts } from "../../components/payments/PaymentCharts";
+import { useTranslation } from "../../hooks/useTranslation";
 
 export function PaymentsPage() {
   const { t } = useTranslation();

@@ -3,31 +3,31 @@ import { Calendar, dateFnsLocalizer, Event } from "react-big-calendar";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { enUS } from "date-fns/locale";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import "../styles/calendar.css";
+import "../../styles/calendar.css";
 import { Plus, X } from "lucide-react";
 import { toast } from "sonner";
-import { Card } from "../components/ui/card";
-import { Button } from "../components/ui/button";
+import { Card } from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "../components/ui/dialog";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
+} from "../../components/ui/dialog";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../components/ui/select";
-import { Textarea } from "../components/ui/textarea";
-import { appointmentsApi, patientsApi } from "../api";
-import { Appointment } from "../types/appointment";
-import { Patient } from "../types/patient";
-import { useTranslation } from "../hooks/useTranslation";
+} from "../../components/ui/select";
+import { Textarea } from "../../components/ui/textarea";
+import { appointmentsApi, patientsApi } from "../../api";
+import { Appointment } from "../../types/appointment";
+import { Patient } from "../../types/patient";
+import { useTranslation } from "../../hooks/useTranslation";
 
 const locales = {
   "en-US": enUS,

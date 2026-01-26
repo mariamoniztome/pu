@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { appointmentsApi } from '../api';
-import { Appointment } from '../types/appointment';
-import { AppointmentForm } from '../components/appointments/AppointmentForm';
-import { useTranslation } from '../hooks/useTranslation';
+import { Button } from '../../components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { appointmentsApi } from '../../api';
+import { Appointment } from '../../types/appointment';
+import { AppointmentForm } from '../../components/appointments/AppointmentForm';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export function AppointmentsPage() {
   const { t } = useTranslation();

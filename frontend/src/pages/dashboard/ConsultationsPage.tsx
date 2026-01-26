@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Plus, FileText } from 'lucide-react';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { consultationsApi } from '../api';
-import { Consultation } from '../types/consultation';
-import { ConsultationForm } from '../components/consultations/ConsultationForm';
-import { ConsultationTemplates } from '../components/consultations/ConsultationTemplates';
-import { ConsultationChecklist } from '../components/consultations/ConsultationChecklist';
-import { useTranslation } from '../hooks/useTranslation';
+import { Button } from '../../components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { consultationsApi } from '../../api';
+import { Consultation } from '../../types/consultation';
+import { ConsultationForm } from '../../components/consultations/ConsultationForm';
+import { ConsultationTemplates } from '../../components/consultations/ConsultationTemplates';
+import { ConsultationChecklist } from '../../components/consultations/ConsultationChecklist';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export function ConsultationsPage() {
   const { t } = useTranslation();

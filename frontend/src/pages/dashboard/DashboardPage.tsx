@@ -8,22 +8,22 @@ import {
   Clock,
   Video,
 } from "lucide-react";
-import { Card } from "../components/ui/card";
-import { Button } from "../components/ui/button";
+import { Card } from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "../components/ui/dialog";
-import { DashboardChart } from "../components/shared/DashboardChart";
-import { AppointmentForm } from "../components/appointments/AppointmentForm";
-import { ConsultationForm } from "../components/consultations/ConsultationForm";
-import { appointmentsApi, patientsApi } from "../api";
-import { Appointment } from "../types/appointment";
-import { Patient } from "../types/patient";
-import { useTranslation } from "../hooks/useTranslation";
-import { useAuth } from "../contexts/AuthContext";
+} from "../../components/ui/dialog";
+import { DashboardChart } from "../../components/shared/DashboardChart";
+import { AppointmentForm } from "../../components/appointments/AppointmentForm";
+import { ConsultationForm } from "../../components/consultations/ConsultationForm";
+import { appointmentsApi, patientsApi } from "../../api";
+import { Appointment } from "../../types/appointment";
+import { Patient } from "../../types/patient";
+import { useTranslation } from "../../hooks/useTranslation";
+import { useAuth } from "../../contexts/AuthContext";
 
 export function DashboardPage() {
   const { t } = useTranslation();

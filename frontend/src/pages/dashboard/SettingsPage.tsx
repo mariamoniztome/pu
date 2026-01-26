@@ -1,7 +1,7 @@
 import React from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { Label } from '../components/ui/label';
-import { Card } from '../components/ui/card';
+import { useAuth } from '../../contexts/AuthContext';
+import { Label } from '../../components/ui/label';
+import { Card } from '../../components/ui/card';
 
 export const SettingsPage: React.FC = () => {
   const { doctor, organization } = useAuth();

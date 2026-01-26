@@ -4,14 +4,14 @@ import { toast } from 'sonner';
 import { AgGridReact } from 'ag-grid-react';
 import { ColDef } from 'ag-grid-community';
 import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { patientsApi } from '../api';
-import { Patient } from '../types/patient';
-import { PatientForm } from '../components/patients/PatientForm';
-import { PatientCard } from '../components/patients/PatientCard';
-import { useTranslation } from '../hooks/useTranslation';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { patientsApi } from '../../api';
+import { Patient } from '../../types/patient';
+import { PatientForm } from '../../components/patients/PatientForm';
+import { PatientCard } from '../../components/patients/PatientCard';
+import { useTranslation } from '../../hooks/useTranslation';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
