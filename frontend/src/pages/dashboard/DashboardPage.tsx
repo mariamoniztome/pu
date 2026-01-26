@@ -313,7 +313,7 @@ export function DashboardPage() {
             </Card>
           </div>
 
-          <Card className="rounded-5xl p-8 shadow-xl h-[600px]">
+          <Card className="rounded-5xl p-8 shadow-xl h-[700px]">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <div className="flex items-center gap-2 mb-2">
@@ -412,7 +412,7 @@ export function DashboardPage() {
                 </div>
               </div>
 
-              <div className="h-48 bg-gradient-to-br from-lilac-50 to-primary-50 rounded-4xl flex items-center justify-center border border-white/60 overflow-hidden">
+              <div className="h-80 bg-gradient-to-br from-lilac-50 to-primary-50 rounded-xl flex items-center justify-center border border-white/60 overflow-scroll">
                 <DashboardChart appointments={appointments} />
               </div>
             </div>

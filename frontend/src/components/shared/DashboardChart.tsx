@@ -67,7 +67,7 @@ export function DashboardChart({ appointments }: DashboardChartProps) {
         data={chartData}
         keys={['count', 'countByStatus']}
         indexBy="type"
-        margin={{ top: 20, right: 30, bottom: 20, left: 60 }}
+        margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
         padding={0.3}
         colors={['#6366f1', '#8b5cf6']}
         borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}

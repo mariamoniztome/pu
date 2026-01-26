@@ -3,8 +3,14 @@
 @tailwind utilities;
 
 /* Global styles for custom scrollbar */
+html {
+    scrollbar-gutter: stable;
+    overflow-x: hidden;
+}
+
 ::-webkit-scrollbar {
     width: 8px;
+    height: 8px;
 }
 
 ::-webkit-scrollbar-track {
