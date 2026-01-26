@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { authAPI } from '../../api/auth';
 import type { Doctor, InviteDoctorData } from '../../types/auth';
@@ -6,8 +7,8 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Card } from '../../components/ui/card';
-import { Dialog } from '../../components/ui/dialog';
-import { Select } from '../../components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../../components/ui/select';
 import { toast } from 'sonner';
 
 export const DoctorsPage: React.FC = () => {
@@ -227,145 +228,149 @@ export const DoctorsPage: React.FC = () => {
       </div>
 
       {/* Invite Doctor Dialog */}
-      {showInviteDialog && (
-        <Dialog open={showInviteDialog} onOpenChange={setShowInviteDialog}>
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <Card className="w-full max-w-2xl p-6 max-h-[90vh] overflow-y-auto">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                Invite New Doctor
-              </h2>
+      <Dialog open={showInviteDialog} onOpenChange={setShowInviteDialog}>
+        <DialogContent>
+          <DialogHeader className="flex flex-row items-center justify-between">
+            <DialogTitle>Invite New Doctor</DialogTitle>
+            <Button variant="ghost" size="icon" onClick={() => setShowInviteDialog(false)}>
+              <X className="h-4 w-4" />
+            </Button>
+          </DialogHeader>
 
-              <form onSubmit={handleInvite} className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="firstName">
-                      First Name <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="firstName"
-                      required
-                      value={inviteData.firstName}
-                      onChange={(e) =>
-                        setInviteData({ ...inviteData, firstName: e.target.value })
-                      }
-                    />
-                  </div>
+          <form onSubmit={handleInvite} className="space-y-4 px-6 pb-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="firstName">
+                  First Name <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="firstName"
+                  required
+                  value={inviteData.firstName}
+                  onChange={(e) =>
+                    setInviteData({ ...inviteData, firstName: e.target.value })
+                  }
+                />
+              </div>
 
-                  <div>
-                    <Label htmlFor="lastName">
-                      Last Name <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="lastName"
-                      required
-                      value={inviteData.lastName}
-                      onChange={(e) =>
-                        setInviteData({ ...inviteData, lastName: e.target.value })
-                      }
-                    />
-                  </div>
+              <div>
+                <Label htmlFor="lastName">
+                  Last Name <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="lastName"
+                  required
+                  value={inviteData.lastName}
+                  onChange={(e) =>
+                    setInviteData({ ...inviteData, lastName: e.target.value })
+                  }
+                />
+              </div>
 
-                  <div>
-                    <Label htmlFor="email">
-                      Email <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      required
-                      value={inviteData.email}
-                      onChange={(e) =>
-                        setInviteData({ ...inviteData, email: e.target.value })
-                      }
-                    />
-                  </div>
+              <div>
+                <Label htmlFor="email">
+                  Email <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  required
+                  value={inviteData.email}
+                  onChange={(e) =>
+                    setInviteData({ ...inviteData, email: e.target.value })
+                  }
+                />
+              </div>
 
-                  <div>
-                    <Label htmlFor="password">
-                      Password <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="password"
-                      type="password"
-                      required
-                      value={inviteData.password}
-                      onChange={(e) =>
-                        setInviteData({ ...inviteData, password: e.target.value })
-                      }
-                    />
-                  </div>
+              <div>
+                <Label htmlFor="password">
+                  Password <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  value={inviteData.password}
+                  onChange={(e) =>
+                    setInviteData({ ...inviteData, password: e.target.value })
+                  }
+                />
+              </div>
 
-                  <div>
-                    <Label htmlFor="phone">Phone</Label>
-                    <Input
-                      id="phone"
-                      value={inviteData.phone}
-                      onChange={(e) =>
-                        setInviteData({ ...inviteData, phone: e.target.value })
-                      }
-                    />
-                  </div>
+              <div>
+                <Label htmlFor="phone">Phone</Label>
+                <Input
+                  id="phone"
+                  value={inviteData.phone}
+                  onChange={(e) =>
+                    setInviteData({ ...inviteData, phone: e.target.value })
+                  }
+                />
+              </div>
 
-                  <div>
-                    <Label htmlFor="specialization">Specialization</Label>
-                    <Input
-                      id="specialization"
-                      value={inviteData.specialization}
-                      onChange={(e) =>
-                        setInviteData({
-                          ...inviteData,
-                          specialization: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
+              <div>
+                <Label htmlFor="specialization">Specialization</Label>
+                <Input
+                  id="specialization"
+                  value={inviteData.specialization}
+                  onChange={(e) =>
+                    setInviteData({
+                      ...inviteData,
+                      specialization: e.target.value,
+                    })
+                  }
+                />
+              </div>
 
-                  <div>
-                    <Label htmlFor="licenseNumber">License Number</Label>
-                    <Input
-                      id="licenseNumber"
-                      value={inviteData.licenseNumber}
-                      onChange={(e) =>
-                        setInviteData({
-                          ...inviteData,
-                          licenseNumber: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
+              <div>
+                <Label htmlFor="licenseNumber">License Number</Label>
+                <Input
+                  id="licenseNumber"
+                  value={inviteData.licenseNumber}
+                  onChange={(e) =>
+                    setInviteData({
+                      ...inviteData,
+                      licenseNumber: e.target.value,
+                    })
+                  }
+                />
+              </div>
 
-                  <div>
-                    <Label>Role</Label>
-                    <Select
-                      value={inviteData.role}
-                      onValueChange={(value) =>
-                        setInviteData({
-                          ...inviteData,
-                          role: value as 'admin' | 'member',
-                        })
-                      }
-                    >
-                      <option value="member">Member</option>
-                      <option value="admin">Admin</option>
-                    </Select>
-                  </div>
-                </div>
+              <div>
+                <Label>Role</Label>
+                <Select
+                  value={inviteData.role}
+                  onValueChange={(value) =>
+                    setInviteData({
+                      ...inviteData,
+                      role: value as 'admin' | 'member',
+                    })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="member">Member</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
 
-                <div className="flex justify-end gap-2 mt-6">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setShowInviteDialog(false)}
-                  >
-                    Cancel
-                  </Button>
-                  <Button type="submit">Invite Doctor</Button>
-                </div>
-              </form>
-            </Card>
-          </div>
-        </Dialog>
-      )}
+            <div className="flex justify-end gap-2 mt-6">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowInviteDialog(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit">Invite Doctor</Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
