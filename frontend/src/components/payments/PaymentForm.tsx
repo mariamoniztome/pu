@@ -15,6 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { paymentsApi, patientsApi } from "../../api";
 import { Payment } from "../../types/payment";
 import { Patient } from "../../types/patient";
+import { useTranslation } from "../../hooks/useTranslation";
 
 interface PaymentFormProps {
   payment?: Payment | null;
@@ -22,6 +23,7 @@ interface PaymentFormProps {
 }
 
 export function PaymentForm({ payment, onClose }: PaymentFormProps) {
+  const { t } = useTranslation();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [file, setFile] = useState<File | null>(null);
 
@@ -76,9 +78,7 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
       setPatients(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
-      setError(
-        "Unable to load patients. Please ensure the backend server is running."
-      );
+      setError(t('payments.form.loadPatientsError'));
     }
   };
 
@@ -86,7 +86,7 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
     e.preventDefault();
 
     if (!formData.patient || !formData.currency) {
-      setError("Please fill in all required fields.");
+      setError(t('payments.form.requiredFields'));
       return;
     }
 
@@ -132,7 +132,7 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
 
       onClose();
     } catch (err: any) {
-      setError(err.message || "Failed to save payment");
+      setError(err.message || t('payments.form.saveError'));
     } finally {
       setLoading(false);
     }
@@ -143,7 +143,7 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
       <DialogContent>
       <DialogHeader className="flex  flex-row items-center justify-between">
         <DialogTitle className="text-slate-800">
-          {payment ? "Edit Payment" : "Record New Payment"}
+          {payment ? t('payments.form.titleEdit') : t('payments.form.titleNew')}
         </DialogTitle>
         <Button variant="ghost" size="icon" onClick={onClose}>
           <X className="h-4 w-4" />
@@ -152,15 +152,15 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
         <form onSubmit={handleSubmit} className="space-y-4 px-12 pb-12">
           {/* Patient */}
           <div>
-            <Label>Patient *</Label>
+            <Label>{t('payments.form.patient')} *</Label>
             <Select
               value={formData.patient}
               onValueChange={(value) =>
                 setFormData({ ...formData, patient: value })
               }
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Select a patient" />
+                <SelectTrigger>
+                  <SelectValue placeholder={t('payments.form.selectPatient')} />
               </SelectTrigger>
               <SelectContent>
                 {patients.map((patient) => (
@@ -175,7 +175,7 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
           {/* Amounts */}
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <Label>Amount Billed *</Label>
+              <Label>{t('payments.form.amountBilled')} *</Label>
               <Input
                 type="number"
                 step="0.01"
@@ -189,7 +189,7 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
             </div>
 
             <div>
-              <Label>Amount Paid *</Label>
+              <Label>{t('payments.form.amountPaid')} *</Label>
               <Input
                 type="number"
                 step="0.01"
@@ -203,7 +203,7 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
             </div>
 
             <div>
-              <Label>Currency *</Label>
+              <Label>{t('payments.form.currency')} *</Label>
               <Select
                 value={formData.currency}
                 onValueChange={(value) =>
@@ -211,7 +211,7 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
                 }
               >
                 <SelectTrigger>
-                  <SelectValue />
+                  <SelectValue placeholder={t('payments.form.currencyPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="USD">USD</SelectItem>
@@ -226,7 +226,7 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
           {/* Payment details */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label>Payment Date</Label>
+              <Label>{t('payments.form.paymentDate')}</Label>
               <Input
                 type="date"
                 value={formData.paymentDate}
@@ -237,7 +237,7 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
             </div>
 
             <div>
-              <Label>Payment Method</Label>
+              <Label>{t('payments.form.paymentMethod')}</Label>
               <Select
                 value={formData.paymentMethod}
                 onValueChange={(value) =>
@@ -248,15 +248,15 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select method" />
+                  <SelectValue placeholder={t('payments.form.selectMethod')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="cash">Cash</SelectItem>
-                  <SelectItem value="card">Card</SelectItem>
-                  <SelectItem value="transfer">Transfer</SelectItem>
-                  <SelectItem value="check">Check</SelectItem>
-                  <SelectItem value="insurance">Insurance</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="cash">{t('payments.methods.cash')}</SelectItem>
+                  <SelectItem value="card">{t('payments.methods.card')}</SelectItem>
+                  <SelectItem value="transfer">{t('payments.methods.transfer')}</SelectItem>
+                  <SelectItem value="check">{t('payments.methods.check')}</SelectItem>
+                  <SelectItem value="insurance">{t('payments.methods.insurance')}</SelectItem>
+                  <SelectItem value="other">{t('payments.methods.other')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -264,18 +264,18 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
 
           {/* Invoice + Notes */}
           <div>
-            <Label>Invoice Number</Label>
+            <Label>{t('payments.form.invoiceNumber')}</Label>
             <Input
               value={formData.invoiceNumber}
               onChange={(e) =>
                 setFormData({ ...formData, invoiceNumber: e.target.value })
               }
-              placeholder="e.g., INV-2024-001"
+              placeholder={t('payments.form.invoicePlaceholder')}
             />
           </div>
 
           <div>
-            <Label>Notes</Label>
+            <Label>{t('payments.form.notes')}</Label>
             <Textarea
               value={formData.notes}
               onChange={(e) =>
@@ -287,14 +287,14 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
 
           {/* Receipt */}
           <div>
-            <Label>Receipt / Invoice</Label>
+            <Label>{t('payments.form.receipt')}</Label>
             <label className="mt-2 flex h-24 w-full cursor-pointer items-center justify-center rounded-2xl border-2 border-dashed border-sand-200 bg-sand-50/30 transition hover:bg-sand-50">
               <div className="text-center">
                 <Upload className="mx-auto mb-2 h-8 w-8 text-sand-400" />
                 <p className="text-sm text-slate-600">
-                  {file ? file.name : "Click to upload receipt"}
+                  {file ? file.name : t('payments.form.uploadPrompt')}
                 </p>
-                <p className="text-xs text-slate-400">PDF, images</p>
+                <p className="text-xs text-slate-400">{t('payments.form.uploadHelp')}</p>
               </div>
               <input
                 type="file"
@@ -313,10 +313,10 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
 
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? "Saving..." : payment ? "Update" : "Record"}
+              {loading ? t('common.saving') : payment ? t('payments.form.submitUpdate') : t('payments.form.submitNew')}
             </Button>
           </div>
         </form>

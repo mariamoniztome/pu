@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-import { Select } from '../ui/select';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
 import { Textarea } from '../ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { patientsApi } from '../../api';
@@ -145,16 +145,21 @@ export function PatientForm({ patient, open, onClose }: PatientFormProps) {
                   value={formData.gender}
                   onValueChange={(value: string) => setFormData({ ...formData, gender: value as 'male' | 'female' | 'other' })}
                 >
-                  <option value="male">{t('common.male')}</option>
-                  <option value="female">{t('common.female')}</option>
-                  <option value="other">{t('common.other')}</option>
+                  <SelectTrigger>
+                    <SelectValue placeholder={t('patients.selectGender')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="male">{t('common.male')}</SelectItem>
+                    <SelectItem value="female">{t('common.female')}</SelectItem>
+                    <SelectItem value="other">{t('common.other')}</SelectItem>
+                  </SelectContent>
                 </Select>
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('patients.email')}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -163,7 +168,7 @@ export function PatientForm({ patient, open, onClose }: PatientFormProps) {
                 />
               </div>
               <div>
-                <Label htmlFor="phone">Phone *</Label>
+                <Label htmlFor="phone">{t('patients.phone')} {t('common.required')}</Label>
                 <Input
                   id="phone"
                   value={formData.phone}
@@ -174,7 +179,7 @@ export function PatientForm({ patient, open, onClose }: PatientFormProps) {
             </div>
 
             <div>
-              <Label htmlFor="address">Address</Label>
+              <Label htmlFor="address">{t('patients.address')}</Label>
               <Input
                 id="address"
                 value={formData.address}
@@ -183,10 +188,10 @@ export function PatientForm({ patient, open, onClose }: PatientFormProps) {
             </div>
 
             <div className="border-t pt-4">
-              <h3 className="text-sm font-semibold mb-3">Emergency Contact</h3>
+              {/* <h3 className="text-sm font-semibold mb-3">{t('patients.emergencyContact')}</h3> */}
               <div className="space-y-3">
                 <div>
-                  <Label htmlFor="emergencyContactName">Name</Label>
+                  <Label htmlFor="emergencyContactName">{t('patients.emergencyContactName')}</Label>
                   <Input
                     id="emergencyContactName"
                     value={formData.emergencyContactName}
@@ -195,7 +200,7 @@ export function PatientForm({ patient, open, onClose }: PatientFormProps) {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="emergencyContactRelationship">Relationship</Label>
+                    <Label htmlFor="emergencyContactRelationship">{t('patients.emergencyContactRelationship')}</Label>
                     <Input
                       id="emergencyContactRelationship"
                       value={formData.emergencyContactRelationship}
@@ -203,7 +208,7 @@ export function PatientForm({ patient, open, onClose }: PatientFormProps) {
                     />
                   </div>
                   <div>
-                    <Label htmlFor="emergencyContactPhone">Phone</Label>
+                    <Label htmlFor="emergencyContactPhone">{t('patients.emergencyContactPhone')}</Label>
                     <Input
                       id="emergencyContactPhone"
                       value={formData.emergencyContactPhone}
@@ -215,7 +220,7 @@ export function PatientForm({ patient, open, onClose }: PatientFormProps) {
             </div>
 
             <div>
-              <Label htmlFor="familyNotes">Family Notes</Label>
+              <Label htmlFor="familyNotes">{t('patients.familyNotes')}</Label>
               <Textarea
                 id="familyNotes"
                 value={formData.familyNotes}
@@ -225,7 +230,7 @@ export function PatientForm({ patient, open, onClose }: PatientFormProps) {
             </div>
 
             <div>
-              <Label htmlFor="contextNotes">Context Notes</Label>
+              <Label htmlFor="contextNotes">{t('patients.contextNotes')}</Label>
               <Textarea
                 id="contextNotes"
                 value={formData.contextNotes}
@@ -235,7 +240,7 @@ export function PatientForm({ patient, open, onClose }: PatientFormProps) {
             </div>
 
             <div>
-              <Label htmlFor="medicalHistory">Medical History</Label>
+              <Label htmlFor="medicalHistory">{t('patients.medicalHistory')}</Label>
               <Textarea
                 id="medicalHistory"
                 value={formData.medicalHistory}
@@ -252,10 +257,10 @@ export function PatientForm({ patient, open, onClose }: PatientFormProps) {
 
           <div className="flex gap-2 justify-end pt-4">
             <Button type="button" variant="outline" onClick={onClose} className="rounded-full">
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button type="submit" disabled={loading} className="rounded-full bg-gray-900 hover:bg-black">
-              {loading ? 'Saving...' : patient ? 'Update' : 'Create'}
+              {loading ? t('common.saving') : patient ? t('common.update') : t('common.create')}
             </Button>
           </div>
         </form>

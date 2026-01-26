@@ -15,6 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { externalReportsApi, patientsApi } from "../../api";
 import { ExternalReport } from "../../types/reports";
 import { Patient } from "../../types/patient";
+import { useTranslation } from "../../hooks/useTranslation";
 
 interface ReportFormProps {
   report?: ExternalReport | null;
@@ -22,6 +23,7 @@ interface ReportFormProps {
 }
 
 export function ReportForm({ report, onClose }: ReportFormProps) {
+  const { t } = useTranslation();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [files, setFiles] = useState<FileList | null>(null);
 
@@ -84,9 +86,7 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
       const data = await patientsApi.getAll();
       setPatients(Array.isArray(data) ? data : []);
     } catch {
-      setError(
-        "Unable to load patients. Please ensure the backend server is running."
-      );
+      setError(t('reports.form.loadPatientsError'));
     }
   };
 
@@ -94,7 +94,7 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
     e.preventDefault();
 
     if (!formData.patient || !formData.reportType || !formData.status) {
-      setError("Please fill in all required fields.");
+      setError(t('reports.form.requiredFields'));
       return;
     }
 
@@ -147,7 +147,7 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
 
       onClose();
     } catch (err: any) {
-      setError(err.message || "Failed to save report");
+      setError(err.message || t('reports.form.saveError'));
     } finally {
       setLoading(false);
     }
@@ -158,7 +158,7 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
       <DialogContent>
       <DialogHeader className="flex  flex-row items-center justify-between">
           <DialogTitle className="text-slate-800">
-            {report ? "Edit Report" : "New External Report"}
+            {report ? t('reports.form.titleEdit') : t('reports.form.titleNew')}
           </DialogTitle>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-4 w-4" />
@@ -169,7 +169,7 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
           {/* Patient + Type */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label>Patient *</Label>
+              <Label>{t('reports.form.patient')} *</Label>
               <Select
                 value={formData.patient}
                 onValueChange={(value) =>
@@ -177,7 +177,7 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a patient" />
+                  <SelectValue placeholder={t('reports.form.selectPatient')} />
                 </SelectTrigger>
                 <SelectContent>
                   {patients.map((p) => (
@@ -190,7 +190,7 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
             </div>
 
             <div>
-              <Label>Report Type *</Label>
+              <Label>{t('reports.form.type')} *</Label>
               <Select
                 value={formData.reportType}
                 onValueChange={(value) =>
@@ -201,15 +201,15 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
+                  <SelectValue placeholder={t('reports.form.selectType')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="court">Court</SelectItem>
-                  <SelectItem value="school">School</SelectItem>
-                  <SelectItem value="employer">Employer</SelectItem>
-                  <SelectItem value="insurance">Insurance</SelectItem>
-                  <SelectItem value="medical">Medical</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="court">{t('reports.types.court')}</SelectItem>
+                  <SelectItem value="school">{t('reports.types.school')}</SelectItem>
+                  <SelectItem value="employer">{t('reports.types.employer')}</SelectItem>
+                  <SelectItem value="insurance">{t('reports.types.insurance')}</SelectItem>
+                  <SelectItem value="medical">{t('reports.types.medical')}</SelectItem>
+                  <SelectItem value="other">{t('reports.types.other')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -218,7 +218,7 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
           {/* Dates + Status */}
           <div className="grid grid-cols-3 gap-4">
             <div>
-              <Label>Request Date *</Label>
+              <Label>{t('reports.form.requestDate')} *</Label>
               <Input
                 type="date"
                 value={formData.requestDate}
@@ -230,7 +230,7 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
             </div>
 
             <div>
-              <Label>Completion Date</Label>
+              <Label>{t('reports.form.completionDate')}</Label>
               <Input
                 type="date"
                 value={formData.completionDate}
@@ -244,7 +244,7 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
             </div>
 
             <div>
-              <Label>Status *</Label>
+              <Label>{t('reports.form.status')} *</Label>
               <Select
                 value={formData.status}
                 onValueChange={(value) =>
@@ -255,13 +255,13 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select status" />
+                  <SelectValue placeholder={t('reports.form.selectStatus')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="requested">Requested</SelectItem>
-                  <SelectItem value="in-progress">In Progress</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                  <SelectItem value="delivered">Delivered</SelectItem>
+                  <SelectItem value="requested">{t('reports.status.requested')}</SelectItem>
+                  <SelectItem value="in-progress">{t('reports.status.inProgress')}</SelectItem>
+                  <SelectItem value="completed">{t('reports.status.completed')}</SelectItem>
+                  <SelectItem value="delivered">{t('reports.status.delivered')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -269,7 +269,7 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
 
           {/* Text fields */}
           <div>
-            <Label>Purpose *</Label>
+            <Label>{t('reports.form.purpose')} *</Label>
             <Textarea
               value={formData.purpose}
               onChange={(e) =>
@@ -280,7 +280,7 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
           </div>
 
           <div>
-            <Label>Summary *</Label>
+            <Label>{t('reports.form.summary')} *</Label>
             <Textarea
               value={formData.summary}
               onChange={(e) =>
@@ -292,7 +292,7 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label>Findings</Label>
+              <Label>{t('reports.form.findings')}</Label>
               <Textarea
                 value={formData.findings}
                 onChange={(e) =>
@@ -302,7 +302,7 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
             </div>
 
             <div>
-              <Label>Recommendations</Label>
+              <Label>{t('reports.form.recommendations')}</Label>
               <Textarea
                 value={formData.recommendations}
                 onChange={(e) =>
@@ -317,19 +317,21 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
 
           {/* Attachments */}
           <div>
-            <Label>Attachments</Label>
+            <Label>{t('reports.form.attachments')}</Label>
             <label className="mt-2 flex h-24 w-full cursor-pointer items-center justify-center rounded-2xl border-2 border-dashed border-lavender-200 bg-lavender-50/30 hover:bg-lavender-50">
               <div className="text-center">
                 <Upload className="mx-auto mb-2 h-8 w-8 text-lavender-400" />
                 <p className="text-sm text-slate-600">
-                  {files ? `${files.length} file(s) selected` : "Click to upload files"}
+                  {files
+                    ? t('reports.form.filesSelected', { count: files.length })
+                    : t('reports.form.uploadPrompt')}
                 </p>
+                <p className="text-xs text-slate-400">{t('reports.form.uploadHelp')}</p>
               </div>
               <input
                 type="file"
                 multiple
                 className="hidden"
-                accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.txt"
                 onChange={(e) => setFiles(e.target.files)}
               />
             </label>
@@ -343,10 +345,10 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
 
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? "Saving..." : report ? "Update" : "Create"}
+              {loading ? t('common.saving') : report ? t('reports.form.submitUpdate') : t('reports.form.submitNew')}
             </Button>
           </div>
         </form>

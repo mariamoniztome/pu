@@ -215,8 +215,8 @@ export function CalendarPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-1">Calendar</h1>
-          <p className="text-gray-500">View and manage all your appointments</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-1">{t('calendar.title')}</h1>
+          <p className="text-gray-500">{t('calendar.subtitle')}</p>
         </div>
         <Button
           onClick={() => {
@@ -232,7 +232,7 @@ export function CalendarPage() {
           className="bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white rounded-full px-6 shadow-lg"
         >
           <Plus className="h-5 w-5 mr-2" />
-          New Appointment
+          {t('calendar.newAppointment')}
         </Button>
       </div>
 
@@ -262,7 +262,7 @@ export function CalendarPage() {
         <DialogContent>
           <DialogHeader className="flex flex-row items-center justify-between">
             <DialogTitle className="text-xl font-bold text-gray-900">
-              {selectedEvent ? "Edit Appointment" : "New Appointment"}
+              {selectedEvent ? t('calendar.editAppointmentTitle') : t('calendar.newAppointmentTitle')}
             </DialogTitle>
 
             <Button
@@ -280,7 +280,7 @@ export function CalendarPage() {
             {/* Patient */}
             <div className="space-y-2">
               <Label className="text-sm font-semibold text-gray-700">
-                Patient <span className="text-red-500">*</span>
+                {t('appointments.patient')} <span className="text-red-500">*</span>
               </Label>
               <Select
                 value={formData.patientId}
@@ -289,7 +289,7 @@ export function CalendarPage() {
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a patient" />
+                  <SelectValue placeholder={t('appointments.selectPatient')} />
                 </SelectTrigger>
                 <SelectContent>
                   {patients.map((patient) => (
@@ -304,7 +304,7 @@ export function CalendarPage() {
             {/* Date */}
             <div className="space-y-2">
               <Label className="text-sm font-semibold text-gray-700">
-                Date & Time <span className="text-red-500">*</span>
+                {t('appointments.dateTime')} <span className="text-red-500">*</span>
               </Label>
               <Input
                 type="datetime-local"
@@ -319,7 +319,7 @@ export function CalendarPage() {
             {/* Type */}
             <div className="space-y-2">
               <Label className="text-sm font-semibold text-gray-700">
-                Appointment Type <span className="text-red-500">*</span>
+                {t('appointments.appointmentType')} <span className="text-red-500">*</span>
               </Label>
               <Select
                 value={formData.type}
@@ -328,14 +328,14 @@ export function CalendarPage() {
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a type" />
+                  <SelectValue placeholder={t('appointments.selectType')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="initial">Initial Assessment</SelectItem>
-                  <SelectItem value="follow-up">Follow-up</SelectItem>
-                  <SelectItem value="assessment">Assessment</SelectItem>
-                  <SelectItem value="therapy">Therapy</SelectItem>
-                  <SelectItem value="other">Other</SelectItem>
+                  <SelectItem value="initial">{t('appointments.type.initial')}</SelectItem>
+                  <SelectItem value="follow-up">{t('appointments.type.followUp')}</SelectItem>
+                  <SelectItem value="assessment">{t('appointments.type.assessment')}</SelectItem>
+                  <SelectItem value="therapy">{t('appointments.type.therapy')}</SelectItem>
+                  <SelectItem value="other">{t('appointments.type.other')}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -343,7 +343,7 @@ export function CalendarPage() {
             {/* Notes */}
             <div className="space-y-2">
               <Label className="text-sm font-semibold text-gray-700">
-                Notes
+                {t('common.notes')}
               </Label>
               <Textarea
                 value={formData.notes}
@@ -351,7 +351,7 @@ export function CalendarPage() {
                   setFormData({ ...formData, notes: e.target.value })
                 }
                 rows={3}
-                placeholder="Add any additional notes..."
+                placeholder={t('appointments.notesPlaceholder')}
               />
             </div>
 
@@ -365,7 +365,7 @@ export function CalendarPage() {
                   className="rounded-full mr-auto"
                   disabled={loading}
                 >
-                  Delete
+                  {t('common.delete')}
                 </Button>
               )}
 
@@ -375,11 +375,11 @@ export function CalendarPage() {
                 onClick={() => setShowDialog(false)}
                 disabled={loading}
               >
-                Cancel
+                {t('common.cancel')}
               </Button>
 
               <Button type="submit" disabled={loading}>
-                {loading ? "Saving..." : selectedEvent ? "Update" : "Create"}
+                {loading ? t('common.saving') : selectedEvent ? t('common.update') : t('common.create')}
               </Button>
             </div>
           </form>

@@ -3,6 +3,7 @@ import { Card } from '../ui/card';
 import { DollarSign, TrendingUp, TrendingDown, Calendar } from 'lucide-react';
 import { paymentsApi } from '../../api';
 import { Payment } from '../../types/payment';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface ChartData {
   label: string;
@@ -11,6 +12,7 @@ interface ChartData {
 }
 
 export function PaymentCharts() {
+  const { t } = useTranslation();
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -101,7 +103,7 @@ export function PaymentCharts() {
   };
 
   if (loading) {
-    return <div className="text-center py-8 text-gray-500">Loading payment statistics...</div>;
+    return <div className="text-center py-8 text-gray-500">{t('payments.charts.loading')}</div>;
   }
 
   return (
@@ -110,7 +112,7 @@ export function PaymentCharts() {
         <Card className="p-6">
           <div className="flex items-start justify-between mb-3">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Total Revenue</p>
+              <p className="text-sm text-gray-600 mb-1">{t('payments.charts.totalRevenue')}</p>
               <h3 className="text-2xl font-bold text-gray-900">
                 ${stats.totalRevenue.toLocaleString()}
               </h3>
@@ -127,14 +129,14 @@ export function PaymentCharts() {
                   ? Math.round(((monthlyData[monthlyData.length - 1].value - monthlyData[monthlyData.length - 2].value) / (monthlyData[monthlyData.length - 2].value || 1)) * 100)
                   : 0}%
               </span>
-            <span className="text-gray-500">vs last month</span>
+            <span className="text-gray-500">{t('payments.charts.vsLastMonth')}</span>
           </div>
         </Card>
 
         <Card className="p-6">
           <div className="flex items-start justify-between mb-3">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Paid Invoices</p>
+              <p className="text-sm text-gray-600 mb-1">{t('payments.charts.paidInvoices')}</p>
               <h3 className="text-2xl font-bold text-gray-900">{stats.paidInvoices}</h3>
             </div>
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-lilac-200 to-lilac-300 flex items-center justify-center">
@@ -142,7 +144,7 @@ export function PaymentCharts() {
             </div>
           </div>
           <div className="flex items-center gap-2 text-sm">
-            <span className="text-gray-600">Success rate: </span>
+            <span className="text-gray-600">{t('payments.charts.successRate')} </span>
             <span className="text-gray-900 font-semibold">
               {payments.length > 0 ? Math.round((paidInvoices / payments.length) * 100) : 0}%
             </span>
@@ -152,7 +154,7 @@ export function PaymentCharts() {
         <Card className="p-6">
           <div className="flex items-start justify-between mb-3">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Pending</p>
+              <p className="text-sm text-gray-600 mb-1">{t('payments.charts.pendingInvoices')}</p>
               <h3 className="text-2xl font-bold text-gray-900">{stats.pendingInvoices}</h3>
             </div>
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-200 to-amber-300 flex items-center justify-center">
@@ -160,7 +162,7 @@ export function PaymentCharts() {
             </div>
           </div>
           <div className="flex items-center gap-2 text-sm">
-            <span className="text-gray-600">Total value: </span>
+            <span className="text-gray-600">{t('payments.charts.totalValue')} </span>
             <span className="text-gray-900 font-semibold">
               ${payments.filter(p => p.status === 'unpaid').reduce((sum, p) => sum + p.amount, 0).toLocaleString()}
             </span>
@@ -170,7 +172,7 @@ export function PaymentCharts() {
         <Card className="p-6">
           <div className="flex items-start justify-between mb-3">
             <div>
-              <p className="text-sm text-gray-600 mb-1">Avg Payment Time</p>
+              <p className="text-sm text-gray-600 mb-1">{t('payments.charts.avgPaymentTime')}</p>
               <h3 className="text-2xl font-bold text-gray-900">{stats.avgPaymentTime}</h3>
             </div>
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-200 to-blue-300 flex items-center justify-center">
@@ -179,14 +181,14 @@ export function PaymentCharts() {
           </div>
           <div className="flex items-center gap-2 text-sm">
             <TrendingDown className="h-4 w-4 text-green-600" />
-            <span className="text-green-600 font-semibold">optimized</span>
-            <span className="text-gray-500">payment time</span>
+            <span className="text-green-600 font-semibold">{t('payments.charts.optimized')}</span>
+            <span className="text-gray-500">{t('payments.charts.paymentTime')}</span>
           </div>
         </Card>
       </div>
 
       <Card className="p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-6">Revenue Overview</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-6">{t('payments.charts.revenueOverview')}</h3>
         <div className="space-y-4">
           {monthlyData.map((data) => (
             <div key={data.label} className="space-y-2">
@@ -213,7 +215,7 @@ export function PaymentCharts() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card className="p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Methods</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('payments.charts.paymentMethods')}</h3>
           <div className="space-y-3">
             {paymentMethodsArray.length > 0 ? (
               paymentMethodsArray.map((item) => (
@@ -231,13 +233,13 @@ export function PaymentCharts() {
                 </div>
               ))
             ) : (
-              <p className="text-sm text-gray-500 text-center py-4">No payment methods recorded yet</p>
+              <p className="text-sm text-gray-500 text-center py-4">{t('payments.charts.noPaymentMethods')}</p>
             )}
           </div>
         </Card>
 
         <Card className="p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Status</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('payments.charts.paymentStatus')}</h3>
           <div className="flex items-center justify-center h-48">
             <div className="relative w-48 h-48">
               <svg viewBox="0 0 100 100" className="transform -rotate-90">
@@ -269,22 +271,22 @@ export function PaymentCharts() {
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="text-3xl font-bold text-gray-900">{paidPercentage}%</span>
-                <span className="text-sm text-gray-600">Paid</span>
+                <span className="text-sm text-gray-600">{t('payments.status.paid')}</span>
               </div>
             </div>
           </div>
           <div className="grid grid-cols-3 gap-4 mt-4">
             <div className="text-center">
               <div className="text-lg font-bold text-gray-900">{paidPercentage}%</div>
-              <div className="text-xs text-green-600">Paid</div>
+              <div className="text-xs text-green-600">{t('payments.status.paid')}</div>
             </div>
             <div className="text-center">
               <div className="text-lg font-bold text-gray-900">{partialPercentage}%</div>
-              <div className="text-xs text-amber-600">Partial</div>
+              <div className="text-xs text-amber-600">{t('payments.status.partial')}</div>
             </div>
             <div className="text-center">
               <div className="text-lg font-bold text-gray-900">{unpaidPercentage}%</div>
-              <div className="text-xs text-red-600">Unpaid</div>
+              <div className="text-xs text-red-600">{t('payments.status.unpaid')}</div>
             </div>
           </div>
         </Card>

@@ -15,6 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { consultationsApi, patientsApi } from "../../api";
 import { Consultation } from "../../types/consultation";
 import { Patient } from "../../types/patient";
+import { useTranslation } from "../../hooks/useTranslation";
 
 interface ConsultationFormProps {
   consultation?: Consultation | null;
@@ -25,6 +26,7 @@ export function ConsultationForm({
   consultation,
   onClose,
 }: ConsultationFormProps) {
+  const { t } = useTranslation();
   const [patients, setPatients] = useState<Patient[]>([]);
   const [files, setFiles] = useState<FileList | null>(null);
 
@@ -82,9 +84,7 @@ export function ConsultationForm({
       const data = await patientsApi.getAll();
       setPatients(Array.isArray(data) ? data : []);
     } catch {
-      setError(
-        "Unable to load patients. Please ensure the backend server is running."
-      );
+      setError(t('consultations.form.loadPatientsError'));
     }
   };
 
@@ -92,7 +92,7 @@ export function ConsultationForm({
     e.preventDefault();
 
     if (!formData.patient) {
-      setError("Please select a patient.");
+      setError(t('consultations.form.requiredFields'));
       return;
     }
 
@@ -143,7 +143,7 @@ export function ConsultationForm({
 
       onClose();
     } catch (err: any) {
-      setError(err.message || "Failed to save consultation");
+      setError(err.message || t('consultations.form.saveError'));
     } finally {
       setLoading(false);
     }
@@ -154,7 +154,7 @@ export function ConsultationForm({
       <DialogContent>
         <DialogHeader className="flex flex-row items-center justify-between">
           <DialogTitle className="text-slate-800">
-            {consultation ? "Edit Session" : "New Session Record"}
+            {consultation ? t('consultations.form.titleEdit') : t('consultations.form.titleNew')}
           </DialogTitle>
           <Button variant="ghost" size="icon" onClick={onClose}>
             <X className="h-4 w-4" />
@@ -165,7 +165,7 @@ export function ConsultationForm({
           {/* Patient + Date */}
           <div className="grid grid-cols-3 gap-4">
             <div className="col-span-2">
-              <Label>Patient *</Label>
+              <Label>{t('consultations.form.patient')} *</Label>
               <Select
                 value={formData.patient}
                 onValueChange={(value) =>
@@ -173,7 +173,7 @@ export function ConsultationForm({
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a patient" />
+                  <SelectValue placeholder={t('consultations.form.selectPatient')} />
                 </SelectTrigger>
                 <SelectContent>
                   {patients.map((p) => (
@@ -186,7 +186,7 @@ export function ConsultationForm({
             </div>
 
             <div>
-              <Label>Date *</Label>
+              <Label>{t('consultations.form.date')} *</Label>
               <Input
                 type="date"
                 value={formData.date}
@@ -200,7 +200,7 @@ export function ConsultationForm({
 
           {/* Session number */}
           <div>
-            <Label>Session Number *</Label>
+            <Label>{t('consultations.form.sessionNumber')} *</Label>
             <Input
               type="number"
               min="1"
@@ -214,7 +214,7 @@ export function ConsultationForm({
 
           {/* Notes */}
           <div>
-            <Label>Session Notes *</Label>
+            <Label>{t('consultations.form.sessionNotes')} *</Label>
             <Textarea
               value={formData.sessionNotes}
               onChange={(e) =>
@@ -230,15 +230,16 @@ export function ConsultationForm({
 
           {/* Attachments */}
           <div>
-            <Label>Attachments</Label>
+            <Label>{t('consultations.form.attachments')}</Label>
             <label className="mt-2 flex h-24 w-full cursor-pointer items-center justify-center rounded-2xl border-2 border-dashed border-primary-200 bg-primary-50/30 hover:bg-primary-50">
               <div className="text-center">
                 <Upload className="mx-auto mb-2 h-8 w-8 text-primary-400" />
                 <p className="text-sm text-slate-600">
                   {files
-                    ? `${files.length} file(s) selected`
-                    : "Click to upload files"}
+                    ? t('consultations.form.filesSelected', { count: files.length })
+                    : t('consultations.form.uploadPrompt')}
                 </p>
+                <p className="text-xs text-slate-400">{t('consultations.form.uploadHelp')}</p>
               </div>
               <input
                 type="file"
@@ -258,10 +259,10 @@ export function ConsultationForm({
 
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="outline" onClick={onClose}>
-              Cancel
+              {t('common.cancel')}
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? "Saving..." : consultation ? "Update" : "Create"}
+              {loading ? t('common.saving') : consultation ? t('common.update') : t('common.create')}
             </Button>
           </div>
         </form>

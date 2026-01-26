@@ -75,7 +75,7 @@ export function AppointmentsPage() {
             <CardHeader>
               <CardTitle className="text-lg">{getPatientName(appointment)}</CardTitle>
               <span className={`text-xs capitalize font-medium px-3 py-1.5 rounded-xl ${getStatusColor(appointment.status)} w-fit`}>
-                {appointment.status}
+                {t(`appointments.status.${appointment.status === 'no-show' ? 'noShow' : appointment.status}`)}
               </span>
             </CardHeader>
             <CardContent className="space-y-2">
@@ -91,7 +91,7 @@ export function AppointmentsPage() {
                 <span className="font-medium">{t('common.duration')}:</span> {appointment.duration} {t('common.minutes')}
               </div>
               <div className="text-sm">
-                <span className="font-medium">{t('common.type')}:</span> {appointment.type}
+                <span className="font-medium">{t('common.type')}:</span> {t(`appointments.type.${appointment.type === 'follow-up' ? 'followUp' : appointment.type}`)}
               </div>
               {appointment.notes && (
                 <div className="text-sm text-slate-600 mt-2">

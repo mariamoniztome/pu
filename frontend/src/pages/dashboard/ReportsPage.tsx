@@ -97,35 +97,35 @@ export function ReportsPage() {
                     report.status
                   )}`}
                 >
-                  {report.status}
+                  {t(`reports.status.${report.status === 'in-progress' ? 'inProgress' : report.status}`)}
                 </span>
                 <span className="text-xs capitalize font-medium px-3 py-1.5 rounded-xl bg-gradient-to-r from-red-100 to-red-200 text-red-800">
-                  {report.reportType}
+                  {t(`reports.types.${report.reportType || 'other'}`)}
                 </span>
               </div>
             </CardHeader>
             <CardContent className="space-y-2">
               <div className="text-sm">
-                <span className="font-medium">Recipient:</span>{" "}
+                <span className="font-medium">{t('reports.card.recipient')}:</span>{" "}
                 {report.recipientName}
               </div>
               {report.recipientOrganization && (
                 <div className="text-sm">
-                  <span className="font-medium">Organization:</span>{" "}
+                  <span className="font-medium">{t('reports.card.organization')}:</span>{" "}
                   {report.recipientOrganization}
                 </div>
               )}
               <div className="text-sm">
-                <span className="font-medium">Requested:</span>{" "}
+                <span className="font-medium">{t('reports.card.requested')}:</span>{" "}
                 {new Date(report.requestDate).toLocaleDateString()}
               </div>
               <div className="text-sm">
-                <span className="font-medium">Purpose:</span> {report.purpose}
+                <span className="font-medium">{t('reports.card.purpose')}:</span> {report.purpose}
               </div>
               {report.attachments.length > 0 && (
                 <div className="flex items-center text-sm text-slate-500 mt-2">
                   <FileText className="h-4 w-4 mr-1" />
-                  {report.attachments.length} attachment(s)
+                  {t('reports.card.attachments', { count: report.attachments.length })}
                 </div>
               )}
             </CardContent>

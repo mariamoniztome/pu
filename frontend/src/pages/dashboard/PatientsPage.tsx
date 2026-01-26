@@ -37,7 +37,7 @@ export function PatientsPage() {
       setPatients(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Failed to load patients:', error);
-      toast.error('Failed to load patients');
+      toast.error(t('patients.failedToLoad'));
       setPatients([]);
     } finally {
       setLoading(false);
@@ -56,7 +56,7 @@ export function PatientsPage() {
       toast.success(t('patients.foundPatients', { count: results.length }));
     } catch (error) {
       console.error('Search failed:', error);
-      toast.error('Search failed');
+      toast.error(t('patients.searchFailed'));
       setPatients([]);
     }
   };
@@ -123,14 +123,14 @@ export function PatientsPage() {
         <div className="flex gap-2 items-center">
           <button
             className='mt-2'
-            title='Edit'
+            title={t('common.edit')}
             onClick={() => handleEdit(params.data)}
           >
             <Edit className="h-4 w-4 mr-1 text-blue-500 hover:text-blue-700" />
           </button>
           <button
             className='mt-2'
-            title='Delete'
+            title={t('common.delete')}
             onClick={() => handleDelete(params.data._id)}
           >
             <Trash2 className="h-4 w-4 mr-1 text-red-500 hover:text-red-700" />
@@ -222,7 +222,7 @@ export function PatientsPage() {
       ) : (
         <Card className="shadow-sm">
           <CardHeader className="flex flex-row justify-between items-center">
-            <CardTitle className="text-gray-900">Patient List</CardTitle>
+            <CardTitle className="text-gray-900">{t('patients.listTitle')}</CardTitle>
             <Button
               variant="outline"
               size="sm"
@@ -247,7 +247,7 @@ export function PatientsPage() {
                 a.click();
               }}
             >
-              Export to CSV
+              {t('patients.exportCsv')}
             </Button>
           </CardHeader>
           <CardContent>

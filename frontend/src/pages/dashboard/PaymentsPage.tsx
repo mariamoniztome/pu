@@ -98,40 +98,40 @@ export function PaymentsPage() {
                     payment.status
                   )} w-fit`}
                 >
-                  {payment.status}
+                  {t(`payments.status.${payment.status}`)}
                 </span>
               </CardHeader>
               <CardContent className="space-y-2">
                 {payment.invoiceNumber && (
                   <div className="text-sm">
-                    <span className="font-medium">Invoice:</span>{" "}
+                    <span className="font-medium">{t('payments.card.invoice')}:</span>{" "}
                     {payment.invoiceNumber}
                   </div>
                 )}
                 <div className="text-sm">
-                  <span className="font-medium">Amount:</span>{" "}
+                  <span className="font-medium">{t('payments.card.amount')}:</span>{" "}
                   {payment.currency} {payment.amount.toFixed(2)}
                 </div>
                 <div className="text-sm">
-                  <span className="font-medium">Paid:</span> {payment.currency}{" "}
+                  <span className="font-medium">{t('payments.card.paid')}:</span> {payment.currency}{" "}
                   {payment.amountPaid.toFixed(2)}
                 </div>
                 {payment.amountPaid < payment.amount && (
                   <div className="text-sm text-red-600">
-                    <span className="font-medium">Balance:</span>{" "}
+                    <span className="font-medium">{t('payments.card.balance')}:</span>{" "}
                     {payment.currency}{" "}
                     {(payment.amount - payment.amountPaid).toFixed(2)}
                   </div>
                 )}
                 {payment.paymentMethod && (
                   <div className="text-sm">
-                    <span className="font-medium">Method:</span>{" "}
-                    {payment.paymentMethod}
+                    <span className="font-medium">{t('payments.card.method')}:</span>{" "}
+                    {t(`payments.methods.${payment.paymentMethod}`)}
                   </div>
                 )}
                 {payment.paymentDate && (
                   <div className="text-sm">
-                    <span className="font-medium">Date:</span>{" "}
+                    <span className="font-medium">{t('payments.card.date')}:</span>{" "}
                     {new Date(payment.paymentDate).toLocaleDateString()}
                   </div>
                 )}
