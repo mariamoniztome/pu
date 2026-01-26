@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, FileText, Eye, Edit } from "lucide-react";
+import { Plus, FileText, Eye, Edit, X } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import {
   Card,
@@ -188,10 +188,13 @@ export function ReportsPage() {
       {viewReport && (
         <Dialog open onOpenChange={() => setViewReport(null)}>
           <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
+            <DialogHeader className="flex flex-row items-center justify-between">
               <DialogTitle className="text-2xl">
                 {t('reports.details')} - {getPatientName(viewReport)}
               </DialogTitle>
+              <Button variant="ghost" size="icon" onClick={() => setViewReport(null)}>
+                <X className="h-4 w-4" />
+              </Button>
             </DialogHeader>
             <div className="space-y-4 px-6 pb-6">
               <div className="flex gap-2">

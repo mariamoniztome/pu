@@ -39,7 +39,9 @@
     "other": "Other",
     "required": "*",
     "grid": "Grid",
-    "table": "Table"
+    "table": "Table",
+    "view": "View",
+    "viewReceipt": "View Receipt"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -202,6 +204,11 @@
     "sessionNumber": "Session #{{number}}",
     "chiefComplaint": "Chief Complaint",
     "sessionNotes": "Session Notes",
+    "clinicalObservations": "Clinical Observations",
+    "interventions": "Interventions",
+    "homework": "Homework",
+    "progressAssessment": "Progress Assessment",
+    "nextSessionPlan": "Next Session Plan",
     "attachments": "{{count}} attachment(s)",
     "form": {
       "titleEdit": "Edit Session",
@@ -235,6 +242,9 @@
     "description": "Description",
     "noReports": "No reports found",
     "loadingReports": "Loading reports...",
+    "details": "Report Details",
+    "completionDate": "Completion Date",
+    "content": "Content",
     "types": {
       "court": "Court",
       "school": "School",
@@ -303,13 +313,16 @@
     "recentPayments": "Recent Payments",
     "partial": "Partial",
     "unpaid": "Unpaid",
+    "details": "Payment Details",
+    "receipt": "Receipt",
     "card": {
       "invoice": "Invoice",
       "amount": "Amount",
       "paid": "Paid",
       "balance": "Balance",
       "method": "Method",
-      "date": "Date"
+      "date": "Date",
+      "viewReceipt": "View Receipt"
     },
     "methods": {
       "cash": "Cash",

@@ -64,7 +64,7 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
         patient:
           typeof report.patient === "string"
             ? report.patient
-            : report.patient._id,
+            : report.patient?._id,
         reportType: report.reportType,
         recipientName: report.recipientName,
         recipientOrganization: report.recipientOrganization || "",
