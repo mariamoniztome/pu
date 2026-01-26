@@ -86,7 +86,6 @@ const conversationSchema = new Schema<IConversation>(
 
 // Index for faster queries
 conversationSchema.index({ organization: 1, doctor: 1 });
-conversationSchema.index({ sessionId: 1 });
 conversationSchema.index({ patientId: 1, createdAt: -1 });
 conversationSchema.index({ 'context.appointmentId': 1 });
 

@@ -125,7 +125,6 @@ const organizationSchema = new Schema<IOrganization>(
 );
 
 // Indexes for performance
-organizationSchema.index({ email: 1 });
 organizationSchema.index({ isActive: 1 });
 
 export default mongoose.model<IOrganization>('Organization', organizationSchema);

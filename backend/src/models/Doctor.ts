@@ -104,7 +104,6 @@ const doctorSchema = new Schema<IDoctor>(
 );
 
 // Indexes for performance
-doctorSchema.index({ email: 1 });
 doctorSchema.index({ organization: 1, isActive: 1 });
 
 // Hash password before saving

@@ -93,6 +93,5 @@ const patientSchema = new Schema<IPatient>(
 
 patientSchema.index({ organization: 1, firstName: 1, lastName: 1 });
 patientSchema.index({ organization: 1, doctor: 1 });
-patientSchema.index({ email: 1 });
 
 export default mongoose.model<IPatient>('Patient', patientSchema);
