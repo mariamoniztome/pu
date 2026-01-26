@@ -1,16 +1,18 @@
 import { useState, useEffect } from "react";
-import { Plus, DollarSign } from "lucide-react";
+import { Plus, DollarSign, FileText, Eye, Edit } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "../../components/ui/card";
 import { paymentsApi } from "../../api";
 import { Payment } from "../../types/payment";
 import { PaymentForm } from "../../components/payments/PaymentForm";
 import { PaymentCharts } from "../../components/payments/PaymentCharts";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../components/ui/dialog";
 import { useTranslation } from "../../hooks/useTranslation";
 
 export function PaymentsPage() {
@@ -19,6 +21,7 @@ export function PaymentsPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
+  const [viewPayment, setViewPayment] = useState<Payment | null>(null);
 
   useEffect(() => {
     loadPayments();
@@ -139,12 +142,46 @@ export function PaymentsPage() {
                     {new Date(payment.paymentDate).toLocaleDateString()}
                   </div>
                 )}
+                {payment.receiptAttachment && (
+                  <div className="mt-2">
+                    <a
+                      href={`http://localhost:5000/${payment.receiptAttachment.path}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline"
+                    >
+                      <FileText className="h-3 w-3 mr-1" />
+                      {t('payments.card.viewReceipt')}
+                    </a>
+                  </div>
+                )}
                 {payment.notes && (
                   <div className="text-sm text-slate-600 mt-2">
                     {payment.notes}
                   </div>
                 )}
               </CardContent>
+              <CardFooter className="flex gap-2 pt-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="flex-1"
+                  onClick={() => setViewPayment(payment)}
+                >
+                  <Eye className="h-4 w-4 mr-1" />
+                  {t('common.view')}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedPayment(payment);
+                    setShowForm(true);
+                  }}
+                >
+                  <Edit className="h-4 w-4" />
+                </Button>
+              </CardFooter>
             </Card>
           ))}
         </div>
@@ -159,6 +196,105 @@ export function PaymentsPage() {
             loadPayments();
           }}
         />
+      )}
+
+      {viewPayment && (
+        <Dialog open onOpenChange={() => setViewPayment(null)}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="text-2xl">
+                {t('payments.details')} - {getPatientName(viewPayment)}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 px-6 pb-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="text-sm font-semibold text-slate-700 mb-1">{t('common.status')}</div>
+                  <span className={`text-xs font-medium px-3 py-1.5 rounded-xl capitalize ${getStatusColor(viewPayment.status)}`}>
+                    {t(`payments.status.${viewPayment.status}`)}
+                  </span>
+                </div>
+                {viewPayment.invoiceNumber && (
+                  <div>
+                    <div className="text-sm font-semibold text-slate-700 mb-1">{t('payments.card.invoice')}</div>
+                    <div className="text-sm">{viewPayment.invoiceNumber}</div>
+                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="text-sm font-semibold text-slate-700 mb-1">{t('payments.card.amount')}</div>
+                  <div className="text-lg font-bold">{viewPayment.currency} {viewPayment.amount.toFixed(2)}</div>
+                </div>
+                <div>
+                  <div className="text-sm font-semibold text-slate-700 mb-1">{t('payments.card.paid')}</div>
+                  <div className="text-lg font-bold text-green-600">{viewPayment.currency} {viewPayment.amountPaid.toFixed(2)}</div>
+                </div>
+              </div>
+
+              {viewPayment.amountPaid < viewPayment.amount && (
+                <div>
+                  <div className="text-sm font-semibold text-slate-700 mb-1">{t('payments.card.balance')}</div>
+                  <div className="text-lg font-bold text-red-600">
+                    {viewPayment.currency} {(viewPayment.amount - viewPayment.amountPaid).toFixed(2)}
+                  </div>
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-4">
+                {viewPayment.paymentMethod && (
+                  <div>
+                    <div className="text-sm font-semibold text-slate-700 mb-1">{t('payments.card.method')}</div>
+                    <div className="text-sm">{t(`payments.methods.${viewPayment.paymentMethod}`)}</div>
+                  </div>
+                )}
+                {viewPayment.paymentDate && (
+                  <div>
+                    <div className="text-sm font-semibold text-slate-700 mb-1">{t('payments.card.date')}</div>
+                    <div className="text-sm">{new Date(viewPayment.paymentDate).toLocaleDateString()}</div>
+                  </div>
+                )}
+              </div>
+
+              {viewPayment.notes && (
+                <div>
+                  <div className="text-sm font-semibold text-slate-700 mb-1">{t('common.notes')}</div>
+                  <div className="text-sm bg-slate-50 p-3 rounded-lg">{viewPayment.notes}</div>
+                </div>
+              )}
+
+              {viewPayment.receiptAttachment && (
+                <div>
+                  <div className="text-sm font-semibold text-slate-700 mb-2">{t('payments.receipt')}</div>
+                  <div className="flex items-center justify-between bg-slate-50 p-3 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-5 w-5 text-slate-500" />
+                      <div>
+                        <div className="text-sm font-medium">{viewPayment.receiptAttachment.originalName}</div>
+                        <div className="text-xs text-slate-500">
+                          {(viewPayment.receiptAttachment.size / 1024).toFixed(2)} KB
+                        </div>
+                      </div>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                    >
+                      <a
+                        href={`http://localhost:5000/${viewPayment.receiptAttachment.path}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {t('common.view')}
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );

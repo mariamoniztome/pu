@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
-import { Plus, FileText } from "lucide-react";
+import { Plus, FileText, Eye, Edit } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "../../components/ui/card";
 import { externalReportsApi } from "../../api";
 import { ExternalReport } from "../../types/reports";
 import { ReportForm } from "../../components/reports/ReportForm";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../components/ui/dialog";
 import { useTranslation } from "../../hooks/useTranslation";
 
 export function ReportsPage() {
@@ -20,6 +22,7 @@ export function ReportsPage() {
   const [selectedReport, setSelectedReport] = useState<ExternalReport | null>(
     null
   );
+  const [viewReport, setViewReport] = useState<ExternalReport | null>(null);
 
   useEffect(() => {
     loadReports();
@@ -127,12 +130,46 @@ export function ReportsPage() {
                 <span className="font-medium">{t('reports.card.purpose')}:</span> {report.purpose}
               </div>
               {report.attachments.length > 0 && (
-                <div className="flex items-center text-sm text-slate-500 mt-2">
-                  <FileText className="h-4 w-4 mr-1" />
-                  {t('reports.card.attachments', { count: report.attachments.length })}
+                <div className="space-y-1 mt-2">
+                  <div className="text-sm font-medium text-slate-700">{t('reports.card.attachments', { count: report.attachments.length })}:</div>
+                  <div className="space-y-1">
+                    {report.attachments.map((attachment, idx) => (
+                      <a
+                        key={idx}
+                        href={`http://localhost:5000/${attachment.path}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline"
+                      >
+                        <FileText className="h-3 w-3 mr-1" />
+                        {attachment.originalName}
+                      </a>
+                    ))}
+                  </div>
                 </div>
               )}
             </CardContent>
+            <CardFooter className="flex gap-2 pt-2">
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex-1"
+                onClick={() => setViewReport(report)}
+              >
+                <Eye className="h-4 w-4 mr-1" />
+                {t('common.view')}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setSelectedReport(report);
+                  setShowForm(true);
+                }}
+              >
+                <Edit className="h-4 w-4" />
+              </Button>
+            </CardFooter>
           </Card>
         ))}
       </div>
@@ -146,6 +183,93 @@ export function ReportsPage() {
             loadReports();
           }}
         />
+      )}
+
+      {viewReport && (
+        <Dialog open onOpenChange={() => setViewReport(null)}>
+          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="text-2xl">
+                {t('reports.details')} - {getPatientName(viewReport)}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 px-6 pb-6">
+              <div className="flex gap-2">
+                <span className={`text-xs capitalize font-medium px-3 py-1.5 rounded-xl ${getStatusColor(viewReport.status)}`}>
+                  {t(`reports.status.${viewReport.status === 'in-progress' ? 'inProgress' : viewReport.status}`)}
+                </span>
+                <span className="text-xs capitalize font-medium px-3 py-1.5 rounded-xl bg-gradient-to-r from-red-100 to-red-200 text-red-800">
+                  {t(`reports.types.${viewReport.reportType || 'other'}`)}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="text-sm font-semibold text-slate-700 mb-1">{t('reports.card.recipient')}</div>
+                  <div className="text-sm">{viewReport.recipientName}</div>
+                </div>
+                {viewReport.recipientOrganization && (
+                  <div>
+                    <div className="text-sm font-semibold text-slate-700 mb-1">{t('reports.card.organization')}</div>
+                    <div className="text-sm">{viewReport.recipientOrganization}</div>
+                  </div>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <div className="text-sm font-semibold text-slate-700 mb-1">{t('reports.card.requested')}</div>
+                  <div className="text-sm">{new Date(viewReport.requestDate).toLocaleDateString()}</div>
+                </div>
+                {viewReport.completionDate && (
+                  <div>
+                    <div className="text-sm font-semibold text-slate-700 mb-1">{t('reports.completionDate')}</div>
+                    <div className="text-sm">{new Date(viewReport.completionDate).toLocaleDateString()}</div>
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <div className="text-sm font-semibold text-slate-700 mb-1">{t('reports.card.purpose')}</div>
+                <div className="text-sm bg-slate-50 p-3 rounded-lg">{viewReport.purpose}</div>
+              </div>
+
+              {viewReport.attachments.length > 0 && (
+                <div>
+                  <div className="text-sm font-semibold text-slate-700 mb-2">{t('reports.card.attachments', { count: viewReport.attachments.length })}</div>
+                  <div className="space-y-2">
+                    {viewReport.attachments.map((attachment, idx) => (
+                      <div key={idx} className="flex items-center justify-between bg-slate-50 p-3 rounded-lg">
+                        <div className="flex items-center gap-2">
+                          <FileText className="h-5 w-5 text-slate-500" />
+                          <div>
+                            <div className="text-sm font-medium">{attachment.originalName}</div>
+                            <div className="text-xs text-slate-500">
+                              {(attachment.size / 1024).toFixed(2)} KB • {new Date(attachment.uploadedAt).toLocaleDateString()}
+                            </div>
+                          </div>
+                        </div>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          
+                        >
+                          <a
+                            href={`http://localhost:5000/${attachment.path}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {t('common.view')}
+                          </a>
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );
