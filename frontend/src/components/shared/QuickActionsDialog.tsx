@@ -81,17 +81,14 @@ export function QuickActionsDialog() {
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="max-w-3xl bg-white/95 backdrop-blur-xl border-lilac-200">
-          <DialogHeader>
-            <div className="flex items-center justify-between">
+          <DialogHeader className="flex flex-row items-center justify-between">
+            <div>
               <DialogTitle className="text-2xl font-bold text-gray-900">Quick Actions</DialogTitle>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="p-2 rounded-full hover:bg-white/60 transition-all duration-300"
-              >
-                <X className="h-5 w-5 text-gray-600" />
-              </button>
+              <p className="text-sm text-gray-500 mt-1">Choose an action to perform quickly</p>
             </div>
-            <p className="text-sm text-gray-500">Choose an action to perform quickly</p>
+            <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
+              <X className="h-4 w-4" />
+            </Button>
           </DialogHeader>
 
           <div className="grid grid-cols-2 gap-4 mt-6">

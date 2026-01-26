@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FileText, Plus, Copy, Edit, Trash2 } from 'lucide-react';
+import { FileText, Plus, Copy, Edit, Trash2, X } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
@@ -124,8 +124,11 @@ export function ConsultationTemplates({ onSelectTemplate }: { onSelectTemplate?:
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="bg-white/95 backdrop-blur-xl border-lilac-200">
-          <DialogHeader>
+          <DialogHeader className="flex flex-row items-center justify-between">
             <DialogTitle>{editingTemplate ? 'Edit Template' : 'New Template'}</DialogTitle>
+            <Button variant="ghost" size="icon" onClick={() => setIsDialogOpen(false)}>
+              <X className="h-4 w-4" />
+            </Button>
           </DialogHeader>
           <div className="space-y-4 mt-4">
             <div>

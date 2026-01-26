@@ -7,6 +7,7 @@ import {
   Check,
   Clock,
   Video,
+  X,
 } from "lucide-react";
 import { Card } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
@@ -546,8 +547,11 @@ export function DashboardPage() {
         onOpenChange={setIsAppointmentDialogOpen}
       >
         <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
+          <DialogHeader className="flex flex-row items-center justify-between">
             <DialogTitle>Add New Appointment</DialogTitle>
+            <Button variant="ghost" size="icon" onClick={() => setIsAppointmentDialogOpen(false)}>
+              <X className="h-4 w-4" />
+            </Button>
           </DialogHeader>
           <AppointmentForm onClose={handleAppointmentFormClose} />
         </DialogContent>
@@ -558,8 +562,11 @@ export function DashboardPage() {
         onOpenChange={setIsConsultationDialogOpen}
       >
         <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
+          <DialogHeader className="flex flex-row items-center justify-between">
             <DialogTitle>New Consultation Session</DialogTitle>
+            <Button variant="ghost" size="icon" onClick={() => setIsConsultationDialogOpen(false)}>
+              <X className="h-4 w-4" />
+            </Button>
           </DialogHeader>
           <ConsultationForm
             onClose={() => {
