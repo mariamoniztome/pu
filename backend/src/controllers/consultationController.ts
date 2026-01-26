@@ -1,11 +1,17 @@
 import { Request, Response } from 'express';
 import Consultation from '../models/Consultation.js';
+import {
+  addOrganizationContext,
+  buildOrganizationFilter,
+  sanitizeUpdateData,
+} from '../utils/multiTenancy.js';
 import fs from 'fs';
 import path from 'path';
 
 export const getAllConsultations = async (req: Request, res: Response) => {
   try {
-    const consultations = await Consultation.find()
+    const filter = buildOrganizationFilter(req);
+    const consultations = await Consultation.find(filter)
       .populate('patient', 'firstName lastName')
       .populate('appointment')
       .sort({ date: -1 });
@@ -17,7 +23,8 @@ export const getAllConsultations = async (req: Request, res: Response) => {
 
 export const getConsultationById = async (req: Request, res: Response) => {
   try {
-    const consultation = await Consultation.findById(req.params.id)
+    const filter = buildOrganizationFilter(req, { _id: req.params.id });
+    const consultation = await Consultation.findOne(filter)
       .populate('patient', 'firstName lastName email phone')
       .populate('appointment');
     if (!consultation) {
@@ -31,7 +38,8 @@ export const getConsultationById = async (req: Request, res: Response) => {
 
 export const getConsultationsByPatient = async (req: Request, res: Response) => {
   try {
-    const consultations = await Consultation.find({ patient: req.params.patientId })
+    const filter = buildOrganizationFilter(req, { patient: req.params.patientId });
+    const consultations = await Consultation.find(filter)
       .populate('appointment')
       .sort({ date: -1 });
     res.json(consultations);
@@ -42,9 +50,9 @@ export const getConsultationsByPatient = async (req: Request, res: Response) => 
 
 export const createConsultation = async (req: Request, res: Response) => {
   try {
-    const consultationData = req.body;
+    const consultationData = addOrganizationContext(req, req.body);
 
-    if (req.files && Array.isArray(req.files)) {
+    if (req.files && Array.isArray(req.files) && req.files.length > 0) {
       consultationData.attachments = req.files.map((file: Express.Multer.File) => ({
         filename: file.filename,
         originalName: file.originalname,
@@ -53,6 +61,8 @@ export const createConsultation = async (req: Request, res: Response) => {
         path: file.path,
         uploadedAt: new Date(),
       }));
+    } else {
+      consultationData.attachments = [];
     }
 
     const consultation = new Consultation(consultationData);
@@ -66,7 +76,8 @@ export const createConsultation = async (req: Request, res: Response) => {
 
 export const updateConsultation = async (req: Request, res: Response) => {
   try {
-    const consultationData = req.body;
+    const filter = buildOrganizationFilter(req, { _id: req.params.id });
+    const consultationData = sanitizeUpdateData(req.body);
 
     if (req.files && Array.isArray(req.files) && req.files.length > 0) {
       const newAttachments = req.files.map((file: Express.Multer.File) => ({
@@ -78,7 +89,7 @@ export const updateConsultation = async (req: Request, res: Response) => {
         uploadedAt: new Date(),
       }));
 
-      const existingConsultation = await Consultation.findById(req.params.id);
+      const existingConsultation = await Consultation.findOne(filter);
       if (existingConsultation) {
         consultationData.attachments = [
           ...(existingConsultation.attachments || []),
@@ -89,8 +100,8 @@ export const updateConsultation = async (req: Request, res: Response) => {
       }
     }
 
-    const consultation = await Consultation.findByIdAndUpdate(
-      req.params.id,
+    const consultation = await Consultation.findOneAndUpdate(
+      filter,
       consultationData,
       { new: true, runValidators: true }
     ).populate('patient', 'firstName lastName email phone');
@@ -106,7 +117,8 @@ export const updateConsultation = async (req: Request, res: Response) => {
 
 export const deleteConsultation = async (req: Request, res: Response) => {
   try {
-    const consultation = await Consultation.findById(req.params.id);
+    const filter = buildOrganizationFilter(req, { _id: req.params.id });
+    const consultation = await Consultation.findOne(filter);
     if (!consultation) {
       return res.status(404).json({ error: 'Consultation not found' });
     }
@@ -123,7 +135,7 @@ export const deleteConsultation = async (req: Request, res: Response) => {
       });
     }
 
-    await Consultation.findByIdAndDelete(req.params.id);
+    await Consultation.findOneAndDelete(filter);
     res.json({ message: 'Consultation deleted successfully' });
   } catch (error: any) {
     res.status(500).json({ error: 'Failed to delete consultation', message: error.message });
@@ -133,7 +145,8 @@ export const deleteConsultation = async (req: Request, res: Response) => {
 export const deleteConsultationAttachment = async (req: Request, res: Response) => {
   try {
     const { id, filename } = req.params;
-    const consultation = await Consultation.findById(id);
+    const filter = buildOrganizationFilter(req, { _id: id });
+    const consultation = await Consultation.findOne(filter);
 
     if (!consultation) {
       return res.status(404).json({ error: 'Consultation not found' });

@@ -1,10 +1,16 @@
 import { Request, Response } from 'express';
 import Payment from '../models/Payment.js';
+import {
+  addOrganizationContext,
+  buildOrganizationFilter,
+  sanitizeUpdateData,
+} from '../utils/multiTenancy.js';
 import fs from 'fs';
 
 export const getAllPayments = async (req: Request, res: Response) => {
   try {
-    const payments = await Payment.find()
+    const filter = buildOrganizationFilter(req);
+    const payments = await Payment.find(filter)
       .populate('patient', 'firstName lastName')
       .populate('consultation')
       .populate('appointment')
@@ -17,7 +23,8 @@ export const getAllPayments = async (req: Request, res: Response) => {
 
 export const getPaymentById = async (req: Request, res: Response) => {
   try {
-    const payment = await Payment.findById(req.params.id)
+    const filter = buildOrganizationFilter(req, { _id: req.params.id });
+    const payment = await Payment.findOne(filter)
       .populate('patient', 'firstName lastName email phone')
       .populate('consultation')
       .populate('appointment');
@@ -32,7 +39,8 @@ export const getPaymentById = async (req: Request, res: Response) => {
 
 export const getPaymentsByPatient = async (req: Request, res: Response) => {
   try {
-    const payments = await Payment.find({ patient: req.params.patientId })
+    const filter = buildOrganizationFilter(req, { patient: req.params.patientId });
+    const payments = await Payment.find(filter)
       .populate('consultation')
       .populate('appointment')
       .sort({ createdAt: -1 });
@@ -44,7 +52,7 @@ export const getPaymentsByPatient = async (req: Request, res: Response) => {
 
 export const createPayment = async (req: Request, res: Response) => {
   try {
-    const paymentData = req.body;
+    const paymentData = addOrganizationContext(req, req.body);
 
     if (req.file) {
       paymentData.receiptAttachment = {
@@ -68,10 +76,11 @@ export const createPayment = async (req: Request, res: Response) => {
 
 export const updatePayment = async (req: Request, res: Response) => {
   try {
-    const paymentData = req.body;
+    const filter = buildOrganizationFilter(req, { _id: req.params.id });
+    const paymentData = sanitizeUpdateData(req.body);
 
     if (req.file) {
-      const existingPayment = await Payment.findById(req.params.id);
+      const existingPayment = await Payment.findOne(filter);
       if (existingPayment?.receiptAttachment) {
         try {
           if (fs.existsSync(existingPayment.receiptAttachment.path)) {
@@ -92,8 +101,8 @@ export const updatePayment = async (req: Request, res: Response) => {
       };
     }
 
-    const payment = await Payment.findByIdAndUpdate(
-      req.params.id,
+    const payment = await Payment.findOneAndUpdate(
+      filter,
       paymentData,
       { new: true, runValidators: true }
     ).populate('patient', 'firstName lastName email phone');
@@ -109,7 +118,8 @@ export const updatePayment = async (req: Request, res: Response) => {
 
 export const deletePayment = async (req: Request, res: Response) => {
   try {
-    const payment = await Payment.findById(req.params.id);
+    const filter = buildOrganizationFilter(req, { _id: req.params.id });
+    const payment = await Payment.findOne(filter);
     if (!payment) {
       return res.status(404).json({ error: 'Payment not found' });
     }
@@ -124,7 +134,7 @@ export const deletePayment = async (req: Request, res: Response) => {
       }
     }
 
-    await Payment.findByIdAndDelete(req.params.id);
+    await Payment.findOneAndDelete(filter);
     res.json({ message: 'Payment deleted successfully' });
   } catch (error: any) {
     res.status(500).json({ error: 'Failed to delete payment', message: error.message });
@@ -133,7 +143,9 @@ export const deletePayment = async (req: Request, res: Response) => {
 
 export const getPaymentStats = async (req: Request, res: Response) => {
   try {
+    const filter = buildOrganizationFilter(req);
     const stats = await Payment.aggregate([
+      { $match: filter },
       {
         $group: {
           _id: '$status',

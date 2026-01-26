@@ -1,10 +1,16 @@
 import { Request, Response } from 'express';
 import ExternalReport from '../models/ExternalReport.js';
+import {
+  addOrganizationContext,
+  buildOrganizationFilter,
+  sanitizeUpdateData,
+} from '../utils/multiTenancy.js';
 import fs from 'fs';
 
 export const getAllReports = async (req: Request, res: Response) => {
   try {
-    const reports = await ExternalReport.find()
+    const filter = buildOrganizationFilter(req);
+    const reports = await ExternalReport.find(filter)
       .populate('patient', 'firstName lastName')
       .sort({ requestDate: -1 });
     res.json(reports);
@@ -15,7 +21,8 @@ export const getAllReports = async (req: Request, res: Response) => {
 
 export const getReportById = async (req: Request, res: Response) => {
   try {
-    const report = await ExternalReport.findById(req.params.id)
+    const filter = buildOrganizationFilter(req, { _id: req.params.id });
+    const report = await ExternalReport.findOne(filter)
       .populate('patient', 'firstName lastName email phone');
     if (!report) {
       return res.status(404).json({ error: 'Report not found' });
@@ -28,7 +35,8 @@ export const getReportById = async (req: Request, res: Response) => {
 
 export const getReportsByPatient = async (req: Request, res: Response) => {
   try {
-    const reports = await ExternalReport.find({ patient: req.params.patientId })
+    const filter = buildOrganizationFilter(req, { patient: req.params.patientId });
+    const reports = await ExternalReport.find(filter)
       .sort({ requestDate: -1 });
     res.json(reports);
   } catch (error: any) {
@@ -39,9 +47,10 @@ export const getReportsByPatient = async (req: Request, res: Response) => {
 export const createReport = async (req: Request, res: Response) => {
   try {
     const { attachments, ...reportData } = req.body;
+    const reportDataWithContext = addOrganizationContext(req, reportData);
 
     if (req.files && Array.isArray(req.files) && req.files.length > 0) {
-      reportData.attachments = req.files.map((file: Express.Multer.File) => ({
+      reportDataWithContext.attachments = req.files.map((file: Express.Multer.File) => ({
         filename: file.filename,
         originalName: file.originalname,
         mimetype: file.mimetype,
@@ -50,10 +59,10 @@ export const createReport = async (req: Request, res: Response) => {
         uploadedAt: new Date(),
       }));
     } else {
-      reportData.attachments = [];
+      reportDataWithContext.attachments = [];
     }
 
-    const report = new ExternalReport(reportData);
+    const report = new ExternalReport(reportDataWithContext);
     await report.save();
     await report.populate('patient', 'firstName lastName email phone');
     res.status(201).json(report);
@@ -66,6 +75,8 @@ export const createReport = async (req: Request, res: Response) => {
 export const updateReport = async (req: Request, res: Response) => {
   try {
     const { attachments, ...reportData } = req.body;
+    const filter = buildOrganizationFilter(req, { _id: req.params.id });
+    const sanitizedData = sanitizeUpdateData(reportData);
 
     if (req.files && Array.isArray(req.files) && req.files.length > 0) {
       const newAttachments = req.files.map((file: Express.Multer.File) => ({
@@ -77,20 +88,20 @@ export const updateReport = async (req: Request, res: Response) => {
         uploadedAt: new Date(),
       }));
 
-      const existingReport = await ExternalReport.findById(req.params.id);
+      const existingReport = await ExternalReport.findOne(filter);
       if (existingReport) {
-        reportData.attachments = [
+        sanitizedData.attachments = [
           ...(existingReport.attachments || []),
           ...newAttachments,
         ];
       } else {
-        reportData.attachments = newAttachments;
+        sanitizedData.attachments = newAttachments;
       }
     }
 
-    const report = await ExternalReport.findByIdAndUpdate(
-      req.params.id,
-      reportData,
+    const report = await ExternalReport.findOneAndUpdate(
+      filter,
+      sanitizedData,
       { new: true, runValidators: true }
     ).populate('patient', 'firstName lastName email phone');
 
@@ -106,7 +117,8 @@ export const updateReport = async (req: Request, res: Response) => {
 
 export const deleteReport = async (req: Request, res: Response) => {
   try {
-    const report = await ExternalReport.findById(req.params.id);
+    const filter = buildOrganizationFilter(req, { _id: req.params.id });
+    const report = await ExternalReport.findOne(filter);
     if (!report) {
       return res.status(404).json({ error: 'Report not found' });
     }
@@ -123,7 +135,7 @@ export const deleteReport = async (req: Request, res: Response) => {
       });
     }
 
-    await ExternalReport.findByIdAndDelete(req.params.id);
+    await ExternalReport.findOneAndDelete(filter);
     res.json({ message: 'Report deleted successfully' });
   } catch (error: any) {
     res.status(500).json({ error: 'Failed to delete report', message: error.message });
@@ -133,7 +145,8 @@ export const deleteReport = async (req: Request, res: Response) => {
 export const deleteReportAttachment = async (req: Request, res: Response) => {
   try {
     const { id, filename } = req.params;
-    const report = await ExternalReport.findById(id);
+    const filter = buildOrganizationFilter(req, { _id: id });
+    const report = await ExternalReport.findOne(filter);
 
     if (!report) {
       return res.status(404).json({ error: 'Report not found' });
