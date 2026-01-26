@@ -16,7 +16,6 @@ import {
   Building,
 } from 'lucide-react';
 import { cn } from '../lib/utils';
-import { Chatbot } from './Chatbot';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useTranslation } from '../hooks/useTranslation';
 import { useAuth } from '../contexts/AuthContext';
@@ -225,8 +224,6 @@ export function Layout() {
         </main>
       </div>
 
-      {/* Chatbot Widget */}
-      <Chatbot />
     </div>
   );
 }

@@ -427,13 +427,5 @@
   "language": {
     "english": "English",
     "portuguese": "Português (Portugal)"
-  },
-  "chatbot": {
-    "supportChat": "Support Chat",
-    "supportAgent": "Support Agent",
-    "welcomeTitle": "Welcome to Support Chat",
-    "welcomeMessage": "I'm here to help with appointments, consultations, payments, and general guidance.",
-    "typePlaceholder": "Type your message...",
-    "errorMessage": "Sorry, I encountered an error. Please try again."
   }
 }

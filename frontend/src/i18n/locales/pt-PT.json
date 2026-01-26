@@ -39,7 +39,8 @@
     "other": "Outro",
     "required": "*",
     "grid": "Grelha",
-    "table": "Tabela"
+    "table": "Tabela",
+    "view": "Ver"
   },
   "navigation": {
     "dashboard": "Painel de Controlo",
@@ -413,13 +414,5 @@
   "language": {
     "english": "English",
     "portuguese": "Português (Portugal)"
-  },
-  "chatbot": {
-    "supportChat": "Chat de Suporte",
-    "supportAgent": "Agente de Suporte",
-    "welcomeTitle": "Bem-vindo ao Chat de Suporte",
-    "welcomeMessage": "Estou aqui para ajudar com consultas, pagamentos e orientações gerais.",
-    "typePlaceholder": "Escreva a sua mensagem...",
-    "errorMessage": "Desculpe, ocorreu um erro. Por favor, tente novamente."
   }
 }
