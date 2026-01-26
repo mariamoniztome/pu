@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, DollarSign, FileText, Eye, Edit, X, Download } from "lucide-react";
+import { Plus, DollarSign, FileText, Eye, Edit, X, Download, Trash2 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import {
   Card,
@@ -59,6 +59,17 @@ export function PaymentsPage() {
         return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm(t('payments.confirmDelete') || 'Are you sure?')) return;
+    
+    try {
+      await paymentsApi.delete(id);
+      loadPayments();
+    } catch (error) {
+      console.error('Failed to delete payment:', error);
     }
   };
 
@@ -181,6 +192,13 @@ export function PaymentsPage() {
                 >
                   <Edit className="h-4 w-4" />
                 </Button>
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => handleDelete(payment._id)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
               </CardFooter>
             </Card>
           ))}
@@ -209,7 +227,7 @@ export function PaymentsPage() {
                 <X className="h-4 w-4" />
               </Button>
             </DialogHeader>
-            <div className="space-y-4 px-6 pb-6">
+            <div className="space-y-4 px-12 pb-12">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <div className="text-sm font-semibold text-slate-700 mb-1">{t('common.status')}</div>

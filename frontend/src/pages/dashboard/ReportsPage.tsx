@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, FileText, Eye, Edit, X, Download } from "lucide-react";
+import { Plus, FileText, Eye, Edit, X, Download, Trash2 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import {
   Card,
@@ -62,6 +62,17 @@ export function ReportsPage() {
         return "bg-purple-100 text-purple-800";
       default:
         return "bg-gray-100 text-gray-800";
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm(t('reports.confirmDelete') || 'Are you sure?')) return;
+    
+    try {
+      await externalReportsApi.delete(id);
+      loadReports();
+    } catch (error) {
+      console.error('Failed to delete report:', error);
     }
   };
 
@@ -169,6 +180,13 @@ export function ReportsPage() {
               >
                 <Edit className="h-4 w-4" />
               </Button>
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={() => handleDelete(report._id)}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
             </CardFooter>
           </Card>
         ))}
@@ -196,7 +214,7 @@ export function ReportsPage() {
                 <X className="h-4 w-4" />
               </Button>
             </DialogHeader>
-            <div className="space-y-4 px-6 pb-6">
+            <div className="space-y-4 px-12 pb-12">
               <div className="flex gap-2">
                 <span className={`text-xs capitalize font-medium px-3 py-1.5 rounded-xl ${getStatusColor(viewReport.status)}`}>
                   {t(`reports.status.${viewReport.status === 'in-progress' ? 'inProgress' : viewReport.status}`)}

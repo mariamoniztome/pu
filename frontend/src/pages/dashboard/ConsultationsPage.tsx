@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, FileText, Eye, Edit, X, Download } from 'lucide-react';
+import { Plus, FileText, Eye, Edit, X, Download, Trash2 } from 'lucide-react';
 import { Button } from '../../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '../../components/ui/card';
 import { consultationsApi } from '../../api';
@@ -42,6 +42,17 @@ export function ConsultationsPage() {
     const { firstName = '', lastName = '' } = consultation.patient;
     const name = `${firstName} ${lastName}`.trim();
     return name || t('common.unknownPatient');
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm(t('consultations.confirmDelete') || 'Are you sure?')) return;
+    
+    try {
+      await consultationsApi.delete(id);
+      loadConsultations();
+    } catch (error) {
+      console.error('Failed to delete consultation:', error);
+    }
   };
 
   if (loading) {
@@ -128,6 +139,13 @@ export function ConsultationsPage() {
                   >
                     <Edit className="h-4 w-4" />
                   </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleDelete(consultation._id)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </CardFooter>
               </Card>
             ))}
@@ -163,7 +181,7 @@ export function ConsultationsPage() {
                 <X className="h-4 w-4" />
               </Button>
             </DialogHeader>
-            <div className="space-y-4 px-6 pb-6">
+            <div className="space-y-4 px-12 pb-12">
               <div>
                 <div className="text-sm font-semibold text-slate-700 mb-1">{t('common.date')}</div>
                 <div className="text-sm">{new Date(viewConsultation.date).toLocaleDateString()}</div>
