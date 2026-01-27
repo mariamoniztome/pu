@@ -76,7 +76,8 @@
     "patientStatistics": "Estatísticas de pacientes",
     "allPatients": "Todos os pacientes",
     "newPatients": "Novos pacientes",
-    "insurance": "Seguro"
+    "insurance": "Seguro",
+    "unknownPatient": "Desconhecido"
   },
   "patients": {
     "title": "Pacientes",
@@ -202,7 +203,13 @@
     "sessionNumber": "Sessão #{{number}}",
     "chiefComplaint": "Queixa Principal",
     "sessionNotes": "Notas da Sessão",
+    "clinicalObservations": "Observações Clínicas",
+    "interventions": "Intervenções",
+    "homework": "Tarefas de Casa",
+    "progressAssessment": "Avaliação de Progresso",
+    "nextSessionPlan": "Plano da Próxima Sessão",
     "attachments": "{{count}} anexo(s)",
+    "confirmDelete": "Tem a certeza que deseja eliminar esta consulta?",
     "form": {
       "titleEdit": "Editar Sessão",
       "titleNew": "Novo Registo de Sessão",
@@ -235,6 +242,7 @@
     "description": "Descrição",
     "noReports": "Nenhum relatório encontrado",
     "loadingReports": "A carregar relatórios...",
+    "confirmDelete": "Tem a certeza que deseja eliminar este relatório?",
     "types": {
       "court": "Tribunal",
       "school": "Escola",
@@ -303,6 +311,7 @@
     "recentPayments": "Pagamentos Recentes",
     "partial": "Parcial",
     "unpaid": "Não Pago",
+    "confirmDelete": "Tem a certeza que deseja eliminar este pagamento?",
     "card": {
       "invoice": "Fatura",
       "amount": "Valor",
