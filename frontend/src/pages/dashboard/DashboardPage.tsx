@@ -263,11 +263,11 @@ export function DashboardPage() {
         <h1 className="text-3xl font-bold text-gray-900 mb-1">
           {t("dashboard.greeting", {
             name: 
-                `${doctor?.firstName} ${doctor?.lastName}`
+                `${doctor?.firstName}!`
               
           })}
         </h1>
-        <p className="text-gray-500">{t("dashboard.subtitle")}</p>
+        {/* <p className="text-gray-500">{t("dashboard.subtitle")}</p> */}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

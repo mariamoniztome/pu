@@ -6,7 +6,8 @@ import { consultationsApi } from '../../api';
 import { Consultation } from '../../types/consultation';
 import { ConsultationForm } from '../../components/consultations/ConsultationForm';
 import { ConsultationTemplates } from '../../components/consultations/ConsultationTemplates';
-import { ConsultationChecklist } from '../../components/consultations/ConsultationChecklist';
+// ConsultationChecklist disabled — doesn't fit the current consultation workflow
+// import { ConsultationChecklist } from '../../components/consultations/ConsultationChecklist';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 import { useTranslation } from '../../hooks/useTranslation';
 
@@ -72,8 +73,8 @@ export function ConsultationsPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
+      <div className="grid grid-cols-1 gap-6">
+        <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {consultations.map((consultation) => (
               <Card key={consultation._id}>
@@ -152,10 +153,6 @@ export function ConsultationsPage() {
           </div>
 
           <ConsultationTemplates />
-        </div>
-
-        <div className="space-y-6">
-          <ConsultationChecklist />
         </div>
       </div>
 
