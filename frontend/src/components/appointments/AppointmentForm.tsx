@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { X } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -117,16 +116,13 @@ export function AppointmentForm({
   return (
     <Dialog open onOpenChange={onClose}>
       <DialogContent>
-        <DialogHeader className="flex flex-row items-center justify-between">
-          <DialogTitle className="text-slate-800">
+        <DialogHeader>
+          <DialogTitle>
             {appointment ? t('appointments.editAppointment') : t('appointments.scheduleNewAppointment')}
           </DialogTitle>
-          <Button variant="ghost" size="icon" onClick={onClose}>
-            <X className="h-4 w-4" />
-          </Button>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 px-12 pb-12">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {/* Patient */}
           <div>
             <Label>{t('appointments.patient')} {t('common.required')}</Label>

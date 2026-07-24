@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X, Upload } from "lucide-react";
+import { Upload } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -152,16 +152,13 @@ export function ConsultationForm({
   return (
     <Dialog open onOpenChange={onClose}>
       <DialogContent>
-        <DialogHeader className="flex flex-row items-center justify-between">
-          <DialogTitle className="text-slate-800">
+        <DialogHeader>
+          <DialogTitle>
             {consultation ? t('consultations.form.titleEdit') : t('consultations.form.titleNew')}
           </DialogTitle>
-          <Button variant="ghost" size="icon" onClick={onClose}>
-            <X className="h-4 w-4" />
-          </Button>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 px-12 pb-12">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {/* Patient + Date */}
           <div className="grid grid-cols-3 gap-4">
             <div className="col-span-2">

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X, Upload } from "lucide-react";
+import { Upload } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -149,15 +149,12 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
   return (
     <Dialog open onOpenChange={onClose}>
       <DialogContent>
-      <DialogHeader className="flex  flex-row items-center justify-between">
-        <DialogTitle className="text-slate-800">
+      <DialogHeader>
+        <DialogTitle>
           {payment ? t('payments.form.titleEdit') : t('payments.form.titleNew')}
         </DialogTitle>
-        <Button variant="ghost" size="icon" onClick={onClose}>
-          <X className="h-4 w-4" />
-        </Button>
-      </DialogHeader>      
-        <form onSubmit={handleSubmit} className="space-y-4 px-12 pb-12">
+      </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
           {/* Patient */}
           <div>
             <Label>{t('payments.form.patient')} *</Label>

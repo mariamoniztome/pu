@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FileText, Calendar, UserPlus, Euro, ClipboardList, X } from 'lucide-react';
+import { FileText, Calendar, UserPlus, Euro, ClipboardList } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
@@ -83,14 +83,9 @@ export function QuickActionsDialog() {
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="max-w-3xl bg-white/95 backdrop-blur-xl border-lilac-200">
-          <DialogHeader className="flex flex-row items-center justify-between">
-            <div>
-              <DialogTitle className="text-2xl font-bold text-gray-900">{t('quickActions.title')}</DialogTitle>
-              <p className="text-sm text-gray-500 mt-1">{t('quickActions.subtitle')}</p>
-            </div>
-            <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
-              <X className="h-4 w-4" />
-            </Button>
+          <DialogHeader>
+            <DialogTitle>{t('quickActions.title')}</DialogTitle>
+            <p className="text-sm text-gray-500">{t('quickActions.subtitle')}</p>
           </DialogHeader>
 
           <div className="grid grid-cols-2 gap-4 mt-6">

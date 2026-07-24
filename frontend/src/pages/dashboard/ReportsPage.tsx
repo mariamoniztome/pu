@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, FileText, Eye, Edit, X, Download, Trash2, FileDown } from "lucide-react";
+import { Plus, FileText, Eye, Edit, Download, Trash2, FileDown } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import {
   Card,
@@ -213,24 +213,19 @@ export function ReportsPage() {
         <Dialog open onOpenChange={() => setViewReport(null)}>
           <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
             <DialogHeader className="flex flex-row items-center justify-between">
-              <DialogTitle className="text-2xl">
+              <DialogTitle>
                 {t('reports.details')} - {getPatientName(viewReport)}
               </DialogTitle>
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => exportReportToPdf(viewReport)}
-                >
-                  <FileDown className="h-4 w-4 mr-1" />
-                  {t('reports.exportPdf')}
-                </Button>
-                <Button variant="ghost" size="icon" onClick={() => setViewReport(null)}>
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => exportReportToPdf(viewReport)}
+              >
+                <FileDown className="h-4 w-4 mr-1" />
+                {t('reports.exportPdf')}
+              </Button>
             </DialogHeader>
-            <div className="space-y-4 px-12 pb-12">
+            <div className="space-y-4">
               <div className="flex gap-2">
                 <span className={`text-xs capitalize font-medium px-3 py-1.5 rounded-xl ${getStatusColor(viewReport.status)}`}>
                   {t(`reports.status.${viewReport.status === 'in-progress' ? 'inProgress' : viewReport.status}`)}

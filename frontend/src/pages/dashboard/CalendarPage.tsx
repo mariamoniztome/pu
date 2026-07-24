@@ -407,23 +407,13 @@ export function CalendarPage() {
         onOpenChange={(open) => !loading && setShowDialog(open)}
       >
         <DialogContent>
-          <DialogHeader className="flex flex-row items-center justify-between">
-            <DialogTitle className="text-xl font-bold text-gray-900">
+          <DialogHeader>
+            <DialogTitle>
               {selectedEvent ? t('calendar.editAppointmentTitle') : t('calendar.newAppointmentTitle')}
             </DialogTitle>
-
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              onClick={() => setShowDialog(false)}
-              disabled={loading}
-            >
-              <X className="h-4 w-4" />
-            </Button>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-6 px-12 pb-12">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-400">
                 {t('calendar.appointmentDetailsSection')}

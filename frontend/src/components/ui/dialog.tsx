@@ -1,6 +1,10 @@
 import * as React from "react"
+import { X } from "lucide-react"
 
 import { cn } from "../../lib/utils"
+import { useTranslation } from "../../hooks/useTranslation"
+
+const DialogContext = React.createContext<{ onOpenChange?: (open: boolean) => void }>({})
 
 const Dialog = ({ open, onOpenChange, children }: {
   open?: boolean
@@ -8,9 +12,9 @@ const Dialog = ({ open, onOpenChange, children }: {
   children: React.ReactNode
 }) => {
   return (
-    <>
+    <DialogContext.Provider value={{ onOpenChange }}>
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
             className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm"
             onClick={() => onOpenChange?.(false)}
@@ -20,7 +24,7 @@ const Dialog = ({ open, onOpenChange, children }: {
           </div>
         </div>
       )}
-    </>
+    </DialogContext.Provider>
   )
 }
 
@@ -41,21 +45,37 @@ const DialogTrigger = ({
 
 const DialogContent = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, children, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "relative bg-white rounded-3xl shadow-lg w-[45rem] max-h-[90vh] overflow-hidden flex flex-col",
-      className
-    )}
-    {...props}
-  >
-    <div className="overflow-y-auto flex-1">
-      {children}
+  React.HTMLAttributes<HTMLDivElement> & { hideCloseButton?: boolean }
+>(({ className, children, hideCloseButton, ...props }, ref) => {
+  const { onOpenChange } = React.useContext(DialogContext)
+  const { t } = useTranslation()
+
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "relative bg-white rounded-3xl shadow-lg w-[45rem] max-h-[90vh] overflow-hidden flex flex-col",
+        className
+      )}
+      {...props}
+    >
+      {!hideCloseButton && (
+        <button
+          type="button"
+          onClick={() => onOpenChange?.(false)}
+          className="absolute top-5 right-5 z-10 flex h-9 w-9 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors"
+          aria-label={t('common.close')}
+          title={t('common.close')}
+        >
+          <X className="h-5 w-5" />
+        </button>
+      )}
+      <div className="overflow-y-auto flex-1 px-8 py-8">
+        {children}
+      </div>
     </div>
-  </div>
-))
+  )
+})
 DialogContent.displayName = "DialogContent"
 
 const DialogHeader = ({
@@ -64,7 +84,7 @@ const DialogHeader = ({
 }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
     className={cn(
-      "flex flex-col space-y-1.5 text-center sm:text-left mb-4 px-12 pt-12",
+      "flex flex-col space-y-1.5 text-center sm:text-left mb-6 pr-10",
       className
     )}
     {...props}
@@ -79,7 +99,7 @@ const DialogTitle = React.forwardRef<
   <h2
     ref={ref}
     className={cn(
-      "text-2xl font-semibold leading-none tracking-tight",
+      "text-2xl font-semibold leading-none tracking-tight text-gray-900",
       className
     )}
     {...props}

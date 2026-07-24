@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, Euro, FileText, Eye, Edit, X, Download, Trash2 } from "lucide-react";
+import { Plus, Euro, FileText, Eye, Edit, Download, Trash2 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import {
   Card,
@@ -216,15 +216,12 @@ export function PaymentsPage() {
       {viewPayment && (
         <Dialog open onOpenChange={() => setViewPayment(null)}>
           <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader className="flex flex-row items-center justify-between">
-              <DialogTitle className="text-2xl">
+            <DialogHeader>
+              <DialogTitle>
                 {t('payments.details')} - {getPatientName(viewPayment)}
               </DialogTitle>
-              <Button variant="ghost" size="icon" onClick={() => setViewPayment(null)}>
-                <X className="h-4 w-4" />
-              </Button>
             </DialogHeader>
-            <div className="space-y-4 px-12 pb-12">
+            <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <div className="text-sm font-semibold text-slate-700 mb-1">{t('common.status')}</div>

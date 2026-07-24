@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, X } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { authAPI } from '../../api/auth';
 import type { Doctor, InviteDoctorData } from '../../types/auth';
@@ -233,14 +233,11 @@ export const DoctorsPage: React.FC = () => {
       {/* Invite Doctor Dialog */}
       <Dialog open={showInviteDialog} onOpenChange={setShowInviteDialog}>
         <DialogContent>
-          <DialogHeader className="flex flex-row items-center justify-between">
+          <DialogHeader>
             <DialogTitle>{t('doctors.inviteNewDoctor')}</DialogTitle>
-            <Button variant="ghost" size="icon" onClick={() => setShowInviteDialog(false)}>
-              <X className="h-4 w-4" />
-            </Button>
           </DialogHeader>
 
-          <form onSubmit={handleInvite} className="space-y-4 px-12 pb-12">
+          <form onSubmit={handleInvite} className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="firstName">
