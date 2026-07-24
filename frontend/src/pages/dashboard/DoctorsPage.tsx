@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { authAPI } from '../../api/auth';
 import type { Doctor, InviteDoctorData } from '../../types/auth';
@@ -119,6 +119,7 @@ export const DoctorsPage: React.FC = () => {
         </div>
         {canManageDoctors && (
           <Button onClick={() => setShowInviteDialog(true)}>
+            <Plus className="h-5 w-5 mr-2" />
             {t('doctors.inviteDoctor')}
           </Button>
         )}
@@ -130,8 +131,8 @@ export const DoctorsPage: React.FC = () => {
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                    <span className="text-xl font-semibold text-blue-600">
+                  <div className="w-12 h-12 rounded-full bg-lilac-100 flex items-center justify-center">
+                    <span className="text-xl font-semibold text-lilac-700">
                       {doc.firstName[0]}
                       {doc.lastName[0]}
                     </span>
