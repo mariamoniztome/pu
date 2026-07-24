@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, FileText, Eye, Edit, X, Download, Trash2 } from "lucide-react";
+import { Plus, FileText, Eye, Edit, X, Download, Trash2, FileDown } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import {
   Card,
@@ -13,6 +13,7 @@ import { ExternalReport } from "../../types/reports";
 import { ReportForm } from "../../components/reports/ReportForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../components/ui/dialog";
 import { useTranslation } from "../../hooks/useTranslation";
+import { exportReportToPdf } from "../../lib/exportReportPdf";
 
 export function ReportsPage() {
   const { t } = useTranslation();
@@ -181,6 +182,14 @@ export function ReportsPage() {
                 <Edit className="h-4 w-4" />
               </Button>
               <Button
+                variant="outline"
+                size="sm"
+                title={t('reports.exportPdf')}
+                onClick={() => exportReportToPdf(report)}
+              >
+                <FileDown className="h-4 w-4" />
+              </Button>
+              <Button
                 variant="destructive"
                 size="sm"
                 onClick={() => handleDelete(report._id)}
@@ -210,9 +219,19 @@ export function ReportsPage() {
               <DialogTitle className="text-2xl">
                 {t('reports.details')} - {getPatientName(viewReport)}
               </DialogTitle>
-              <Button variant="ghost" size="icon" onClick={() => setViewReport(null)}>
-                <X className="h-4 w-4" />
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => exportReportToPdf(viewReport)}
+                >
+                  <FileDown className="h-4 w-4 mr-1" />
+                  {t('reports.exportPdf')}
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => setViewReport(null)}>
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
             </DialogHeader>
             <div className="space-y-4 px-12 pb-12">
               <div className="flex gap-2">

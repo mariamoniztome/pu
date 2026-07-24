@@ -243,6 +243,7 @@
     "noReports": "Nenhum relatório encontrado",
     "loadingReports": "A carregar relatórios...",
     "confirmDelete": "Tem a certeza que deseja eliminar este relatório?",
+    "exportPdf": "Exportar PDF",
     "types": {
       "court": "Tribunal",
       "school": "Escola",
@@ -385,6 +386,7 @@
     "day": "Dia",
     "newEvent": "Novo Evento",
     "newAppointment": "Nova Consulta",
+    "timeRange": "Intervalo horário",
     "editAppointmentTitle": "Editar Consulta",
     "newAppointmentTitle": "Nova Consulta",
     "appointmentType": "Tipo de Consulta",

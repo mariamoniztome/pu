@@ -248,6 +248,7 @@
     "completionDate": "Completion Date",
     "content": "Content",
     "confirmDelete": "Are you sure you want to delete this report?",
+    "exportPdf": "Export PDF",
     "types": {
       "court": "Court",
       "school": "School",
@@ -393,6 +394,7 @@
     "day": "Day",
     "newEvent": "New Event",
     "newAppointment": "New Appointment",
+    "timeRange": "Time range",
     "editAppointmentTitle": "Edit Appointment",
     "newAppointmentTitle": "New Appointment",
     "appointmentType": "Appointment Type",
