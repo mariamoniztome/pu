@@ -58,7 +58,9 @@
     "manageDoctors": "Manage Doctors",
     "collapseMenu": "Collapse menu",
     "expandMenu": "Expand menu",
-    "collapse": "Collapse"
+    "collapse": "Collapse",
+    "pinSidebar": "Pin sidebar open",
+    "unpinSidebar": "Unpin sidebar"
   },
   "dashboard": {
     "title": "Dashboard",

@@ -58,7 +58,9 @@
     "manageDoctors": "Gerir Médicos",
     "collapseMenu": "Recolher menu",
     "expandMenu": "Expandir menu",
-    "collapse": "Recolher"
+    "collapse": "Recolher",
+    "pinSidebar": "Fixar barra lateral",
+    "unpinSidebar": "Desafixar barra lateral"
   },
   "dashboard": {
     "title": "Painel de Controlo",
