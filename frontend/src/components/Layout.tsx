@@ -9,7 +9,6 @@ import {
   DollarSign,
   Home,
   Settings,
-  HelpCircle,
   Menu,
   LogOut,
   UserCircle,
@@ -116,13 +115,7 @@ export function Layout() {
               {isExpanded && <span>{t('navigation.settings')}</span>}
             </Link>
 
-            <button
-              className="flex items-center gap-3 px-4 py-4 rounded-3xl text-sm font-medium transition-all duration-300 w-full text-gray-600 hover:bg-white/60 hover:text-gray-900"
-              title={!isExpanded ? 'Help' : undefined}
-            >
-              <HelpCircle className="h-5 w-5" />
-              {isExpanded && <span>Help</span>}
-            </button>
+            {/* Help button disabled for now */}
 
             <button
               onClick={() => setIsExpanded((v) => !v)}
