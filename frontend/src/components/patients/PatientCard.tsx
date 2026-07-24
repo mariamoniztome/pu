@@ -2,6 +2,7 @@ import { Edit, Trash2, Mail, Phone, MapPin } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Patient } from '../../types/patient';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface PatientCardProps {
   patient: Patient;
@@ -10,6 +11,7 @@ interface PatientCardProps {
 }
 
 export function PatientCard({ patient, onEdit, onDelete }: PatientCardProps) {
+  const { t } = useTranslation();
   const age = Math.floor(
     (new Date().getTime() - new Date(patient.dateOfBirth).getTime()) / (365.25 * 24 * 60 * 60 * 1000)
   );
@@ -29,7 +31,7 @@ const genderColors = {
             {patient.gender}
           </span>
         </CardTitle>
-        <p className="text-sm text-slate-600 font-medium">Age: {age} years</p>
+        <p className="text-sm text-slate-600 font-medium">{t('patients.ageYears', { age })}</p>
       </CardHeader>
       <CardContent className="space-y-3">
         {patient.email && (
@@ -57,7 +59,7 @@ const genderColors = {
           onClick={() => onEdit(patient)}
         >
           <Edit className="h-4 w-4 mr-1" />
-          Edit
+          {t('common.edit')}
         </Button>
         <Button
           variant="destructive"

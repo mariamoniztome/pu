@@ -6,8 +6,10 @@ import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Card } from '../../components/ui/card';
 import { toast } from 'sonner';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export const RegisterPage: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { register } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -30,12 +32,12 @@ export const RegisterPage: React.FC = () => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      toast.error('Passwords do not match');
+      toast.error(t('auth.register.passwordsDoNotMatch'));
       return;
     }
 
     if (formData.password.length < 8) {
-      toast.error('Password must be at least 8 characters');
+      toast.error(t('auth.register.passwordTooShort'));
       return;
     }
 
@@ -44,11 +46,11 @@ export const RegisterPage: React.FC = () => {
     try {
       const { confirmPassword, ...registerData } = formData;
       await register(registerData);
-      toast.success('Registration successful! Welcome to your clinic.');
+      toast.success(t('auth.register.registrationSuccess'));
       navigate('/', { replace: true });
     } catch (error: any) {
       console.error('Registration error:', error);
-      toast.error(error.response?.data?.message || 'Registration failed. Please try again.');
+      toast.error(error.response?.data?.message || t('auth.register.registrationFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -66,10 +68,10 @@ export const RegisterPage: React.FC = () => {
       <Card className="w-full max-w-2xl p-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Create Your Account
+            {t('auth.register.createAccount')}
           </h1>
           <p className="text-gray-600">
-            Set up your psychology clinic management system
+            {t('auth.register.subtitle')}
           </p>
         </div>
 
@@ -77,12 +79,12 @@ export const RegisterPage: React.FC = () => {
           {/* Organization Information */}
           <div className="border-b pb-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              Organization Information
+              {t('auth.register.organizationInfo')}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="md:col-span-2">
                 <Label htmlFor="organizationName">
-                  Organization Name <span className="text-red-500">*</span>
+                  {t('auth.register.organizationName')} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="organizationName"
@@ -90,14 +92,14 @@ export const RegisterPage: React.FC = () => {
                   required
                   value={formData.organizationName}
                   onChange={handleChange}
-                  placeholder="My Psychology Clinic"
+                  placeholder={t('auth.register.organizationNamePlaceholder')}
                   className="mt-1"
                 />
               </div>
 
               <div>
                 <Label htmlFor="organizationType">
-                  Type <span className="text-red-500">*</span>
+                  {t('auth.register.organizationType')} <span className="text-red-500">*</span>
                 </Label>
                 <select
                   id="organizationType"
@@ -107,26 +109,26 @@ export const RegisterPage: React.FC = () => {
                   onChange={handleChange}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 >
-                  <option value="individual">Individual Practice</option>
-                  <option value="clinic">Clinic (Multiple Doctors)</option>
+                  <option value="individual">{t('auth.register.individualPractice')}</option>
+                  <option value="clinic">{t('auth.register.clinicMultipleDoctors')}</option>
                 </select>
               </div>
 
               <div>
-                <Label htmlFor="organizationEmail">Organization Email</Label>
+                <Label htmlFor="organizationEmail">{t('auth.register.organizationEmail')}</Label>
                 <Input
                   id="organizationEmail"
                   name="organizationEmail"
                   type="email"
                   value={formData.organizationEmail}
                   onChange={handleChange}
-                  placeholder="contact@clinic.com"
+                  placeholder={t('auth.register.organizationEmailPlaceholder')}
                   className="mt-1"
                 />
               </div>
 
               <div className="md:col-span-2">
-                <Label htmlFor="organizationPhone">Organization Phone</Label>
+                <Label htmlFor="organizationPhone">{t('auth.register.organizationPhone')}</Label>
                 <Input
                   id="organizationPhone"
                   name="organizationPhone"
@@ -143,12 +145,12 @@ export const RegisterPage: React.FC = () => {
           {/* Doctor Information */}
           <div className="border-b pb-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              Your Information
+              {t('auth.register.yourInfo')}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="firstName">
-                  First Name <span className="text-red-500">*</span>
+                  {t('auth.register.firstName')} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="firstName"
@@ -156,14 +158,14 @@ export const RegisterPage: React.FC = () => {
                   required
                   value={formData.firstName}
                   onChange={handleChange}
-                  placeholder="John"
+                  placeholder={t('auth.register.firstNamePlaceholder')}
                   className="mt-1"
                 />
               </div>
 
               <div>
                 <Label htmlFor="lastName">
-                  Last Name <span className="text-red-500">*</span>
+                  {t('auth.register.lastName')} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="lastName"
@@ -171,14 +173,14 @@ export const RegisterPage: React.FC = () => {
                   required
                   value={formData.lastName}
                   onChange={handleChange}
-                  placeholder="Doe"
+                  placeholder={t('auth.register.lastNamePlaceholder')}
                   className="mt-1"
                 />
               </div>
 
               <div>
                 <Label htmlFor="email">
-                  Email <span className="text-red-500">*</span>
+                  {t('auth.register.email')} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="email"
@@ -188,51 +190,51 @@ export const RegisterPage: React.FC = () => {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="john@example.com"
+                  placeholder={t('auth.register.emailPlaceholder')}
                   className="mt-1"
                 />
               </div>
 
               <div>
-                <Label htmlFor="phone">Phone</Label>
+                <Label htmlFor="phone">{t('auth.register.phone')}</Label>
                 <Input
                   id="phone"
                   name="phone"
                   type="tel"
                   value={formData.phone}
                   onChange={handleChange}
-                  placeholder="+1 (555) 987-6543"
+                  placeholder={t('auth.register.phonePlaceholder')}
                   className="mt-1"
                 />
               </div>
 
               <div>
-                <Label htmlFor="specialization">Specialization</Label>
+                <Label htmlFor="specialization">{t('auth.register.specialization')}</Label>
                 <Input
                   id="specialization"
                   name="specialization"
                   value={formData.specialization}
                   onChange={handleChange}
-                  placeholder="Clinical Psychology"
+                  placeholder={t('auth.register.specializationPlaceholder')}
                   className="mt-1"
                 />
               </div>
 
               <div>
-                <Label htmlFor="licenseNumber">License Number</Label>
+                <Label htmlFor="licenseNumber">{t('auth.register.licenseNumber')}</Label>
                 <Input
                   id="licenseNumber"
                   name="licenseNumber"
                   value={formData.licenseNumber}
                   onChange={handleChange}
-                  placeholder="PSY12345"
+                  placeholder={t('auth.register.licenseNumberPlaceholder')}
                   className="mt-1"
                 />
               </div>
 
               <div>
                 <Label htmlFor="password">
-                  Password <span className="text-red-500">*</span>
+                  {t('auth.register.password')} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="password"
@@ -246,13 +248,13 @@ export const RegisterPage: React.FC = () => {
                   className="mt-1"
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Must be at least 8 characters
+                  {t('auth.register.passwordHelp')}
                 </p>
               </div>
 
               <div>
                 <Label htmlFor="confirmPassword">
-                  Confirm Password <span className="text-red-500">*</span>
+                  {t('auth.register.confirmPassword')} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="confirmPassword"
@@ -296,21 +298,21 @@ export const RegisterPage: React.FC = () => {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
                 </svg>
-                Creating account...
+                {t('auth.register.creatingAccount')}
               </span>
             ) : (
-              'Create Account'
+              t('auth.register.createAccountButton')
             )}
           </Button>
         </form>
 
         <div className="mt-6 text-center text-sm">
-          <span className="text-gray-600">Already have an account? </span>
+          <span className="text-gray-600">{t('auth.register.alreadyHaveAccount')}</span>
           <Link
             to="/login"
             className="font-medium text-blue-600 hover:text-blue-500"
           >
-            Sign in here
+            {t('auth.register.signInHere')}
           </Link>
         </div>
       </Card>

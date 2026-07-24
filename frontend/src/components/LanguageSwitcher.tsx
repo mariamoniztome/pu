@@ -9,7 +9,7 @@ import {
 import { useTranslation } from '../hooks/useTranslation';
 
 export function LanguageSwitcher() {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
 
   const handleLanguageChange = (language: string) => {
     i18n.changeLanguage(language);
@@ -23,8 +23,8 @@ export function LanguageSwitcher() {
           <SelectValue />
         </SelectTrigger>
         <SelectContent className='rounded-sm'>
-          <SelectItem value="en">English</SelectItem>
-          <SelectItem value="pt-PT">Português (Portugal)</SelectItem>
+          <SelectItem value="en">{t('language.english')}</SelectItem>
+          <SelectItem value="pt-PT">{t('language.portuguese')}</SelectItem>
         </SelectContent>
       </Select>
     </div>

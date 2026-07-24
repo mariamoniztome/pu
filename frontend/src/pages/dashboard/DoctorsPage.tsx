@@ -10,8 +10,10 @@ import { Card } from '../../components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../../components/ui/select';
 import { toast } from 'sonner';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export const DoctorsPage: React.FC = () => {
+  const { t } = useTranslation();
   const { doctor: currentDoctor, organization } = useAuth();
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -41,7 +43,7 @@ export const DoctorsPage: React.FC = () => {
       const response = await authAPI.getDoctors();
       setDoctors(response.doctors);
     } catch (error) {
-      toast.error('Failed to load doctors');
+      toast.error(t('doctors.failedToLoad'));
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -53,7 +55,7 @@ export const DoctorsPage: React.FC = () => {
 
     try {
       await authAPI.inviteDoctor(inviteData);
-      toast.success('Doctor invited successfully!');
+      toast.success(t('doctors.invitedSuccessfully'));
       setShowInviteDialog(false);
       setInviteData({
         firstName: '',
@@ -67,22 +69,22 @@ export const DoctorsPage: React.FC = () => {
       });
       fetchDoctors();
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to invite doctor');
+      toast.error(error.response?.data?.message || t('doctors.failedToInvite'));
       console.error(error);
     }
   };
 
   const handleDeactivate = async (doctorId: string) => {
-    if (!confirm('Are you sure you want to deactivate this doctor?')) {
+    if (!confirm(t('doctors.confirmDeactivate'))) {
       return;
     }
 
     try {
       await authAPI.deleteDoctor(doctorId);
-      toast.success('Doctor deactivated successfully');
+      toast.success(t('doctors.deactivatedSuccessfully'));
       fetchDoctors();
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to deactivate doctor');
+      toast.error(error.response?.data?.message || t('doctors.failedToDeactivate'));
       console.error(error);
     }
   };
@@ -110,14 +112,14 @@ export const DoctorsPage: React.FC = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Doctors</h1>
+          <h1 className="text-3xl font-bold text-gray-900">{t('doctors.title')}</h1>
           <p className="text-gray-600 mt-1">
-            Manage doctors in {organization?.name}
+            {t('doctors.subtitle', { organization: organization?.name })}
           </p>
         </div>
         {canManageDoctors && (
           <Button onClick={() => setShowInviteDialog(true)}>
-            Invite Doctor
+            {t('doctors.inviteDoctor')}
           </Button>
         )}
       </div>
@@ -149,7 +151,7 @@ export const DoctorsPage: React.FC = () => {
                   </span>
                   {!doc.isActive && (
                     <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                      Inactive
+                      {t('doctors.inactive')}
                     </span>
                   )}
                 </div>
@@ -157,25 +159,25 @@ export const DoctorsPage: React.FC = () => {
                 <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                   {doc.phone && (
                     <div>
-                      <span className="text-gray-500">Phone:</span>
+                      <span className="text-gray-500">{t('doctors.phone')}</span>
                       <p className="font-medium">{doc.phone}</p>
                     </div>
                   )}
                   {doc.specialization && (
                     <div>
-                      <span className="text-gray-500">Specialization:</span>
+                      <span className="text-gray-500">{t('doctors.specialization')}</span>
                       <p className="font-medium">{doc.specialization}</p>
                     </div>
                   )}
                   {doc.licenseNumber && (
                     <div>
-                      <span className="text-gray-500">License:</span>
+                      <span className="text-gray-500">{t('doctors.license')}</span>
                       <p className="font-medium">{doc.licenseNumber}</p>
                     </div>
                   )}
                   {doc.lastLogin && (
                     <div>
-                      <span className="text-gray-500">Last Login:</span>
+                      <span className="text-gray-500">{t('doctors.lastLogin')}</span>
                       <p className="font-medium">
                         {new Date(doc.lastLogin).toLocaleDateString()}
                       </p>
@@ -184,26 +186,26 @@ export const DoctorsPage: React.FC = () => {
                 </div>
 
                 <div className="mt-4">
-                  <span className="text-sm text-gray-500">Permissions:</span>
+                  <span className="text-sm text-gray-500">{t('doctors.permissions')}</span>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {doc.permissions.canManageOrganization && (
                       <span className="px-2 py-1 bg-green-50 text-green-700 text-xs rounded">
-                        Manage Organization
+                        {t('doctors.manageOrganization')}
                       </span>
                     )}
                     {doc.permissions.canManageDoctors && (
                       <span className="px-2 py-1 bg-green-50 text-green-700 text-xs rounded">
-                        Manage Doctors
+                        {t('doctors.manageDoctors')}
                       </span>
                     )}
                     {doc.permissions.canViewAllPatients && (
                       <span className="px-2 py-1 bg-green-50 text-green-700 text-xs rounded">
-                        View All Patients
+                        {t('doctors.viewAllPatients')}
                       </span>
                     )}
                     {doc.permissions.canManageBilling && (
                       <span className="px-2 py-1 bg-green-50 text-green-700 text-xs rounded">
-                        Manage Billing
+                        {t('doctors.manageBilling')}
                       </span>
                     )}
                   </div>
@@ -219,7 +221,7 @@ export const DoctorsPage: React.FC = () => {
                     onClick={() => handleDeactivate(doc._id)}
                     className="text-red-600 hover:text-red-700"
                   >
-                    Deactivate
+                    {t('doctors.deactivate')}
                   </Button>
                 )}
             </div>
@@ -231,7 +233,7 @@ export const DoctorsPage: React.FC = () => {
       <Dialog open={showInviteDialog} onOpenChange={setShowInviteDialog}>
         <DialogContent>
           <DialogHeader className="flex flex-row items-center justify-between">
-            <DialogTitle>Invite New Doctor</DialogTitle>
+            <DialogTitle>{t('doctors.inviteNewDoctor')}</DialogTitle>
             <Button variant="ghost" size="icon" onClick={() => setShowInviteDialog(false)}>
               <X className="h-4 w-4" />
             </Button>
@@ -241,7 +243,7 @@ export const DoctorsPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="firstName">
-                  First Name <span className="text-red-500">*</span>
+                  {t('doctors.firstName')} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="firstName"
@@ -255,7 +257,7 @@ export const DoctorsPage: React.FC = () => {
 
               <div>
                 <Label htmlFor="lastName">
-                  Last Name <span className="text-red-500">*</span>
+                  {t('doctors.lastName')} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="lastName"
@@ -269,7 +271,7 @@ export const DoctorsPage: React.FC = () => {
 
               <div>
                 <Label htmlFor="email">
-                  Email <span className="text-red-500">*</span>
+                  {t('doctors.email')} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="email"
@@ -284,7 +286,7 @@ export const DoctorsPage: React.FC = () => {
 
               <div>
                 <Label htmlFor="password">
-                  Password <span className="text-red-500">*</span>
+                  {t('doctors.password')} <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="password"
@@ -298,7 +300,7 @@ export const DoctorsPage: React.FC = () => {
               </div>
 
               <div>
-                <Label htmlFor="phone">Phone</Label>
+                <Label htmlFor="phone">{t('doctors.phoneLabel')}</Label>
                 <Input
                   id="phone"
                   value={inviteData.phone}
@@ -309,7 +311,7 @@ export const DoctorsPage: React.FC = () => {
               </div>
 
               <div>
-                <Label htmlFor="specialization">Specialization</Label>
+                <Label htmlFor="specialization">{t('doctors.specializationLabel')}</Label>
                 <Input
                   id="specialization"
                   value={inviteData.specialization}
@@ -323,7 +325,7 @@ export const DoctorsPage: React.FC = () => {
               </div>
 
               <div>
-                <Label htmlFor="licenseNumber">License Number</Label>
+                <Label htmlFor="licenseNumber">{t('doctors.licenseNumber')}</Label>
                 <Input
                   id="licenseNumber"
                   value={inviteData.licenseNumber}
@@ -337,7 +339,7 @@ export const DoctorsPage: React.FC = () => {
               </div>
 
               <div>
-                <Label>Role</Label>
+                <Label>{t('doctors.role')}</Label>
                 <Select
                   value={inviteData.role}
                   onValueChange={(value) =>
@@ -348,11 +350,11 @@ export const DoctorsPage: React.FC = () => {
                   }
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select role" />
+                    <SelectValue placeholder={t('doctors.selectRole')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="member">Member</SelectItem>
-                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="member">{t('doctors.member')}</SelectItem>
+                    <SelectItem value="admin">{t('doctors.admin')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -364,9 +366,9 @@ export const DoctorsPage: React.FC = () => {
                 variant="outline"
                 onClick={() => setShowInviteDialog(false)}
               >
-                Cancel
+                {t('doctors.cancel')}
               </Button>
-              <Button type="submit">Invite Doctor</Button>
+              <Button type="submit">{t('doctors.inviteDoctor')}</Button>
             </div>
           </form>
         </DialogContent>

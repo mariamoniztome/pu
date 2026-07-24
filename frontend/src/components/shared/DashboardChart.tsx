@@ -1,12 +1,15 @@
 import { useMemo } from 'react';
 import { ResponsiveBar } from '@nivo/bar';
 import { Appointment } from '../../types/appointment';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface DashboardChartProps {
   appointments: Appointment[];
 }
 
 export function DashboardChart({ appointments }: DashboardChartProps) {
+  const { t } = useTranslation();
+
   const chartData = useMemo(() => {
     // Group appointments by type and count them
     const appointmentsByType: Record<string, number> = {
@@ -34,32 +37,32 @@ export function DashboardChart({ appointments }: DashboardChartProps) {
     // Transform for nivo bar chart - showing both type and status
     return [
       {
-        type: 'Initial',
+        type: t('appointments.type.initial'),
         count: appointmentsByType.initial,
         countByStatus: appointmentsByStatus.completed,
       },
       {
-        type: 'Follow-up',
+        type: t('appointments.type.followUp'),
         count: appointmentsByType['follow-up'],
         countByStatus: appointmentsByStatus.confirmed,
       },
       {
-        type: 'Assessment',
+        type: t('appointments.type.assessment'),
         count: appointmentsByType.assessment,
         countByStatus: appointmentsByStatus.scheduled,
       },
       {
-        type: 'Therapy',
+        type: t('appointments.type.therapy'),
         count: appointmentsByType.therapy,
         countByStatus: appointmentsByStatus.cancelled,
       },
       {
-        type: 'Other',
+        type: t('appointments.type.other'),
         count: appointmentsByType.other,
         countByStatus: appointmentsByStatus['no-show'],
       },
     ];
-  }, [appointments]);
+  }, [appointments, t]);
 
   return (
     <div style={{ width: '100%', height: '100%', minHeight: '300px' }}>
@@ -77,7 +80,7 @@ export function DashboardChart({ appointments }: DashboardChartProps) {
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: 'Appointment Type',
+          legend: t('appointments.appointmentType'),
           legendPosition: 'middle',
           legendOffset: 32,
         }}
@@ -85,7 +88,7 @@ export function DashboardChart({ appointments }: DashboardChartProps) {
           tickSize: 5,
           tickPadding: 5,
           tickRotation: 0,
-          legend: 'Count',
+          legend: t('common.count'),
           legendPosition: 'middle',
           legendOffset: -40,
         }}
@@ -116,7 +119,7 @@ export function DashboardChart({ appointments }: DashboardChartProps) {
           },
         ]}
         role="application"
-        ariaLabel="Appointment statistics chart"
+        ariaLabel={t('dashboard.appointmentStatsChartLabel')}
         tooltip={({ value, indexValue }) => (
           <div
             style={{

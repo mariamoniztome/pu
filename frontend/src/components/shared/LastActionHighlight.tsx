@@ -1,5 +1,6 @@
 import { Clock, User, FileText } from 'lucide-react';
 import { Card } from '../ui/card';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface LastAction {
   type: string;
@@ -10,11 +11,13 @@ interface LastAction {
 }
 
 export function LastActionHighlight() {
+  const { t } = useTranslation();
+
   const lastAction: LastAction = {
-    type: 'Consultation Completed',
-    description: 'Follow-up session with patient',
+    type: t('lastAction.consultationCompleted'),
+    description: t('lastAction.followUpSession'),
     patient: 'Emily Blunt',
-    time: '2 hours ago',
+    time: t('lastAction.mockTimeAgo'),
     icon: FileText,
   };
 
@@ -25,7 +28,7 @@ export function LastActionHighlight() {
       <div className="flex items-start justify-between mb-4">
         <div>
           <p className="text-xs font-bold text-gray-600 uppercase tracking-wide mb-1">
-            Last Action
+            {t('lastAction.label')}
           </p>
           <h3 className="text-xl font-bold text-gray-900">{lastAction.type}</h3>
         </div>

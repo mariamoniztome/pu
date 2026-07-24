@@ -3,6 +3,7 @@ import { Check, Circle, Plus, Edit2, Trash2 } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface ChecklistItem {
   id: string;
@@ -11,6 +12,7 @@ interface ChecklistItem {
 }
 
 export function ConsultationChecklist() {
+  const { t } = useTranslation();
   const [items, setItems] = useState<ChecklistItem[]>([]);
   const [newItemLabel, setNewItemLabel] = useState('');
   const [isAdding, setIsAdding] = useState(false);
@@ -64,9 +66,9 @@ export function ConsultationChecklist() {
     <Card className="p-6">
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
-          <h3 className="text-lg font-semibold text-gray-900">Consultation Checklist</h3>
+          <h3 className="text-lg font-semibold text-gray-900">{t('consultations.checklist.title')}</h3>
           <span className="text-sm font-medium text-gray-600">
-            {completedCount} of {items.length} completed
+            {t('consultations.checklist.completedCount', { completed: completedCount, total: items.length })}
           </span>
         </div>
         <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -90,12 +92,12 @@ export function ConsultationChecklist() {
                       if (e.key === 'Enter') saveEdit(item.id);
                       if (e.key === 'Escape') cancelEdit();
                     }}
-                    placeholder="Edit checklist item"
+                    placeholder={t('consultations.checklist.editPlaceholder')}
                     autoFocus
                     className="flex-1"
                   />
-                  <Button onClick={() => saveEdit(item.id)} size="sm">Save</Button>
-                  <Button onClick={cancelEdit} variant="outline" size="sm">Cancel</Button>
+                  <Button onClick={() => saveEdit(item.id)} size="sm">{t('consultations.checklist.save')}</Button>
+                  <Button onClick={cancelEdit} variant="outline" size="sm">{t('common.cancel')}</Button>
                 </div>
               ) : (
                 <button
@@ -126,14 +128,14 @@ export function ConsultationChecklist() {
                     <button
                       onClick={(e) => startEdit(item.id, item.label, e)}
                       className="p-1.5 rounded-full hover:bg-white/60 transition-all duration-300"
-                      title="Edit item"
+                      title={t('consultations.checklist.editItem')}
                     >
                       <Edit2 className="h-3.5 w-3.5 text-gray-600" />
                     </button>
                     <button
                       onClick={(e) => deleteItem(item.id, e)}
                       className="p-1.5 rounded-full hover:bg-red-50 transition-all duration-300"
-                      title="Delete item"
+                      title={t('consultations.checklist.deleteItem')}
                     >
                       <Trash2 className="h-3.5 w-3.5 text-red-600" />
                     </button>
@@ -144,33 +146,33 @@ export function ConsultationChecklist() {
           ))
         ) : (
           <div className="text-center py-8 text-gray-500">
-            <p className="text-sm">No checklist items yet</p>
-            <p className="text-xs mt-1">Add items to track your consultation workflow</p>
+            <p className="text-sm">{t('consultations.checklist.noItems')}</p>
+            <p className="text-xs mt-1">{t('consultations.checklist.addItemsHelp')}</p>
           </div>
         )}
-        
+
         {isAdding ? (
           <div className="flex gap-2 mt-3">
             <Input
               value={newItemLabel}
               onChange={(e) => setNewItemLabel(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && addItem()}
-              placeholder="Enter checklist item"
+              placeholder={t('consultations.checklist.addItemPlaceholder')}
               autoFocus
               className="flex-1"
             />
-            <Button onClick={addItem} size="sm">Add</Button>
-            <Button onClick={() => { setIsAdding(false); setNewItemLabel(''); }} variant="outline" size="sm">Cancel</Button>
+            <Button onClick={addItem} size="sm">{t('consultations.checklist.add')}</Button>
+            <Button onClick={() => { setIsAdding(false); setNewItemLabel(''); }} variant="outline" size="sm">{t('common.cancel')}</Button>
           </div>
         ) : (
-          <Button 
-            onClick={() => setIsAdding(true)} 
-            variant="outline" 
-            size="sm" 
+          <Button
+            onClick={() => setIsAdding(true)}
+            variant="outline"
+            size="sm"
             className="w-full mt-3"
           >
             <Plus className="h-4 w-4 mr-2" />
-            Add Item
+            {t('consultations.checklist.addItem')}
           </Button>
         )}
       </div>

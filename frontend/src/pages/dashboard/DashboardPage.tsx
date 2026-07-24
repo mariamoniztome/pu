@@ -54,7 +54,7 @@ export function DashboardPage() {
         setPatients(patientsData);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load data");
+        setError(err instanceof Error ? err.message : t("dashboard.failedToLoadData"));
         console.error("Error fetching dashboard data:", err);
       } finally {
         setLoading(false);
@@ -118,7 +118,7 @@ export function DashboardPage() {
     year: "numeric",
   });
 
-  const weekDays = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
+  const weekDays = t("dashboard.weekDaysShort", { returnObjects: true }) as string[];
 
   // Filter today's appointments
   const today = new Date();
@@ -386,10 +386,10 @@ export function DashboardPage() {
                   </div>
                   <div className="text-sm text-gray-500 flex items-center gap-1">
                     {patientFilter === "all"
-                      ? "Total patients"
+                      ? t("dashboard.totalPatientsLabel")
                       : patientFilter === "new"
-                      ? "New patients"
-                      : "Insurance patients"}
+                      ? t("dashboard.newPatients")
+                      : t("dashboard.insurancePatientsLabel")}
                     <span
                       className={
                         weekChange.isIncrease
@@ -398,7 +398,7 @@ export function DashboardPage() {
                       }
                     >
                       {weekChange.isIncrease ? "↑" : "↓"}{" "}
-                      {weekChange.percentage}% week
+                      {t("dashboard.percentWeekChange", { percentage: weekChange.percentage })}
                     </span>
                   </div>
                 </div>
@@ -407,7 +407,7 @@ export function DashboardPage() {
                     {insurancePatients}
                   </div>
                   <div className="text-sm text-gray-500">
-                    Insurance patients
+                    {t("dashboard.insurancePatientsLabel")}
                   </div>
                 </div>
               </div>
@@ -487,7 +487,7 @@ export function DashboardPage() {
 
           <Card className="rounded-5xl p-6 shadow-xl">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
-              Today's Schedule
+              {t("dashboard.todaysSchedule")}
             </h3>
             <div className="space-y-3">
               {todayAppointments.length > 0 ? (
@@ -532,10 +532,10 @@ export function DashboardPage() {
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <Calendar className="h-12 w-12 text-gray-300 mb-3" />
                   <p className="text-gray-500 font-medium">
-                    No appointments scheduled for today
+                    {t("dashboard.noAppointmentsToday")}
                   </p>
                   <p className="text-gray-400 text-sm mt-1">
-                    Your schedule is clear!
+                    {t("dashboard.scheduleClear")}
                   </p>
                 </div>
               )}
@@ -550,7 +550,7 @@ export function DashboardPage() {
       >
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader className="flex flex-row items-center justify-between">
-            <DialogTitle>Add New Appointment</DialogTitle>
+            <DialogTitle>{t("dashboard.addAppointmentDialogTitle")}</DialogTitle>
             <Button variant="ghost" size="icon" onClick={() => setIsAppointmentDialogOpen(false)}>
               <X className="h-4 w-4" />
             </Button>
@@ -565,7 +565,7 @@ export function DashboardPage() {
       >
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader className="flex flex-row items-center justify-between">
-            <DialogTitle>New Consultation Session</DialogTitle>
+            <DialogTitle>{t("dashboard.newConsultationDialogTitle")}</DialogTitle>
             <Button variant="ghost" size="icon" onClick={() => setIsConsultationDialogOpen(false)}>
               <X className="h-4 w-4" />
             </Button>

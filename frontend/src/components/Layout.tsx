@@ -2,11 +2,9 @@ import { useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   Users,
-  CalendarDays,
   CalendarClock,
-  FileText,
   FileBarChart,
-  DollarSign,
+  Euro,
   Home,
   Settings,
   Menu,
@@ -23,16 +21,14 @@ const getNavItems = (t: any, canManageDoctors: boolean) => {
   const items = [
     { to: '/', label: t('navigation.dashboard'), icon: Home },
     { to: '/patients', label: t('navigation.patients'), icon: Users },
-    { to: '/appointments', label: t('navigation.appointments'), icon: CalendarClock },
-    { to: '/calendar', label: t('navigation.calendar'), icon: CalendarDays },
-    { to: '/consultations', label: t('navigation.consultations'), icon: FileText },
+    { to: '/consultations', label: t('navigation.consultations'), icon: CalendarClock },
     { to: '/reports', label: t('navigation.reports'), icon: FileBarChart },
-    { to: '/payments', label: t('navigation.payments'), icon: DollarSign },
+    { to: '/payments', label: t('navigation.payments'), icon: Euro },
   ];
   
   // Add doctors page if user can manage doctors
   if (canManageDoctors) {
-    items.push({ to: '/doctors', label: 'Doctors', icon: UserCircle });
+    items.push({ to: '/doctors', label: t('navigation.doctors'), icon: UserCircle });
   }
   
   return items;
@@ -120,10 +116,10 @@ export function Layout() {
             <button
               onClick={() => setIsExpanded((v) => !v)}
               className="flex items-center gap-3 px-4 py-4 rounded-3xl text-sm font-medium transition-all duration-300 w-full text-gray-600 hover:bg-white/60 hover:text-gray-900"
-              title={isExpanded ? 'Collapse menu' : 'Expand menu'}
+              title={isExpanded ? t('navigation.collapseMenu') : t('navigation.expandMenu')}
             >
               <Menu className="h-5 w-5" />
-              {isExpanded && <span>Collapse</span>}
+              {isExpanded && <span>{t('navigation.collapse')}</span>}
             </button>
           </div>
         </aside>
@@ -185,9 +181,9 @@ export function Layout() {
                           onClick={() => setShowProfileMenu(false)}
                         >
                           <Settings className="h-4 w-4" />
-                          Settings
+                          {t('navigation.settings')}
                         </Link>
-                        
+
                         {canManageDoctors && (
                           <Link
                             to="/doctors"
@@ -195,16 +191,16 @@ export function Layout() {
                             onClick={() => setShowProfileMenu(false)}
                           >
                             <UserCircle className="h-4 w-4" />
-                            Manage Doctors
+                            {t('navigation.manageDoctors')}
                           </Link>
                         )}
-                        
+
                         <button
                           onClick={handleLogout}
                           className="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 w-full"
                         >
                           <LogOut className="h-4 w-4" />
-                          Logout
+                          {t('navigation.logout')}
                         </button>
                       </div>
                     </>

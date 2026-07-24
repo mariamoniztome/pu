@@ -229,11 +229,11 @@ export function PatientsPage() {
               className="rounded-2xl"
               onClick={() => {
                 const csvData = patients.map(p => ({
-                  Name: `${p.firstName} ${p.lastName}`,
-                  'Date of Birth': new Date(p.dateOfBirth).toLocaleDateString(),
-                  Gender: p.gender,
-                  Email: p.email || '',
-                  Phone: p.phone,
+                  [t('patients.columns.name')]: `${p.firstName} ${p.lastName}`,
+                  [t('patients.columns.dateOfBirth')]: new Date(p.dateOfBirth).toLocaleDateString(),
+                  [t('patients.columns.gender')]: p.gender,
+                  [t('patients.columns.email')]: p.email || '',
+                  [t('patients.columns.phone')]: p.phone,
                 }));
                 const csv = [
                   Object.keys(csvData[0]).join(','),

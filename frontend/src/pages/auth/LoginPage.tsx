@@ -6,8 +6,10 @@ import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Card } from '../../components/ui/card';
 import { toast } from 'sonner';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export const LoginPage: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { login } = useAuth();
@@ -25,11 +27,11 @@ export const LoginPage: React.FC = () => {
 
     try {
       await login(formData);
-      toast.success('Welcome back!');
+      toast.success(t('auth.login.welcomeToast'));
       navigate(from, { replace: true });
     } catch (error: any) {
       console.error('Login error:', error);
-      toast.error(error.response?.data?.message || 'Login failed. Please check your credentials.');
+      toast.error(error.response?.data?.message || t('auth.login.failedToast'));
     } finally {
       setIsLoading(false);
     }
@@ -47,16 +49,16 @@ export const LoginPage: React.FC = () => {
       <Card className="w-full max-w-md p-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome Back
+            {t('auth.login.welcomeBack')}
           </h1>
           <p className="text-gray-600">
-            Sign in to your psychology clinic account
+            {t('auth.login.subtitle')}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t('auth.login.email')}</Label>
             <Input
               id="email"
               name="email"
@@ -65,13 +67,13 @@ export const LoginPage: React.FC = () => {
               required
               value={formData.email}
               onChange={handleChange}
-              placeholder="doctor@clinic.com"
+              placeholder={t('auth.login.emailPlaceholder')}
               className="mt-1"
             />
           </div>
 
           <div>
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t('auth.login.password')}</Label>
             <Input
               id="password"
               name="password"
@@ -112,21 +114,21 @@ export const LoginPage: React.FC = () => {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
                 </svg>
-                Signing in...
+                {t('auth.login.signingIn')}
               </span>
             ) : (
-              'Sign in'
+              t('auth.login.signIn')
             )}
           </Button>
         </form>
 
         <div className="mt-6 text-center text-sm">
-          <span className="text-gray-600">Don't have an account? </span>
+          <span className="text-gray-600">{t('auth.login.noAccount')}</span>
           <Link
             to="/register"
             className="font-medium text-blue-600 hover:text-blue-500"
           >
-            Register here
+            {t('auth.login.registerHere')}
           </Link>
         </div>
       </Card>

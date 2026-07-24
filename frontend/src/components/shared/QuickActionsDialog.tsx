@@ -3,6 +3,7 @@ import { FileText, Calendar, UserPlus, Euro, ClipboardList, X } from 'lucide-rea
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface QuickAction {
   id: string;
@@ -14,13 +15,14 @@ interface QuickAction {
 }
 
 export function QuickActionsDialog() {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
   const quickActions: QuickAction[] = [
     {
       id: 'new-appointment',
-      title: 'New Appointment',
-      description: 'Schedule a new patient appointment',
+      title: t('quickActions.newAppointment'),
+      description: t('quickActions.newAppointmentDesc'),
       icon: Calendar,
       color: 'from-primary-200 to-primary-300',
       action: () => {
@@ -29,8 +31,8 @@ export function QuickActionsDialog() {
     },
     {
       id: 'new-patient',
-      title: 'New Patient',
-      description: 'Register a new patient',
+      title: t('quickActions.newPatient'),
+      description: t('quickActions.newPatientDesc'),
       icon: UserPlus,
       color: 'from-lilac-200 to-lilac-300',
       action: () => {
@@ -39,8 +41,8 @@ export function QuickActionsDialog() {
     },
     {
       id: 'new-consultation',
-      title: 'New Consultation',
-      description: 'Start a new consultation session',
+      title: t('quickActions.newConsultation'),
+      description: t('quickActions.newConsultationDesc'),
       icon: ClipboardList,
       color: 'from-blue-200 to-blue-300',
       action: () => {
@@ -49,8 +51,8 @@ export function QuickActionsDialog() {
     },
     {
       id: 'new-prescription',
-      title: 'Write Prescription',
-      description: 'Create a new prescription',
+      title: t('quickActions.writePrescription'),
+      description: t('quickActions.writePrescriptionDesc'),
       icon: FileText,
       color: 'from-primary-200 to-primary-300',
       action: () => {
@@ -59,8 +61,8 @@ export function QuickActionsDialog() {
     },
     {
       id: 'new-payment',
-      title: 'Record Payment',
-      description: 'Register a new payment',
+      title: t('quickActions.recordPayment'),
+      description: t('quickActions.recordPaymentDesc'),
       icon: Euro,
       color: 'from-green-200 to-green-300',
       action: () => {
@@ -83,8 +85,8 @@ export function QuickActionsDialog() {
         <DialogContent className="max-w-3xl bg-white/95 backdrop-blur-xl border-lilac-200">
           <DialogHeader className="flex flex-row items-center justify-between">
             <div>
-              <DialogTitle className="text-2xl font-bold text-gray-900">Quick Actions</DialogTitle>
-              <p className="text-sm text-gray-500 mt-1">Choose an action to perform quickly</p>
+              <DialogTitle className="text-2xl font-bold text-gray-900">{t('quickActions.title')}</DialogTitle>
+              <p className="text-sm text-gray-500 mt-1">{t('quickActions.subtitle')}</p>
             </div>
             <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)}>
               <X className="h-4 w-4" />

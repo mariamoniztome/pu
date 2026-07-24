@@ -40,18 +40,25 @@
     "required": "*",
     "grid": "Grelha",
     "table": "Tabela",
-    "view": "Ver"
+    "view": "Ver",
+    "viewReceipt": "Ver Recibo",
+    "count": "Contagem"
   },
   "navigation": {
     "dashboard": "Painel de Controlo",
     "patients": "Pacientes",
     "appointments": "Consultas",
     "calendar": "Calendário",
-    "consultations": "Consultas Médicas",
+    "consultations": "Consultas",
     "reports": "Relatórios",
     "payments": "Pagamentos",
     "settings": "Definições",
-    "logout": "Sair"
+    "logout": "Sair",
+    "doctors": "Médicos",
+    "manageDoctors": "Gerir Médicos",
+    "collapseMenu": "Recolher menu",
+    "expandMenu": "Expandir menu",
+    "collapse": "Recolher"
   },
   "dashboard": {
     "title": "Painel de Controlo",
@@ -77,7 +84,26 @@
     "allPatients": "Todos os pacientes",
     "newPatients": "Novos pacientes",
     "insurance": "Seguro",
-    "unknownPatient": "Desconhecido"
+    "unknownPatient": "Desconhecido",
+    "totalPatientsLabel": "Total de pacientes",
+    "insurancePatientsLabel": "Pacientes com seguro",
+    "todaysSchedule": "Agenda de Hoje",
+    "noAppointmentsToday": "Sem consultas agendadas para hoje",
+    "scheduleClear": "A sua agenda está livre!",
+    "addAppointmentDialogTitle": "Adicionar Nova Consulta",
+    "newConsultationDialogTitle": "Nova Sessão de Consulta",
+    "weekDaysShort": [
+      "Seg",
+      "Ter",
+      "Qua",
+      "Qui",
+      "Sex",
+      "Sáb",
+      "Dom"
+    ],
+    "appointmentStatsChartLabel": "Gráfico de estatísticas de consultas",
+    "failedToLoadData": "Falha ao carregar dados",
+    "percentWeekChange": "{{percentage}}% semana"
   },
   "patients": {
     "title": "Pacientes",
@@ -129,7 +155,8 @@
       "email": "Email",
       "phone": "Telefone",
       "actions": "Ações"
-    }
+    },
+    "ageYears": "Idade: {{age}} anos"
   },
   "appointments": {
     "title": "Consultas",
@@ -139,6 +166,7 @@
     "editAppointment": "Editar Consulta",
     "deleteAppointment": "Eliminar Consulta",
     "appointmentDetails": "Detalhes da Consulta",
+    "appointmentType": "Tipo de Consulta",
     "patientName": "Nome do Paciente",
     "doctorName": "Nome do Médico",
     "appointmentDate": "Data da Consulta",
@@ -178,7 +206,8 @@
       "completed": "Concluído",
       "cancelled": "Cancelado",
       "noShow": "Ausente"
-    }
+    },
+    "loadPatientsError": "Impossível carregar pacientes. Certifique-se de que o servidor backend está em execução."
   },
   "consultations": {
     "title": "Consultas Médicas",
@@ -225,6 +254,39 @@
       "loadPatientsError": "Impossível carregar pacientes. Certifique-se de que o servidor backend está em execução.",
       "requiredFields": "Por favor, selecione um paciente.",
       "saveError": "Falha ao guardar consulta"
+    },
+    "templates": {
+      "title": "Modelos de Texto",
+      "newTemplate": "Novo Modelo",
+      "copyTemplate": "Copiar modelo",
+      "editTemplate": "Editar modelo",
+      "deleteTemplate": "Eliminar modelo",
+      "noTemplates": "Ainda não há modelos",
+      "createFirst": "Crie o seu primeiro modelo para começar",
+      "editTemplateTitle": "Editar Modelo",
+      "newTemplateTitle": "Novo Modelo",
+      "templateTitle": "Título do Modelo",
+      "templateTitlePlaceholder": "Introduza o título do modelo",
+      "category": "Categoria",
+      "categoryConsultation": "Consulta",
+      "categoryReport": "Relatório",
+      "templateContent": "Conteúdo do Modelo",
+      "templateContentPlaceholder": "Introduza o conteúdo do modelo",
+      "updateTemplateButton": "Atualizar Modelo",
+      "createTemplateButton": "Criar Modelo"
+    },
+    "checklist": {
+      "title": "Lista de Verificação da Consulta",
+      "completedCount": "{{completed}} de {{total}} concluído(s)",
+      "editPlaceholder": "Editar item da lista",
+      "save": "Guardar",
+      "editItem": "Editar item",
+      "deleteItem": "Eliminar item",
+      "noItems": "Ainda não há itens na lista",
+      "addItemsHelp": "Adicione itens para acompanhar o fluxo de trabalho da consulta",
+      "addItemPlaceholder": "Introduza o item da lista",
+      "add": "Adicionar",
+      "addItem": "Adicionar Item"
     }
   },
   "reports": {
@@ -242,6 +304,9 @@
     "description": "Descrição",
     "noReports": "Nenhum relatório encontrado",
     "loadingReports": "A carregar relatórios...",
+    "details": "Detalhes do Relatório",
+    "completionDate": "Data de Conclusão",
+    "content": "Conteúdo",
     "confirmDelete": "Tem a certeza que deseja eliminar este relatório?",
     "exportPdf": "Exportar PDF",
     "types": {
@@ -300,7 +365,13 @@
     "amount": "Valor",
     "paymentMethod": "Método de Pagamento",
     "paymentDate": "Data do Pagamento",
-    "status": "Estado",
+    "status": {
+      "paid": "Pago",
+      "pending": "Pendente",
+      "failed": "Falhado",
+      "partial": "Parcial",
+      "unpaid": "Não Pago"
+    },
     "paid": "Pago",
     "pending": "Pendente",
     "failed": "Falhado",
@@ -312,6 +383,8 @@
     "recentPayments": "Pagamentos Recentes",
     "partial": "Parcial",
     "unpaid": "Não Pago",
+    "details": "Detalhes do Pagamento",
+    "receipt": "Recibo",
     "confirmDelete": "Tem a certeza que deseja eliminar este pagamento?",
     "card": {
       "invoice": "Fatura",
@@ -319,7 +392,8 @@
       "paid": "Pago",
       "balance": "Saldo",
       "method": "Método",
-      "date": "Data"
+      "date": "Data",
+      "viewReceipt": "Ver Recibo"
     },
     "methods": {
       "cash": "Dinheiro",
@@ -328,13 +402,6 @@
       "check": "Cheque",
       "insurance": "Seguro",
       "other": "Outro"
-    },
-    "status": {
-      "paid": "Pago",
-      "pending": "Pendente",
-      "failed": "Falhado",
-      "partial": "Parcial",
-      "unpaid": "Não Pago"
     },
     "form": {
       "titleEdit": "Editar Pagamento",
@@ -379,7 +446,7 @@
   },
   "calendar": {
     "title": "Calendário",
-    "subtitle": "Ver e gerir todas as suas consultas",
+    "subtitle": "Agende consultas e documente sessões num só lugar",
     "today": "Hoje",
     "month": "Mês",
     "week": "Semana",
@@ -387,6 +454,9 @@
     "newEvent": "Novo Evento",
     "newAppointment": "Nova Consulta",
     "timeRange": "Intervalo horário",
+    "appointmentDetailsSection": "Detalhes da Marcação",
+    "sessionInfoSection": "Notas da Sessão",
+    "sessionInfoHint": "Opcional — adicione depois da sessão acontecer",
     "editAppointmentTitle": "Editar Consulta",
     "newAppointmentTitle": "Nova Consulta",
     "appointmentType": "Tipo de Consulta",
@@ -425,5 +495,161 @@
   "language": {
     "english": "English",
     "portuguese": "Português (Portugal)"
+  },
+  "auth": {
+    "login": {
+      "welcomeBack": "Bem-vindo de Volta",
+      "subtitle": "Inicie sessão na sua conta de clínica de psicologia",
+      "email": "Email",
+      "emailPlaceholder": "medico@clinica.com",
+      "password": "Palavra-passe",
+      "signingIn": "A iniciar sessão...",
+      "signIn": "Iniciar sessão",
+      "noAccount": "Ainda não tem conta? ",
+      "registerHere": "Registe-se aqui",
+      "welcomeToast": "Bem-vindo de volta!",
+      "failedToast": "Falha ao iniciar sessão. Verifique as suas credenciais."
+    },
+    "register": {
+      "createAccount": "Crie a Sua Conta",
+      "subtitle": "Configure o seu sistema de gestão de clínica de psicologia",
+      "organizationInfo": "Informação da Organização",
+      "organizationName": "Nome da Organização",
+      "organizationNamePlaceholder": "A Minha Clínica de Psicologia",
+      "organizationType": "Tipo",
+      "individualPractice": "Prática Individual",
+      "clinicMultipleDoctors": "Clínica (Vários Médicos)",
+      "organizationEmail": "Email da Organização",
+      "organizationEmailPlaceholder": "contacto@clinica.com",
+      "organizationPhone": "Telefone da Organização",
+      "yourInfo": "A Sua Informação",
+      "firstName": "Primeiro Nome",
+      "firstNamePlaceholder": "João",
+      "lastName": "Sobrenome",
+      "lastNamePlaceholder": "Silva",
+      "email": "Email",
+      "emailPlaceholder": "joao@exemplo.com",
+      "phone": "Telefone",
+      "phonePlaceholder": "+351 912 345 678",
+      "specialization": "Especialização",
+      "specializationPlaceholder": "Psicologia Clínica",
+      "licenseNumber": "Número de Licença",
+      "licenseNumberPlaceholder": "PSY12345",
+      "password": "Palavra-passe",
+      "passwordHelp": "Deve ter pelo menos 8 caracteres",
+      "confirmPassword": "Confirmar Palavra-passe",
+      "creatingAccount": "A criar conta...",
+      "createAccountButton": "Criar Conta",
+      "alreadyHaveAccount": "Já tem conta? ",
+      "signInHere": "Inicie sessão aqui",
+      "passwordsDoNotMatch": "As palavras-passe não coincidem",
+      "passwordTooShort": "A palavra-passe deve ter pelo menos 8 caracteres",
+      "registrationSuccess": "Registo efetuado com sucesso! Bem-vindo à sua clínica.",
+      "registrationFailed": "Falha no registo. Por favor, tente novamente."
+    }
+  },
+  "doctors": {
+    "title": "Médicos",
+    "subtitle": "Gerir médicos em {{organization}}",
+    "inviteDoctor": "Convidar Médico",
+    "inviteNewDoctor": "Convidar Novo Médico",
+    "failedToLoad": "Falha ao carregar médicos",
+    "invitedSuccessfully": "Médico convidado com sucesso!",
+    "failedToInvite": "Falha ao convidar médico",
+    "confirmDeactivate": "Tem a certeza que deseja desativar este médico?",
+    "deactivatedSuccessfully": "Médico desativado com sucesso",
+    "failedToDeactivate": "Falha ao desativar médico",
+    "inactive": "Inativo",
+    "phone": "Telefone:",
+    "phoneLabel": "Telefone",
+    "specialization": "Especialização:",
+    "license": "Licença:",
+    "lastLogin": "Último Acesso:",
+    "permissions": "Permissões:",
+    "manageOrganization": "Gerir Organização",
+    "manageDoctors": "Gerir Médicos",
+    "viewAllPatients": "Ver Todos os Pacientes",
+    "manageBilling": "Gerir Faturação",
+    "deactivate": "Desativar",
+    "firstName": "Primeiro Nome",
+    "lastName": "Sobrenome",
+    "email": "Email",
+    "password": "Palavra-passe",
+    "specializationLabel": "Especialização",
+    "licenseNumber": "Número de Licença",
+    "role": "Cargo",
+    "selectRole": "Selecione o cargo",
+    "member": "Membro",
+    "admin": "Administrador",
+    "cancel": "Cancelar"
+  },
+  "settings": {
+    "title": "Definições",
+    "profileInformation": "Informação do Perfil",
+    "name": "Nome",
+    "email": "Email",
+    "role": "Cargo",
+    "phone": "Telefone",
+    "specialization": "Especialização",
+    "licenseNumber": "Número de Licença",
+    "organizationInformation": "Informação da Organização",
+    "organizationName": "Nome da Organização",
+    "type": "Tipo",
+    "organizationPhone": "Telefone",
+    "subscription": "Subscrição",
+    "plan": "Plano",
+    "status": "Estado",
+    "maxDoctors": "Máximo de Médicos",
+    "maxPatients": "Máximo de Pacientes",
+    "unlimited": "Ilimitado",
+    "startDate": "Data de Início",
+    "endDate": "Data de Fim",
+    "organizationSettings": "Definições da Organização",
+    "dataSharing": "Partilha de Dados",
+    "dataSharingEnabled": "Ativado - Todos os médicos podem ver todos os pacientes",
+    "dataSharingDisabled": "Desativado - Os médicos só veem os seus próprios pacientes",
+    "timezone": "Fuso Horário",
+    "language": "Idioma",
+    "currency": "Moeda",
+    "yourPermissions": "As Suas Permissões",
+    "manageOrganization": "✓ Gerir Organização",
+    "manageDoctors": "✓ Gerir Médicos",
+    "viewAllPatients": "✓ Ver Todos os Pacientes",
+    "manageBilling": "✓ Gerir Faturação"
+  },
+  "quickActions": {
+    "title": "Ações Rápidas",
+    "subtitle": "Escolha uma ação para executar rapidamente",
+    "newAppointment": "Nova Consulta",
+    "newAppointmentDesc": "Agendar uma nova consulta de paciente",
+    "newPatient": "Novo Paciente",
+    "newPatientDesc": "Registar um novo paciente",
+    "newConsultation": "Nova Consulta Médica",
+    "newConsultationDesc": "Iniciar uma nova sessão de consulta",
+    "writePrescription": "Escrever Receita",
+    "writePrescriptionDesc": "Criar uma nova receita",
+    "recordPayment": "Registar Pagamento",
+    "recordPaymentDesc": "Registar um novo pagamento"
+  },
+  "changeHistory": {
+    "title": "Histórico de Alterações",
+    "yesterday": "Ontem",
+    "minutesAgo": "há {{count}} minutos",
+    "hoursAgo": "há {{count}} horas",
+    "daysAgo": "há {{count}} dias",
+    "sessionNotesUpdated": "Notas da sessão atualizadas",
+    "sessionNotesUpdatedDesc": "Adicionadas notas de progresso e ajustes de tratamento",
+    "consultationCreated": "Nova consulta médica criada",
+    "consultationCreatedDesc": "Avaliação inicial para sessão de seguimento",
+    "treatmentPlanModified": "Plano de tratamento modificado",
+    "treatmentPlanModifiedDesc": "Dosagem de medicação e frequência de terapia atualizadas",
+    "attachmentAdded": "Anexo adicionado",
+    "attachmentAddedDesc": "Carregados resultados de análises e formulários de avaliação"
+  },
+  "lastAction": {
+    "label": "Última Ação",
+    "consultationCompleted": "Consulta Concluída",
+    "followUpSession": "Sessão de seguimento com paciente",
+    "mockTimeAgo": "há 2 horas"
   }
 }

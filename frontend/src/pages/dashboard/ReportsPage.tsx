@@ -67,7 +67,7 @@ export function ReportsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm(t('reports.confirmDelete') || 'Are you sure?')) return;
+    if (!confirm(t('reports.confirmDelete'))) return;
     
     try {
       await externalReportsApi.delete(id);

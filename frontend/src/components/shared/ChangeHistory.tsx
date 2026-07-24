@@ -1,5 +1,6 @@
 import { User, Edit, FileText } from 'lucide-react';
 import { Card } from '../ui/card';
+import { useTranslation } from '../../hooks/useTranslation';
 
 interface HistoryEntry {
   id: string;
@@ -11,35 +12,37 @@ interface HistoryEntry {
 }
 
 export function ChangeHistory() {
+  const { t } = useTranslation();
+
   const history: HistoryEntry[] = [
     {
       id: '1',
-      action: 'Session notes updated',
-      description: 'Added progress notes and treatment adjustments',
+      action: t('changeHistory.sessionNotesUpdated'),
+      description: t('changeHistory.sessionNotesUpdatedDesc'),
       user: 'Dr. Luke',
       timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
       type: 'edit',
     },
     {
       id: '2',
-      action: 'New consultation created',
-      description: 'Initial assessment for follow-up session',
+      action: t('changeHistory.consultationCreated'),
+      description: t('changeHistory.consultationCreatedDesc'),
       user: 'Dr. Luke',
       timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000),
       type: 'create',
     },
     {
       id: '3',
-      action: 'Treatment plan modified',
-      description: 'Updated medication dosage and therapy frequency',
+      action: t('changeHistory.treatmentPlanModified'),
+      description: t('changeHistory.treatmentPlanModifiedDesc'),
       user: 'Dr. Luke',
       timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000),
       type: 'update',
     },
     {
       id: '4',
-      action: 'Attachment added',
-      description: 'Uploaded lab results and assessment forms',
+      action: t('changeHistory.attachmentAdded'),
+      description: t('changeHistory.attachmentAddedDesc'),
       user: 'Dr. Luke',
       timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
       type: 'update',
@@ -76,13 +79,13 @@ export function ChangeHistory() {
 
     if (diffHours < 1) {
       const diffMins = Math.floor(diffMs / (1000 * 60));
-      return `${diffMins} minutes ago`;
+      return t('changeHistory.minutesAgo', { count: diffMins });
     } else if (diffHours < 24) {
-      return `${diffHours} hours ago`;
+      return t('changeHistory.hoursAgo', { count: diffHours });
     } else if (diffDays === 1) {
-      return 'Yesterday';
+      return t('changeHistory.yesterday');
     } else if (diffDays < 7) {
-      return `${diffDays} days ago`;
+      return t('changeHistory.daysAgo', { count: diffDays });
     } else {
       return date.toLocaleDateString();
     }
@@ -90,7 +93,7 @@ export function ChangeHistory() {
 
   return (
     <Card className="p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">Change History</h3>
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">{t('changeHistory.title')}</h3>
 
       <div className="space-y-4">
         {history.map((entry, index) => {

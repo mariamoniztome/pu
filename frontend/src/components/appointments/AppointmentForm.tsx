@@ -75,9 +75,7 @@ export function AppointmentForm({
       setPatients(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error(err);
-      setError(
-        "Unable to load patients. Please ensure the backend server is running."
-      );
+      setError(t('appointments.loadPatientsError'));
     }
   };
 

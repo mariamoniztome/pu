@@ -16,7 +16,6 @@ import Appointment from '../models/Appointment';
 import Consultation from '../models/Consultation';
 import Payment from '../models/Payment';
 import ExternalReport from '../models/ExternalReport';
-import Conversation from '../models/Conversation';
 
 dotenv.config();
 

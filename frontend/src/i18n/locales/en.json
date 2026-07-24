@@ -41,7 +41,8 @@
     "grid": "Grid",
     "table": "Table",
     "view": "View",
-    "viewReceipt": "View Receipt"
+    "viewReceipt": "View Receipt",
+    "count": "Count"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -52,7 +53,12 @@
     "reports": "Reports",
     "payments": "Payments",
     "settings": "Settings",
-    "logout": "Logout"
+    "logout": "Logout",
+    "doctors": "Doctors",
+    "manageDoctors": "Manage Doctors",
+    "collapseMenu": "Collapse menu",
+    "expandMenu": "Expand menu",
+    "collapse": "Collapse"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -78,7 +84,26 @@
     "allPatients": "All patients",
     "newPatients": "New patients",
     "insurance": "Insurance",
-    "unknownPatient": "Unknown"
+    "unknownPatient": "Unknown",
+    "totalPatientsLabel": "Total patients",
+    "insurancePatientsLabel": "Insurance patients",
+    "todaysSchedule": "Today's Schedule",
+    "noAppointmentsToday": "No appointments scheduled for today",
+    "scheduleClear": "Your schedule is clear!",
+    "addAppointmentDialogTitle": "Add New Appointment",
+    "newConsultationDialogTitle": "New Consultation Session",
+    "weekDaysShort": [
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri",
+      "Sat",
+      "Sun"
+    ],
+    "appointmentStatsChartLabel": "Appointment statistics chart",
+    "failedToLoadData": "Failed to load data",
+    "percentWeekChange": "{{percentage}}% week"
   },
   "patients": {
     "title": "Patients",
@@ -130,7 +155,8 @@
       "email": "Email",
       "phone": "Phone",
       "actions": "Actions"
-    }
+    },
+    "ageYears": "Age: {{age}} years"
   },
   "appointments": {
     "title": "Appointments",
@@ -180,7 +206,8 @@
       "completed": "Completed",
       "cancelled": "Cancelled",
       "noShow": "No-show"
-    }
+    },
+    "loadPatientsError": "Unable to load patients. Please ensure the backend server is running."
   },
   "consultations": {
     "title": "Consultations",
@@ -227,6 +254,39 @@
       "loadPatientsError": "Unable to load patients. Please ensure the backend server is running.",
       "requiredFields": "Please select a patient.",
       "saveError": "Failed to save consultation"
+    },
+    "templates": {
+      "title": "Text Templates",
+      "newTemplate": "New Template",
+      "copyTemplate": "Copy template",
+      "editTemplate": "Edit template",
+      "deleteTemplate": "Delete template",
+      "noTemplates": "No templates yet",
+      "createFirst": "Create your first template to get started",
+      "editTemplateTitle": "Edit Template",
+      "newTemplateTitle": "New Template",
+      "templateTitle": "Template Title",
+      "templateTitlePlaceholder": "Enter template title",
+      "category": "Category",
+      "categoryConsultation": "Consultation",
+      "categoryReport": "Report",
+      "templateContent": "Template Content",
+      "templateContentPlaceholder": "Enter template content",
+      "updateTemplateButton": "Update Template",
+      "createTemplateButton": "Create Template"
+    },
+    "checklist": {
+      "title": "Consultation Checklist",
+      "completedCount": "{{completed}} of {{total}} completed",
+      "editPlaceholder": "Edit checklist item",
+      "save": "Save",
+      "editItem": "Edit item",
+      "deleteItem": "Delete item",
+      "noItems": "No checklist items yet",
+      "addItemsHelp": "Add items to track your consultation workflow",
+      "addItemPlaceholder": "Enter checklist item",
+      "add": "Add",
+      "addItem": "Add Item"
     }
   },
   "reports": {
@@ -305,7 +365,13 @@
     "amount": "Amount",
     "paymentMethod": "Payment Method",
     "paymentDate": "Payment Date",
-    "status": "Status",
+    "status": {
+      "paid": "Paid",
+      "pending": "Pending",
+      "failed": "Failed",
+      "partial": "Partial",
+      "unpaid": "Unpaid"
+    },
     "paid": "Paid",
     "pending": "Pending",
     "failed": "Failed",
@@ -336,13 +402,6 @@
       "check": "Check",
       "insurance": "Insurance",
       "other": "Other"
-    },
-    "status": {
-      "paid": "Paid",
-      "pending": "Pending",
-      "failed": "Failed",
-      "partial": "Partial",
-      "unpaid": "Unpaid"
     },
     "form": {
       "titleEdit": "Edit Payment",
@@ -387,7 +446,7 @@
   },
   "calendar": {
     "title": "Calendar",
-    "subtitle": "View and manage all your appointments",
+    "subtitle": "Schedule appointments and document sessions in one place",
     "today": "Today",
     "month": "Month",
     "week": "Week",
@@ -395,6 +454,9 @@
     "newEvent": "New Event",
     "newAppointment": "New Appointment",
     "timeRange": "Time range",
+    "appointmentDetailsSection": "Appointment Details",
+    "sessionInfoSection": "Session Notes",
+    "sessionInfoHint": "Optional — add after the session happens",
     "editAppointmentTitle": "Edit Appointment",
     "newAppointmentTitle": "New Appointment",
     "appointmentType": "Appointment Type",
@@ -433,5 +495,161 @@
   "language": {
     "english": "English",
     "portuguese": "Português (Portugal)"
+  },
+  "auth": {
+    "login": {
+      "welcomeBack": "Welcome Back",
+      "subtitle": "Sign in to your psychology clinic account",
+      "email": "Email",
+      "emailPlaceholder": "doctor@clinic.com",
+      "password": "Password",
+      "signingIn": "Signing in...",
+      "signIn": "Sign in",
+      "noAccount": "Don't have an account? ",
+      "registerHere": "Register here",
+      "welcomeToast": "Welcome back!",
+      "failedToast": "Login failed. Please check your credentials."
+    },
+    "register": {
+      "createAccount": "Create Your Account",
+      "subtitle": "Set up your psychology clinic management system",
+      "organizationInfo": "Organization Information",
+      "organizationName": "Organization Name",
+      "organizationNamePlaceholder": "My Psychology Clinic",
+      "organizationType": "Type",
+      "individualPractice": "Individual Practice",
+      "clinicMultipleDoctors": "Clinic (Multiple Doctors)",
+      "organizationEmail": "Organization Email",
+      "organizationEmailPlaceholder": "contact@clinic.com",
+      "organizationPhone": "Organization Phone",
+      "yourInfo": "Your Information",
+      "firstName": "First Name",
+      "firstNamePlaceholder": "John",
+      "lastName": "Last Name",
+      "lastNamePlaceholder": "Doe",
+      "email": "Email",
+      "emailPlaceholder": "john@example.com",
+      "phone": "Phone",
+      "phonePlaceholder": "+1 (555) 987-6543",
+      "specialization": "Specialization",
+      "specializationPlaceholder": "Clinical Psychology",
+      "licenseNumber": "License Number",
+      "licenseNumberPlaceholder": "PSY12345",
+      "password": "Password",
+      "passwordHelp": "Must be at least 8 characters",
+      "confirmPassword": "Confirm Password",
+      "creatingAccount": "Creating account...",
+      "createAccountButton": "Create Account",
+      "alreadyHaveAccount": "Already have an account? ",
+      "signInHere": "Sign in here",
+      "passwordsDoNotMatch": "Passwords do not match",
+      "passwordTooShort": "Password must be at least 8 characters",
+      "registrationSuccess": "Registration successful! Welcome to your clinic.",
+      "registrationFailed": "Registration failed. Please try again."
+    }
+  },
+  "doctors": {
+    "title": "Doctors",
+    "subtitle": "Manage doctors in {{organization}}",
+    "inviteDoctor": "Invite Doctor",
+    "inviteNewDoctor": "Invite New Doctor",
+    "failedToLoad": "Failed to load doctors",
+    "invitedSuccessfully": "Doctor invited successfully!",
+    "failedToInvite": "Failed to invite doctor",
+    "confirmDeactivate": "Are you sure you want to deactivate this doctor?",
+    "deactivatedSuccessfully": "Doctor deactivated successfully",
+    "failedToDeactivate": "Failed to deactivate doctor",
+    "inactive": "Inactive",
+    "phone": "Phone:",
+    "phoneLabel": "Phone",
+    "specialization": "Specialization:",
+    "license": "License:",
+    "lastLogin": "Last Login:",
+    "permissions": "Permissions:",
+    "manageOrganization": "Manage Organization",
+    "manageDoctors": "Manage Doctors",
+    "viewAllPatients": "View All Patients",
+    "manageBilling": "Manage Billing",
+    "deactivate": "Deactivate",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "password": "Password",
+    "specializationLabel": "Specialization",
+    "licenseNumber": "License Number",
+    "role": "Role",
+    "selectRole": "Select role",
+    "member": "Member",
+    "admin": "Admin",
+    "cancel": "Cancel"
+  },
+  "settings": {
+    "title": "Settings",
+    "profileInformation": "Profile Information",
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "phone": "Phone",
+    "specialization": "Specialization",
+    "licenseNumber": "License Number",
+    "organizationInformation": "Organization Information",
+    "organizationName": "Organization Name",
+    "type": "Type",
+    "organizationPhone": "Phone",
+    "subscription": "Subscription",
+    "plan": "Plan",
+    "status": "Status",
+    "maxDoctors": "Max Doctors",
+    "maxPatients": "Max Patients",
+    "unlimited": "Unlimited",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "organizationSettings": "Organization Settings",
+    "dataSharing": "Data Sharing",
+    "dataSharingEnabled": "Enabled - All doctors can see all patients",
+    "dataSharingDisabled": "Disabled - Doctors only see their own patients",
+    "timezone": "Timezone",
+    "language": "Language",
+    "currency": "Currency",
+    "yourPermissions": "Your Permissions",
+    "manageOrganization": "✓ Manage Organization",
+    "manageDoctors": "✓ Manage Doctors",
+    "viewAllPatients": "✓ View All Patients",
+    "manageBilling": "✓ Manage Billing"
+  },
+  "quickActions": {
+    "title": "Quick Actions",
+    "subtitle": "Choose an action to perform quickly",
+    "newAppointment": "New Appointment",
+    "newAppointmentDesc": "Schedule a new patient appointment",
+    "newPatient": "New Patient",
+    "newPatientDesc": "Register a new patient",
+    "newConsultation": "New Consultation",
+    "newConsultationDesc": "Start a new consultation session",
+    "writePrescription": "Write Prescription",
+    "writePrescriptionDesc": "Create a new prescription",
+    "recordPayment": "Record Payment",
+    "recordPaymentDesc": "Register a new payment"
+  },
+  "changeHistory": {
+    "title": "Change History",
+    "yesterday": "Yesterday",
+    "minutesAgo": "{{count}} minutes ago",
+    "hoursAgo": "{{count}} hours ago",
+    "daysAgo": "{{count}} days ago",
+    "sessionNotesUpdated": "Session notes updated",
+    "sessionNotesUpdatedDesc": "Added progress notes and treatment adjustments",
+    "consultationCreated": "New consultation created",
+    "consultationCreatedDesc": "Initial assessment for follow-up session",
+    "treatmentPlanModified": "Treatment plan modified",
+    "treatmentPlanModifiedDesc": "Updated medication dosage and therapy frequency",
+    "attachmentAdded": "Attachment added",
+    "attachmentAddedDesc": "Uploaded lab results and assessment forms"
+  },
+  "lastAction": {
+    "label": "Last Action",
+    "consultationCompleted": "Consultation Completed",
+    "followUpSession": "Follow-up session with patient",
+    "mockTimeAgo": "2 hours ago"
   }
 }

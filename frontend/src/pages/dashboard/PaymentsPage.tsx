@@ -63,7 +63,7 @@ export function PaymentsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm(t('payments.confirmDelete') || 'Are you sure?')) return;
+    if (!confirm(t('payments.confirmDelete'))) return;
     
     try {
       await paymentsApi.delete(id);
