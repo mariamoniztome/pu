@@ -39,7 +39,7 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
   }>({
     patient: undefined,
     amount: "",
-    currency: "USD",
+    currency: "EUR",
     amountPaid: "",
     paymentDate: "",
     paymentMethod: undefined,

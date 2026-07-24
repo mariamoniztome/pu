@@ -102,7 +102,7 @@ const organizationSchema = new Schema<IOrganization>(
       },
       currency: {
         type: String,
-        default: 'USD',
+        default: 'EUR',
       },
       allowDataSharing: {
         type: Boolean,

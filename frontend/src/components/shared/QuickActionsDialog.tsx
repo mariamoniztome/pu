@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FileText, Calendar, UserPlus, DollarSign, ClipboardList, X } from 'lucide-react';
+import { FileText, Calendar, UserPlus, Euro, ClipboardList, X } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
@@ -61,7 +61,7 @@ export function QuickActionsDialog() {
       id: 'new-payment',
       title: 'Record Payment',
       description: 'Register a new payment',
-      icon: DollarSign,
+      icon: Euro,
       color: 'from-green-200 to-green-300',
       action: () => {
         setIsOpen(false);

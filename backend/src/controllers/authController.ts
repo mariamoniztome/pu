@@ -61,7 +61,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         timezone: 'UTC',
         language: 'en',
         dateFormat: 'MM/DD/YYYY',
-        currency: 'USD',
+        currency: 'EUR',
         allowDataSharing: organizationType === 'clinic',
       },
       isActive: true,

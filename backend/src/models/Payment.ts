@@ -72,7 +72,7 @@ const paymentSchema = new Schema<IPayment>(
     },
     currency: {
       type: String,
-      default: 'USD',
+      default: 'EUR',
       uppercase: true,
       trim: true,
     },

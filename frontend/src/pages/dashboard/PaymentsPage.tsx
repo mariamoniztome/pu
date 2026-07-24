@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, DollarSign, FileText, Eye, Edit, X, Download, Trash2 } from "lucide-react";
+import { Plus, Euro, FileText, Eye, Edit, X, Download, Trash2 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import {
   Card,
@@ -109,7 +109,7 @@ export function PaymentsPage() {
               <CardHeader>
                 <CardTitle className="text-lg flex items-center justify-between">
                   <span>{getPatientName(payment)}</span>
-                  <DollarSign className="h-5 w-5 text-slate-400" />
+                  <Euro className="h-5 w-5 text-slate-400" />
                 </CardTitle>
                 <span
                   className={`text-xs font-medium px-3 py-1.5 rounded-xl capitalize ${getStatusColor(
