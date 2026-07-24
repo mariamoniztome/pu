@@ -126,7 +126,7 @@ export function PatientsPage() {
             title={t('common.edit')}
             onClick={() => handleEdit(params.data)}
           >
-            <Edit className="h-4 w-4 mr-1 text-blue-500 hover:text-blue-700" />
+            <Edit className="h-4 w-4 mr-1 text-lilac-600 hover:text-lilac-800" />
           </button>
           <button
             className='mt-2'
@@ -164,7 +164,7 @@ export function PatientsPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-1">{t('patients.title')}</h1>
           <p className="text-gray-500">{t('patients.subtitle')}</p>
         </div>
-        <Button onClick={() => setShowForm(true)} className="bg-gray-900 hover:bg-black text-white rounded-full px-6">
+        <Button onClick={() => setShowForm(true)}>
           <Plus className="h-5 w-5 mr-2" />
           {t('patients.addPatient')}
         </Button>
@@ -182,7 +182,7 @@ export function PatientsPage() {
               className="pl-11 rounded-2xl border-gray-200"
             />
           </div>
-          <Button onClick={handleSearch} className="rounded-2xl bg-gray-900 hover:bg-gray-800 text-white">
+          <Button onClick={handleSearch}>
             {t('common.search')}
           </Button>
         </div>
@@ -191,7 +191,6 @@ export function PatientsPage() {
             variant={viewMode === 'grid' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setViewMode('grid')}
-            className={`rounded-2xl ${viewMode === 'grid' ? 'bg-gray-900 hover:bg-gray-800' : ''}`}
           >
             <Grid3x3 className="h-4 w-4 mr-2" />
             {t('common.grid')}
@@ -200,7 +199,6 @@ export function PatientsPage() {
             variant={viewMode === 'table' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setViewMode('table')}
-            className={`rounded-2xl ${viewMode === 'table' ? 'bg-gray-900 hover:bg-gray-800' : ''}`}
           >
             <TableIcon className="h-4 w-4 mr-2" />
             {t('common.table')}

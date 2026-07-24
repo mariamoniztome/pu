@@ -329,10 +329,7 @@ export function DashboardPage() {
                   {t("dashboard.patientAppointments")}
                 </p>
               </div>
-              <Button
-                onClick={() => setIsAppointmentDialogOpen(true)}
-                className="bg-gradient-to-r from-gray-800 to-gray-900 hover:from-gray-900 hover:to-black text-white shadow-xl"
-              >
+              <Button onClick={() => setIsAppointmentDialogOpen(true)}>
                 <Plus className="h-5 w-5 mr-2" />
                 {t("dashboard.addNewAppointment")}
               </Button>

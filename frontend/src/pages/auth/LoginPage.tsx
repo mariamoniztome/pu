@@ -126,7 +126,7 @@ export const LoginPage: React.FC = () => {
           <span className="text-gray-600">{t('auth.login.noAccount')}</span>
           <Link
             to="/register"
-            className="font-medium text-blue-600 hover:text-blue-500"
+            className="font-medium text-lilac-600 hover:text-lilac-700"
           >
             {t('auth.login.registerHere')}
           </Link>

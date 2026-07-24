@@ -88,10 +88,7 @@ export function PaymentsPage() {
           <h1 className="text-3xl font-bold text-slate-800">{t('payments.title')}</h1>
           <p className="text-slate-600 mt-1">{t('payments.subtitle')}</p>
         </div>
-        <Button
-          onClick={() => setShowForm(true)}
-          className="rounded-full bg-gray-900 hover:bg-black"
-        >
+        <Button onClick={() => setShowForm(true)}>
           <Plus className="h-5 w-5 mr-2" />
           {t('payments.recordPayment')}
         </Button>
@@ -159,7 +156,7 @@ export function PaymentsPage() {
                       href={`http://localhost:5000/${payment.receiptAttachment.path}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline"
+                      className="flex items-center text-sm text-lilac-600 hover:text-lilac-800 hover:underline"
                     >
                       <FileText className="h-3 w-3 mr-1" />
                       {t('payments.card.viewReceipt')}

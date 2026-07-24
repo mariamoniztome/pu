@@ -310,7 +310,7 @@ export const RegisterPage: React.FC = () => {
           <span className="text-gray-600">{t('auth.register.alreadyHaveAccount')}</span>
           <Link
             to="/login"
-            className="font-medium text-blue-600 hover:text-blue-500"
+            className="font-medium text-lilac-600 hover:text-lilac-700"
           >
             {t('auth.register.signInHere')}
           </Link>

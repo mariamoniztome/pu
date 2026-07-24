@@ -94,10 +94,7 @@ export function ReportsPage() {
             {t('reports.subtitle')}
           </p>
         </div>
-        <Button
-          onClick={() => setShowForm(true)}
-          className="rounded-full bg-gray-900 hover:bg-black"
-        >
+        <Button onClick={() => setShowForm(true)}>
           <Plus className="h-5 w-5 mr-2" />
           {t('reports.newReport')}
         </Button>
@@ -151,7 +148,7 @@ export function ReportsPage() {
                         href={`http://localhost:5000/${attachment.path}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline"
+                        className="flex items-center text-sm text-lilac-600 hover:text-lilac-800 hover:underline"
                       >
                         <FileText className="h-3 w-3 mr-1" />
                         {attachment.originalName}

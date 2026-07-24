@@ -260,10 +260,10 @@ export function PatientForm({ patient, open, onClose }: PatientFormProps) {
             )}
 
           <div className="flex gap-2 justify-end pt-4">
-            <Button type="button" variant="outline" onClick={onClose} className="rounded-full">
+            <Button type="button" variant="outline" onClick={onClose}>
               {t('common.cancel')}
             </Button>
-            <Button type="submit" disabled={loading} className="rounded-full bg-gray-900 hover:bg-black">
+            <Button type="submit" disabled={loading}>
               {loading ? t('common.saving') : patient ? t('common.update') : t('common.create')}
             </Button>
           </div>
