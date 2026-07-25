@@ -4,6 +4,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { authAPI } from '../../api/auth';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
+import { PasswordInput } from '../ui/password-input';
 import { Label } from '../ui/label';
 import { toast } from 'sonner';
 import { useTranslation } from '../../hooks/useTranslation';
@@ -161,11 +162,11 @@ export function ProfileTab() {
           <h3 className="text-sm font-semibold text-gray-900">{t('settings.profile.changePassword')}</h3>
           <div className="space-y-2">
             <Label htmlFor="currentPassword">{t('settings.profile.currentPassword')}</Label>
-            <Input id="currentPassword" type="password" required value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
+            <PasswordInput id="currentPassword" required value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="newPassword">{t('settings.profile.newPassword')}</Label>
-            <Input id="newPassword" type="password" required value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+            <PasswordInput id="newPassword" required value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
           </div>
           <Button type="submit" variant="outline" disabled={changingPassword}>
             {changingPassword ? t('common.saving') : t('settings.profile.changePassword')}

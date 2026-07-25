@@ -1,92 +1,37 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Check, Sparkles, ChevronDown, ShieldCheck, CreditCard, Clock } from 'lucide-react';
-import { Button, buttonVariants } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
-import { Label } from '../../components/ui/label';
-import { Textarea } from '../../components/ui/textarea';
+import {
+  Check,
+  Sparkles,
+  ChevronDown,
+  ShieldCheck,
+  CreditCard,
+  Clock,
+  Users,
+  CalendarClock,
+  FileBarChart,
+  Euro,
+  Lock,
+  Palette,
+} from 'lucide-react';
+import { buttonVariants } from '../../components/ui/button';
 import { LanguageSwitcher } from '../../components/LanguageSwitcher';
+import { ContactSection } from '../../components/marketing/ContactSection';
 import { cn } from '../../lib/utils';
 import { useTranslation } from '../../hooks/useTranslation';
 import { PLANS } from '../../lib/plans';
 import { resetToDefaultTheme } from '../../lib/theme/applyTheme';
-import { contactApi } from '../../api/contact';
-import { toast } from 'sonner';
 
 const FAQ_KEYS = ['trial', 'invite', 'security', 'changePlan'] as const;
 
-function ContactSection() {
-  const { t } = useTranslation();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
-  const [sending, setSending] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSending(true);
-    try {
-      await contactApi.submit({ name, email, message });
-      toast.success(t('landing.contact.success'));
-      setName('');
-      setEmail('');
-      setMessage('');
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || t('landing.contact.error'));
-    } finally {
-      setSending(false);
-    }
-  };
-
-  return (
-    <section id="contact" className="max-w-xl mx-auto px-6 pb-24">
-      <h2 className="text-2xl font-bold text-gray-900 text-center mb-2">{t('landing.contact.title')}</h2>
-      <p className="text-gray-600 text-center mb-8">{t('landing.contact.subtitle')}</p>
-      <form onSubmit={handleSubmit} className="bg-white rounded-3xl border border-gray-200 p-6 space-y-4">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="space-y-1.5">
-            <Label htmlFor="contactName">{t('landing.contact.name')}</Label>
-            <Input id="contactName" required value={name} onChange={(e) => setName(e.target.value)} />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="contactEmail">{t('landing.contact.email')}</Label>
-            <Input id="contactEmail" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-          </div>
-        </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="contactMessage">{t('landing.contact.message')}</Label>
-          <Textarea id="contactMessage" required rows={4} value={message} onChange={(e) => setMessage(e.target.value)} />
-        </div>
-        <Button type="submit" className="w-full" disabled={sending}>
-          {sending ? t('landing.contact.sending') : t('landing.contact.send')}
-        </Button>
-      </form>
-    </section>
-  );
-}
-
-function LandingFooter() {
-  const { t } = useTranslation();
-  const year = new Date().getFullYear();
-  return (
-    <footer className="border-t border-gray-200 bg-white/60">
-      <div className="max-w-6xl mx-auto px-6 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="text-center sm:text-left">
-          <p className="font-semibold text-gray-900">{t('landing.brandName')}</p>
-          <p className="text-sm text-gray-500">{t('landing.footerTagline')}</p>
-        </div>
-        <nav className="flex items-center gap-6 text-sm text-gray-600">
-          <a href="#pricing" className="hover:text-gray-900">{t('landing.pricingTitle')}</a>
-          <a href="#faq" className="hover:text-gray-900">{t('landing.faqTitle')}</a>
-          <a href="#contact" className="hover:text-gray-900">{t('landing.contact.title')}</a>
-        </nav>
-      </div>
-      <div className="max-w-6xl mx-auto px-6 pb-8 text-center sm:text-left text-xs text-gray-400">
-        © {year} {t('landing.brandName')}. {t('landing.footerRights')}
-      </div>
-    </footer>
-  );
-}
+const FEATURE_ICONS = {
+  patients: Users,
+  calendar: CalendarClock,
+  reports: FileBarChart,
+  billing: Euro,
+  permissions: Lock,
+  branding: Palette,
+} as const;
 
 function FaqItem({ questionKey }: { questionKey: string }) {
   const { t } = useTranslation();
@@ -103,6 +48,41 @@ function FaqItem({ questionKey }: { questionKey: string }) {
       </button>
       {open && <p className="text-sm text-gray-600 pb-4 -mt-1">{t(`landing.faq.${questionKey}.a`)}</p>}
     </div>
+  );
+}
+
+function LandingFooter() {
+  const { t } = useTranslation();
+  const year = new Date().getFullYear();
+  return (
+    <footer className="border-t border-gray-200 bg-white/60">
+      <div className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-1 sm:grid-cols-3 gap-8">
+        <div>
+          <p className="font-semibold text-gray-900">{t('landing.brandName')}</p>
+          <p className="text-sm text-gray-500 mt-1">{t('landing.footerTagline')}</p>
+        </div>
+
+        <div>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">{t('landing.footerProduct')}</p>
+          <nav className="flex flex-col gap-2 text-sm text-gray-600">
+            <a href="#features" className="hover:text-gray-900">{t('landing.featuresTitle')}</a>
+            <a href="#pricing" className="hover:text-gray-900">{t('landing.pricingTitle')}</a>
+            <a href="#faq" className="hover:text-gray-900">{t('landing.faqTitle')}</a>
+          </nav>
+        </div>
+
+        <div>
+          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">{t('landing.footerSupport')}</p>
+          <nav className="flex flex-col gap-2 text-sm text-gray-600">
+            <a href="#contact" className="hover:text-gray-900">{t('landing.contact.title')}</a>
+            <Link to="/help" className="hover:text-gray-900">{t('navigation.help')}</Link>
+          </nav>
+        </div>
+      </div>
+      <div className="max-w-6xl mx-auto px-6 pb-8 text-xs text-gray-400">
+        © {year} {t('landing.brandName')}. {t('landing.footerRights')}
+      </div>
+    </footer>
   );
 }
 
@@ -156,6 +136,28 @@ export function LandingPage() {
             <ShieldCheck className="h-4 w-4 text-lilac-500" />
             {t('landing.badgeCancelAnytime')}
           </span>
+        </div>
+      </section>
+
+      <section id="features" className="max-w-6xl mx-auto px-6 pb-24">
+        <div className="text-center mb-10">
+          <h2 className="text-2xl font-bold text-gray-900">{t('landing.featuresTitle')}</h2>
+          <p className="text-gray-600 mt-2">{t('landing.featuresSubtitle')}</p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {(Object.keys(FEATURE_ICONS) as (keyof typeof FEATURE_ICONS)[]).map((key) => {
+            const Icon = FEATURE_ICONS[key];
+            return (
+              <div key={key} className="rounded-3xl border border-gray-200 bg-white p-6">
+                <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-primary-200 to-lilac-200 flex items-center justify-center mb-4">
+                  <Icon className="h-5 w-5 text-gray-800" />
+                </div>
+                <h3 className="font-semibold text-gray-900">{t(`landing.features.${key}.title`)}</h3>
+                <p className="text-sm text-gray-500 mt-1">{t(`landing.features.${key}.body`)}</p>
+              </div>
+            );
+          })}
         </div>
       </section>
 

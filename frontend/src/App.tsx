@@ -8,6 +8,8 @@ import { Layout } from './components/Layout';
 import { ConsentBanner } from './components/ConsentBanner';
 import { trackPageview } from './lib/analytics';
 import { LandingPage } from './pages/marketing/LandingPage';
+import { HelpPage } from './pages/marketing/HelpPage';
+import { NotFoundPage } from './pages/marketing/NotFoundPage';
 import { LoginPage } from './pages/auth/LoginPage';
 import { RegisterPage } from './pages/auth/RegisterPage';
 import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage';
@@ -54,7 +56,7 @@ function HomeGate() {
   return <Layout />;
 }
 
-const PUBLIC_MARKETING_PATHS = ['/', '/login', '/register'];
+const PUBLIC_MARKETING_PATHS = ['/', '/home', '/help', '/login', '/register'];
 
 // Analytics is scoped to the public marketing surface only — never the
 // authenticated app, so clinical usage never gets sent to a third party.
@@ -85,6 +87,11 @@ function AppRoutes() {
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
           <Route path="/accept-invite/:token" element={<AcceptInvitePage />} />
+          {/* Always public — regardless of auth state — so links (e.g. the
+              in-app footer) can send a signed-in user back to the marketing
+              site without landing on their own dashboard. */}
+          <Route path="/home" element={<LandingPage />} />
+          <Route path="/help" element={<HelpPage />} />
 
           {/* "/" is the landing page when signed out, the dashboard layout when signed in */}
           <Route path="/" element={<HomeGate />}>
@@ -99,8 +106,8 @@ function AppRoutes() {
             <Route path="settings" element={<SettingsPage />} />
           </Route>
 
-          {/* Catch all - redirect to home */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          {/* Catch all - unknown paths get a real 404, not a silent redirect */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
     </>

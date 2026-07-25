@@ -61,7 +61,8 @@
     "collapse": "Recolher",
     "pinSidebar": "Fixar barra lateral",
     "unpinSidebar": "Desafixar barra lateral",
-    "userMenu": "Menu do utilizador"
+    "userMenu": "Menu do utilizador",
+    "help": "Ajuda"
   },
   "dashboard": {
     "title": "Painel de Controlo",
@@ -885,12 +886,79 @@
       "send": "Enviar mensagem",
       "sending": "A enviar...",
       "success": "Mensagem enviada — vamos responder em breve.",
-      "error": "Não foi possível enviar a mensagem. Tenta novamente."
-    }
+      "error": "Não foi possível enviar a mensagem. Tenta novamente.",
+      "responseTimeTitle": "Resposta rápida",
+      "responseTimeBody": "Costumamos responder dentro de 1 dia útil.",
+      "anyQuestionTitle": "Qualquer dúvida é bem-vinda",
+      "anyQuestionBody": "Preços, funcionalidades, migrar os teus dados — pergunta à vontade."
+    },
+    "featuresTitle": "Tudo o que a tua prática precisa",
+    "featuresSubtitle": "Um só lugar para pacientes, sessões, faturação e a tua equipa.",
+    "features": {
+      "patients": {
+        "title": "Registo de pacientes",
+        "body": "Historial completo, notas e documentos de cada paciente, organizados e pesquisáveis."
+      },
+      "calendar": {
+        "title": "Calendário e sessões",
+        "body": "Agenda consultas, acompanha sessões online, e não percas o fio ao dia."
+      },
+      "reports": {
+        "title": "Relatórios",
+        "body": "Gera e exporta relatórios para tribunais, escolas, seguradoras e empregadores."
+      },
+      "billing": {
+        "title": "Faturação",
+        "body": "Acompanha pagamentos, faturas e receita sem folhas de cálculo."
+      },
+      "permissions": {
+        "title": "Permissões de equipa",
+        "body": "Convida colegas e controla exatamente o que cada pessoa pode ver e fazer."
+      },
+      "branding": {
+        "title": "A tua própria marca",
+        "body": "O nome, cores e logótipo da tua clínica — em toda a app."
+      }
+    },
+    "footerProduct": "Produto",
+    "footerSupport": "Suporte"
   },
   "consent": {
     "message": "Usamos cookies para perceber como os visitantes usam este site. Podes aceitar ou recusar cookies de análise.",
     "accept": "Aceitar",
     "reject": "Recusar"
+  },
+  "notFound": {
+    "title": "Página não encontrada",
+    "subtitle": "A página que procuras não existe ou pode ter sido movida.",
+    "backHome": "Voltar ao início"
+  },
+  "help": {
+    "title": "Ajuda e suporte",
+    "subtitle": "Perguntas comuns e como nos contactar se algo não estiver a funcionar.",
+    "contactTitle": "Continuas com problemas?",
+    "contactSubtitle": "Conta-nos o que se passa e ajudamos a resolver.",
+    "topics": {
+      "login": {
+        "q": "Não consigo iniciar sessão",
+        "a": "Confirma o email e a palavra-passe. Se continuares a ver um erro, usa \"Esqueceste-te da palavra-passe?\" na página de início de sessão para a repor."
+      },
+      "forgotPassword": {
+        "q": "Não recebi o email de reposição de palavra-passe",
+        "a": "Verifica a pasta de spam. Se mesmo assim não chegar ao fim de alguns minutos, contacta-nos abaixo e ajudamos diretamente."
+      },
+      "invite": {
+        "q": "Fui convidado mas não tenho o link",
+        "a": "Pede à pessoa que te convidou (o dono ou admin da clínica) para reenviar o convite em Definições → Equipa."
+      },
+      "slowLoading": {
+        "q": "A app está lenta ou uma página não carrega",
+        "a": "Tenta primeiro atualizar a página. Se persistir, pode ser um problema temporário do nosso lado — avisa-nos e vamos investigar."
+      },
+      "dataMissing": {
+        "q": "Parece faltar um paciente ou uma consulta",
+        "a": "Verifica se a partilha de dados está ativa em Definições → Organização — dependendo das tuas permissões, podes só ver os teus próprios pacientes. Se não for isso, contacta-nos."
+      }
+    }
   }
 }

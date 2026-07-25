@@ -185,11 +185,11 @@ export function Layout() {
 
         <main
           className={cn(
-            'flex-1 py-4 sm:py-6 lg:py-8 overflow-x-hidden transition-all duration-300',
-            isExpanded ? 'ml-64' : 'ml-20'
+            'flex-1 min-h-screen flex flex-col py-4 sm:py-6 lg:py-8 overflow-x-hidden transition-all duration-300',
+            isExpanded ? 'ml-[17rem]' : 'ml-24'
           )}
         >
-          <div className="max-w-[81rem] mx-auto">
+          <div className="max-w-[81rem] mx-auto w-full flex-1 flex flex-col">
             <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
               <div className="min-w-0">
                 <h2 className="text-2xl font-bold text-gray-900 truncate leading-tight">
@@ -261,11 +261,16 @@ export function Layout() {
               </div>
             </div>
             <PageHeaderSlotContext.Provider value={headerSlot}>
-              <Outlet />
+              <div className="flex-1">
+                <Outlet />
+              </div>
             </PageHeaderSlotContext.Provider>
 
-            <footer className="mt-10 pt-6 border-t border-lilac-100/60 text-xs text-gray-400">
-              © {new Date().getFullYear()} {t('landing.brandName')}
+            <footer className="mt-10 pt-6 border-t border-lilac-100/60 flex flex-wrap items-center justify-between gap-2 text-xs text-gray-400">
+              <Link to="/home" className="hover:text-gray-600">
+                © {new Date().getFullYear()} {t('landing.brandName')}
+              </Link>
+              <Link to="/help" className="hover:text-gray-600">{t('navigation.help')}</Link>
             </footer>
           </div>
         </main>

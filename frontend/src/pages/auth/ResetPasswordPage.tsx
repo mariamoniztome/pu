@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
+import { PasswordInput } from '../../components/ui/password-input';
 import { Label } from '../../components/ui/label';
 import { Card } from '../../components/ui/card';
 import { toast } from 'sonner';
@@ -70,10 +70,9 @@ export const ResetPasswordPage: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <Label htmlFor="password">{t('auth.resetPassword.newPassword')}</Label>
-            <Input
+            <PasswordInput
               id="password"
               name="password"
-              type="password"
               autoComplete="new-password"
               required
               value={formData.password}
@@ -86,10 +85,9 @@ export const ResetPasswordPage: React.FC = () => {
 
           <div>
             <Label htmlFor="confirmPassword">{t('auth.resetPassword.confirmPassword')}</Label>
-            <Input
+            <PasswordInput
               id="confirmPassword"
               name="confirmPassword"
-              type="password"
               autoComplete="new-password"
               required
               value={formData.confirmPassword}

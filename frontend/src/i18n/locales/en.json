@@ -61,7 +61,8 @@
     "collapse": "Collapse",
     "pinSidebar": "Pin sidebar open",
     "unpinSidebar": "Unpin sidebar",
-    "userMenu": "User menu"
+    "userMenu": "User menu",
+    "help": "Help"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -885,12 +886,79 @@
       "send": "Send message",
       "sending": "Sending...",
       "success": "Message sent — we'll get back to you soon.",
-      "error": "Couldn't send your message. Please try again."
-    }
+      "error": "Couldn't send your message. Please try again.",
+      "responseTimeTitle": "Fast response",
+      "responseTimeBody": "We usually reply within 1 business day.",
+      "anyQuestionTitle": "Any question is welcome",
+      "anyQuestionBody": "Pricing, features, migrating your data — just ask."
+    },
+    "featuresTitle": "Everything your practice needs",
+    "featuresSubtitle": "One place for patients, sessions, billing and your team.",
+    "features": {
+      "patients": {
+        "title": "Patient records",
+        "body": "Full history, notes and documents for every patient, organized and searchable."
+      },
+      "calendar": {
+        "title": "Calendar & sessions",
+        "body": "Schedule appointments, track online sessions, and never lose track of your day."
+      },
+      "reports": {
+        "title": "Reports",
+        "body": "Generate and export reports for courts, schools, insurers and employers."
+      },
+      "billing": {
+        "title": "Billing",
+        "body": "Track payments, invoices and revenue without spreadsheets."
+      },
+      "permissions": {
+        "title": "Team permissions",
+        "body": "Invite colleagues and control exactly what each person can see and do."
+      },
+      "branding": {
+        "title": "Your own branding",
+        "body": "Your clinic's name, colors and logo — across the whole app."
+      }
+    },
+    "footerProduct": "Product",
+    "footerSupport": "Support"
   },
   "consent": {
     "message": "We use cookies to understand how visitors use this site. You can accept or decline analytics cookies.",
     "accept": "Accept",
     "reject": "Decline"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "subtitle": "The page you're looking for doesn't exist or may have moved.",
+    "backHome": "Back to home"
+  },
+  "help": {
+    "title": "Help & support",
+    "subtitle": "Common questions and how to reach us if something's not working.",
+    "contactTitle": "Still stuck?",
+    "contactSubtitle": "Tell us what's happening and we'll help you sort it out.",
+    "topics": {
+      "login": {
+        "q": "I can't sign in",
+        "a": "Double check your email and password. If you keep getting an error, use \"Forgot your password?\" on the sign-in page to reset it."
+      },
+      "forgotPassword": {
+        "q": "I didn't receive the password reset email",
+        "a": "Check your spam folder. If it still hasn't arrived after a few minutes, contact us below and we'll help directly."
+      },
+      "invite": {
+        "q": "I was invited but don't have a link",
+        "a": "Ask the person who invited you (your clinic's owner or admin) to resend the invite from Settings → Team."
+      },
+      "slowLoading": {
+        "q": "The app is slow or a page won't load",
+        "a": "Try refreshing the page first. If it persists, it may be a temporary issue on our end — let us know and we'll look into it."
+      },
+      "dataMissing": {
+        "q": "A patient or appointment seems to be missing",
+        "a": "Check whether data sharing is enabled in Settings → Organization — depending on your permissions, you may only see your own patients. If that's not it, contact us."
+      }
+    }
   }
 }

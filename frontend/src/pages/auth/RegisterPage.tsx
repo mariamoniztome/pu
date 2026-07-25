@@ -5,6 +5,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { organizationApi } from '../../api/organization';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
+import { PasswordInput } from '../../components/ui/password-input';
 import { Label } from '../../components/ui/label';
 import { Card } from '../../components/ui/card';
 import { Switch } from '../../components/ui/switch';
@@ -260,10 +261,9 @@ export const RegisterPage: React.FC = () => {
                 <Label htmlFor="password">
                   {t('auth.register.password')} <span className="text-red-500">*</span>
                 </Label>
-                <Input
+                <PasswordInput
                   id="password"
                   name="password"
-                  type="password"
                   autoComplete="new-password"
                   required
                   value={formData.password}
@@ -278,10 +278,9 @@ export const RegisterPage: React.FC = () => {
                 <Label htmlFor="confirmPassword">
                   {t('auth.register.confirmPassword')} <span className="text-red-500">*</span>
                 </Label>
-                <Input
+                <PasswordInput
                   id="confirmPassword"
                   name="confirmPassword"
-                  type="password"
                   autoComplete="new-password"
                   required
                   value={formData.confirmPassword}

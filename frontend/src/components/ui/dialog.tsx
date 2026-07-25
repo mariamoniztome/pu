@@ -1,4 +1,5 @@
 import * as React from "react"
+import { createPortal } from "react-dom"
 import { X } from "lucide-react"
 
 import { cn } from "../../lib/utils"
@@ -34,7 +35,7 @@ const Dialog = ({ open, onOpenChange, children }: {
 
   return (
     <DialogContext.Provider value={{ onOpenChange }}>
-      {open && (
+      {open && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
             className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm"
@@ -43,7 +44,8 @@ const Dialog = ({ open, onOpenChange, children }: {
           <div className="relative z-50">
             {children}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </DialogContext.Provider>
   )
@@ -91,7 +93,7 @@ const DialogContent = React.forwardRef<
           <X className="h-5 w-5" />
         </button>
       )}
-      <div className="overflow-y-auto flex-1 px-8 py-8">
+      <div className="overflow-y-auto flex-1 min-h-0 px-8 py-8">
         {children}
       </div>
     </div>
