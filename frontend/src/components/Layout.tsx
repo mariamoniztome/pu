@@ -154,7 +154,7 @@ export function Layout() {
                     !isExpanded && 'justify-center',
                     isActive
                       ? 'bg-gradient-to-r from-primary-200 to-lilac-200 text-gray-900 shadow-lg'
-                      : 'text-gray-600 hover:bg-white/60 hover:text-gray-900'
+                      : 'text-gray-600 row-hover hover:text-gray-900'
                   )}
                   title={!isExpanded ? item.label : undefined}
                 >
@@ -169,7 +169,7 @@ export function Layout() {
             <Link
               to="/settings"
               className={cn(
-                'flex items-center gap-3 px-4 py-4 rounded-3xl text-sm font-medium transition-all duration-300 w-full text-gray-600 hover:bg-white/60 hover:text-gray-900',
+                'flex items-center gap-3 px-4 py-4 rounded-3xl text-sm font-medium transition-all duration-300 w-full text-gray-600 row-hover hover:text-gray-900',
                 !isExpanded && 'justify-center'
               )}
               title={!isExpanded ? t('navigation.settings') : undefined}
@@ -186,7 +186,7 @@ export function Layout() {
                 setPinned((v) => !v);
               }}
               className={cn(
-                'flex items-center gap-3 px-4 py-4 rounded-3xl text-sm font-medium transition-all duration-300 w-full text-gray-600 hover:bg-white/60 hover:text-gray-900',
+                'flex items-center gap-3 px-4 py-4 rounded-3xl text-sm font-medium transition-all duration-300 w-full text-gray-600 row-hover hover:text-gray-900',
                 !isExpanded && 'justify-center'
               )}
               title={pinned ? t('navigation.unpinSidebar') : t('navigation.pinSidebar')}
@@ -226,7 +226,7 @@ export function Layout() {
                 <div className="relative">
                   <button
                     onClick={() => setShowProfileMenu(!showProfileMenu)}
-                    className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-white/60 transition-colors"
+                    className="flex items-center gap-2 px-3 py-2 rounded-xl row-hover"
                   >
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-300 to-lilac-300 flex items-center justify-center">
                       <span className="text-white text-sm font-medium">
@@ -257,7 +257,7 @@ export function Layout() {
 
                         <Link
                           to="/settings"
-                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                          className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 menu-item"
                           onClick={() => setShowProfileMenu(false)}
                         >
                           <Settings className="h-4 w-4" />
@@ -267,7 +267,7 @@ export function Layout() {
                         {canManageDoctors && (
                           <Link
                             to="/doctors"
-                            className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                            className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 menu-item"
                             onClick={() => setShowProfileMenu(false)}
                           >
                             <UserCircle className="h-4 w-4" />

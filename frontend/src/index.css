@@ -142,3 +142,26 @@ html {
     @apply bg-background text-foreground;
     }
 }
+
+@layer components {
+  /* Static glass card. Shadow is fixed — it never changes on hover, anywhere in the app. */
+  .surface {
+    @apply rounded-4xl border border-white/60 bg-white/60 backdrop-blur-xl shadow-md shadow-lilac-200/30;
+  }
+
+  /* Interactive glass card: same fixed shadow as .surface, just a background tint on hover
+     to signal "clickable" — never a shadow change. */
+  .surface-interactive {
+    @apply surface transition-colors duration-300 hover:bg-white/70;
+  }
+
+  /* Rows/links sitting on a translucent glass surface (sidebar nav, in-page lists) */
+  .row-hover {
+    @apply hover:bg-white/60 transition-colors duration-300;
+  }
+
+  /* Rows/links inside a solid white popover (dropdown menus, context menus) */
+  .menu-item {
+    @apply hover:bg-gray-50 transition-colors;
+  }
+}

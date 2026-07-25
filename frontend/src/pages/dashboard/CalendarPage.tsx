@@ -375,7 +375,7 @@ export function CalendarPage() {
         </div>
       </PageHeaderAction>
 
-      <Card className="rounded-2xl p-2 sm:p-4 shadow-sm border-gray-100 bg-white hover:bg-white hover:shadow-sm overflow-hidden">
+      <Card className="rounded-2xl p-2 sm:p-4 border-gray-100 bg-white overflow-hidden">
         <div style={{ height: "calc(100vh - 166px)", minHeight: "600px" }}>
           <Calendar
             localizer={localizer}
@@ -412,9 +412,7 @@ export function CalendarPage() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
-              <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-                {t('calendar.appointmentDetailsSection')}
-              </h3>
+              
 
               {/* Patient */}
               <div className="space-y-2">
@@ -498,9 +496,7 @@ export function CalendarPage() {
             {selectedEvent && (
               <div className="space-y-4 pt-4 border-t border-gray-100">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-                    {t('calendar.sessionInfoSection')}
-                  </h3>
+                 
                   {!linkedConsultation && (
                     <span className="text-xs text-gray-400">{t('calendar.sessionInfoHint')}</span>
                   )}

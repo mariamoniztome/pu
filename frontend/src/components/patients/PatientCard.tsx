@@ -23,7 +23,7 @@ const genderColors = {
   };
 
   return (
-    <Card className="hover:scale-105 transition-transform duration-200">
+    <Card variant="interactive" className="hover:scale-105 transition-transform duration-200">
       <CardHeader className="p-4 rounded-t-lg">
         <CardTitle className="flex items-center justify-between">
           <span className="text-lg text-slate-800">{`${patient.firstName} ${patient.lastName}`}</span>
@@ -40,13 +40,13 @@ const genderColors = {
             {patient.email}
           </div>
         )}
-        <div className="flex items-center text-sm text-slate-700 bg-sage-50 p-2 rounded-xl">
-          <Phone className="h-4 w-4 mr-2 text-sage-600" />
+        <div className="flex items-center text-sm text-slate-700 bg-lilac-50 p-2 rounded-xl">
+          <Phone className="h-4 w-4 mr-2 text-lilac-600" />
           {patient.phone}
         </div>
         {patient.address && (
-          <div className="flex items-center text-sm text-slate-700 bg-sand-50 p-2 rounded-xl">
-            <MapPin className="h-4 w-4 mr-2 text-sand-600" />
+          <div className="flex items-center text-sm text-slate-700 bg-gray-50 p-2 rounded-xl">
+            <MapPin className="h-4 w-4 mr-2 text-gray-600" />
             {patient.address}
           </div>
         )}

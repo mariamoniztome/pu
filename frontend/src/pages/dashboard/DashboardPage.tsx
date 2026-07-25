@@ -247,7 +247,7 @@ export function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <div className="flex flex-row-reverse items-stretch gap-6">
-            <Card className="flex-1 bg-gradient-to-br from-primary-200 to-primary-300 border-0 rounded-5xl p-8 relative overflow-hidden shadow-2xl hover:shadow-primary-300/40 transition-all duration-300">
+            <Card className="flex-1 bg-gradient-to-br from-primary-200 to-primary-300 border-0 rounded-5xl p-8 relative overflow-hidden shadow-md shadow-primary-300/30">
               <div className="relative z-10 text-center h-full flex flex-col justify-center">
                 <div className="mb-4 w-14 h-14 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center shadow-lg mx-auto">
                   <Clock className="h-7 w-7 text-gray-800" />
@@ -267,7 +267,7 @@ export function DashboardPage() {
               </div>
             </Card>
 
-            <Card className="flex-1 bg-gradient-to-br from-lilac-200 to-lilac-300 border-0 rounded-5xl p-8 relative overflow-hidden shadow-2xl hover:shadow-lilac-300/40 transition-all duration-300">
+            <Card className="flex-1 bg-gradient-to-br from-lilac-200 to-lilac-300 border-0 rounded-5xl p-8 relative overflow-hidden shadow-md shadow-lilac-300/30">
               <div className="relative z-10 text-center h-full flex flex-col justify-center">
                 <div className="mb-4 w-14 h-14 rounded-full bg-white/60 backdrop-blur-sm flex items-center justify-center shadow-lg mx-auto">
                   <Video className="h-7 w-7 text-lilac-700" />
@@ -287,7 +287,7 @@ export function DashboardPage() {
             </Card>
           </div>
 
-          <Card className="rounded-5xl p-8 shadow-xl h-[700px]">
+          <Card className="rounded-5xl p-8 h-[700px]">
             <div className="flex items-center justify-between mb-6">
               <div>
                 <div className="flex items-center gap-2 mb-2">
@@ -319,7 +319,7 @@ export function DashboardPage() {
                   className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
                     patientFilter === "all"
                       ? "bg-gradient-to-r from-lilac-200 to-lilac-300 text-gray-800 shadow-md"
-                      : "text-gray-600 hover:bg-white/60 backdrop-blur-sm"
+                      : "text-gray-600 row-hover"
                   }`}
                 >
                   {t("dashboard.allPatients")}
@@ -329,7 +329,7 @@ export function DashboardPage() {
                   className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                     patientFilter === "new"
                       ? "bg-gradient-to-r from-lilac-200 to-lilac-300 text-gray-800 shadow-md"
-                      : "text-gray-600 hover:bg-white/60 backdrop-blur-sm"
+                      : "text-gray-600 row-hover"
                   }`}
                 >
                   {t("dashboard.newPatients")}
@@ -339,7 +339,7 @@ export function DashboardPage() {
                   className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
                     patientFilter === "insurance"
                       ? "bg-gradient-to-r from-lilac-200 to-lilac-300 text-gray-800 shadow-md"
-                      : "text-gray-600 hover:bg-white/60 backdrop-blur-sm"
+                      : "text-gray-600 row-hover"
                   }`}
                 >
                   {t("dashboard.insurance")}
@@ -391,7 +391,7 @@ export function DashboardPage() {
         </div>
 
         <div className="space-y-6">
-          <Card className="rounded-5xl p-6 shadow-xl">
+          <Card className="rounded-5xl p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-gray-900">
                 {monthName}
@@ -399,13 +399,13 @@ export function DashboardPage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={handlePreviousMonth}
-                  className="p-2 hover:bg-white/60 backdrop-blur-sm rounded-full transition-all duration-300"
+                  className="p-2 row-hover rounded-full"
                 >
                   <ChevronLeft className="h-4 w-4 text-gray-600" />
                 </button>
                 <button
                   onClick={handleNextMonth}
-                  className="p-2 hover:bg-white/60 backdrop-blur-sm rounded-full transition-all duration-300"
+                  className="p-2 row-hover rounded-full"
                 >
                   <ChevronRight className="h-4 w-4 text-gray-600" />
                 </button>
@@ -456,7 +456,7 @@ export function DashboardPage() {
             </div>
           </Card>
 
-          <Card className="rounded-5xl p-6 shadow-xl">
+          <Card className="rounded-5xl p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">
               {t("dashboard.todaysSchedule")}
             </h3>
@@ -465,7 +465,7 @@ export function DashboardPage() {
                 todayAppointments.map((apt, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center gap-3 p-4 rounded-4xl hover:bg-white/60 backdrop-blur-sm transition-all duration-300"
+                    className="flex items-center gap-3 p-4 rounded-4xl row-hover"
                   >
                     <div className="w-11 h-11 rounded-full bg-gradient-to-br from-primary-200 to-lilac-200 flex items-center justify-center flex-shrink-0 shadow-md">
                       <span className="text-sm font-semibold text-gray-800">

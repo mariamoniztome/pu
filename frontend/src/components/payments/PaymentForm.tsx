@@ -293,7 +293,7 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
           {/* Receipt */}
           <div>
             <Label>{t('payments.form.receipt')}</Label>
-            <label className="mt-2 flex h-24 w-full cursor-pointer items-center justify-center rounded-2xl border-2 border-dashed border-sand-200 bg-sand-50/30 transition hover:bg-sand-50">
+            <label className="mt-2 flex h-24 w-full cursor-pointer items-center justify-center rounded-2xl border-2 border-dashed border-primary-200 bg-primary-50/30 transition hover:bg-primary-50">
               <div className="text-center">
                 <Upload className="mx-auto mb-2 h-8 w-8 text-sand-400" />
                 <p className="text-sm text-slate-600">

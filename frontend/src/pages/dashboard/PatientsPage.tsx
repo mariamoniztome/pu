@@ -215,7 +215,7 @@ export function PatientsPage() {
           ))}
         </div>
       ) : (
-        <Card className="shadow-sm">
+        <Card>
           <CardHeader className="flex flex-row justify-between items-center">
             <CardTitle className="text-gray-900">{t('patients.listTitle')}</CardTitle>
             <Button

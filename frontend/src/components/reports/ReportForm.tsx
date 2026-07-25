@@ -315,7 +315,7 @@ export function ReportForm({ report, onClose }: ReportFormProps) {
           {/* Attachments */}
           <div>
             <Label>{t('reports.form.attachments')}</Label>
-            <label className="mt-2 flex h-24 w-full cursor-pointer items-center justify-center rounded-2xl border-2 border-dashed border-lavender-200 bg-lavender-50/30 hover:bg-lavender-50">
+            <label className="mt-2 flex h-24 w-full cursor-pointer items-center justify-center rounded-2xl border-2 border-dashed border-primary-200 bg-primary-50/30 hover:bg-primary-50">
               <div className="text-center">
                 <Upload className="mx-auto mb-2 h-8 w-8 text-lavender-400" />
                 <p className="text-sm text-slate-600">

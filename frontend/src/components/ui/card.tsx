@@ -1,19 +1,35 @@
 import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "../../lib/utils"
 
-const Card = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "rounded-4xl border border-white/60 bg-white/60 backdrop-blur-xl shadow-xl shadow-lilac-200/30 transition-all duration-300 hover:shadow-2xl hover:shadow-lilac-300/40 hover:bg-white/70",
-      className
-    )}
-    {...props}
-  />
-))
+const cardVariants = cva("", {
+  variants: {
+    variant: {
+      // Default: a static panel. Only opt into "interactive" when the whole
+      // card is itself a clickable/hoverable unit — otherwise pages end up
+      // fighting this default with defensive `hover:shadow-sm` overrides.
+      static: "surface",
+      interactive: "surface-interactive",
+    },
+  },
+  defaultVariants: {
+    variant: "static",
+  },
+})
+
+export interface CardProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof cardVariants> {}
+
+const Card = React.forwardRef<HTMLDivElement, CardProps>(
+  ({ className, variant, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(cardVariants({ variant }), className)}
+      {...props}
+    />
+  )
+)
 Card.displayName = "Card"
 
 const CardHeader = React.forwardRef<
