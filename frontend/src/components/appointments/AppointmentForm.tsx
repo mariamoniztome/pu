@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { Textarea } from "../ui/textarea";
+import { Switch } from "../ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../ui/dialog";
 import { appointmentsApi, patientsApi } from "../../api";
 import { Appointment } from "../../types/appointment";
@@ -33,6 +34,7 @@ export function AppointmentForm({
     duration: string;
     type?: Appointment["type"];
     status?: Appointment["status"];
+    isOnline: boolean;
     notes: string;
   }>({
     patient: undefined,
@@ -40,6 +42,7 @@ export function AppointmentForm({
     duration: "60",
     type: undefined,
     status: undefined,
+    isOnline: false,
     notes: "",
   });
 
@@ -63,6 +66,7 @@ export function AppointmentForm({
         duration: appointment.duration.toString(),
         type: appointment.type,
         status: appointment.status,
+        isOnline: appointment.isOnline || false,
         notes: appointment.notes || "",
       });
     }
@@ -96,6 +100,7 @@ export function AppointmentForm({
         duration: parseInt(formData.duration, 10),
         type: formData.type,
         status: formData.status,
+        isOnline: formData.isOnline,
         notes: formData.notes || undefined,
       };
 
@@ -223,6 +228,19 @@ export function AppointmentForm({
                 </SelectContent>
               </Select>
             </div>
+          </div>
+
+          {/* Online session */}
+          <div className="flex items-center justify-between rounded-2xl border border-gray-100 p-4">
+            <div>
+              <Label>{t('appointments.isOnline')}</Label>
+              <p className="text-xs text-gray-500 mt-0.5">{t('appointments.isOnlineHelp')}</p>
+            </div>
+            <Switch
+              checked={formData.isOnline}
+              onCheckedChange={(checked) => setFormData({ ...formData, isOnline: checked })}
+              aria-label={t('appointments.isOnline')}
+            />
           </div>
 
           {/* Notes */}

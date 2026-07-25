@@ -12,6 +12,7 @@ import { Card } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { DashboardChart } from "../../components/shared/DashboardChart";
 import { AppointmentForm } from "../../components/appointments/AppointmentForm";
+import { VideoCallDialog } from "../../components/calendar/VideoCallDialog";
 import { ConsultationForm } from "../../components/consultations/ConsultationForm";
 import { appointmentsApi, patientsApi } from "../../api";
 import { Appointment } from "../../types/appointment";
@@ -34,6 +35,7 @@ export function DashboardPage() {
   const [isConsultationDialogOpen, setIsConsultationDialogOpen] =
     useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [showNextSessionCall, setShowNextSessionCall] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -278,11 +280,15 @@ export function DashboardPage() {
                     ? t("dashboard.withPatient", { name: nextAppointmentPatientName })
                     : t("dashboard.noUpcomingSessions")}
                 </p>
-                {nextAppointmentPatientName && (
+                {nextAppointmentPatientName && nextAppointment?.isOnline && (
                   <div className="flex gap-2 justify-center">
-                    <div className="text-xs font-semibold text-gray-700 bg-white/40 backdrop-blur-sm px-4 py-2 rounded-full">
+                    <button
+                      type="button"
+                      onClick={() => setShowNextSessionCall(true)}
+                      className="text-xs font-semibold text-gray-700 bg-white/40 backdrop-blur-sm px-4 py-2 rounded-full hover:bg-white/70 transition-colors"
+                    >
                       {t("dashboard.available")}
-                    </div>
+                    </button>
                   </div>
                 )}
               </div>
@@ -518,6 +524,15 @@ export function DashboardPage() {
           onClose={() => {
             setIsConsultationDialogOpen(false);
           }}
+        />
+      )}
+
+      {nextAppointment?.isOnline && (
+        <VideoCallDialog
+          open={showNextSessionCall}
+          onOpenChange={setShowNextSessionCall}
+          roomName={`clinicamente-${nextAppointment._id}`}
+          patientName={nextAppointmentPatientName || undefined}
         />
       )}
     </div>

@@ -7,6 +7,7 @@ export interface Appointment {
   duration: number;
   type: 'initial' | 'follow-up' | 'assessment' | 'therapy' | 'other';
   status: 'scheduled' | 'confirmed' | 'completed' | 'cancelled' | 'no-show';
+  isOnline: boolean;
   notes?: string;
   reminderSent: boolean;
   createdAt: string;

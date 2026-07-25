@@ -8,6 +8,7 @@ export interface IAppointment extends Document {
   duration: number;
   type: 'initial' | 'follow-up' | 'assessment' | 'therapy' | 'other';
   status: 'scheduled' | 'confirmed' | 'completed' | 'cancelled' | 'no-show';
+  isOnline: boolean;
   notes?: string;
   reminderSent: boolean;
   createdAt: Date;
@@ -51,6 +52,10 @@ const appointmentSchema = new Schema<IAppointment>(
       type: String,
       enum: ['scheduled', 'confirmed', 'completed', 'cancelled', 'no-show'],
       default: 'scheduled',
+    },
+    isOnline: {
+      type: Boolean,
+      default: false,
     },
     notes: {
       type: String,

@@ -4,7 +4,7 @@ import { format, parse, startOfWeek, getDay } from "date-fns";
 import { enUS, pt } from "date-fns/locale";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import "../../styles/calendar.css";
-import { Plus, X, Upload, FileText } from "lucide-react";
+import { Plus, X, Upload, FileText, Video, Link as LinkIcon } from "lucide-react";
 import { toast } from "sonner";
 import { Card } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "../../components/ui/select";
 import { Textarea } from "../../components/ui/textarea";
+import { Switch } from "../../components/ui/switch";
 import { appointmentsApi, patientsApi, consultationsApi } from "../../api";
 import { Appointment } from "../../types/appointment";
 import { Patient } from "../../types/patient";
@@ -36,6 +37,7 @@ import { usePermissions } from "../../hooks/usePermissions";
 import { authAPI } from "../../api/auth";
 import { Doctor } from "../../types/auth";
 import { ConfirmDialog } from "../../components/ui/confirm-dialog";
+import { VideoCallDialog } from "../../components/calendar/VideoCallDialog";
 
 const locales = {
   "en-US": enUS,
@@ -115,12 +117,14 @@ export function CalendarPage() {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [viewedDoctorId, setViewedDoctorId] = useState("");
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showVideoCall, setShowVideoCall] = useState(false);
   const isViewingOthersCalendar = viewedDoctorId !== "" && viewedDoctorId !== currentDoctor?._id;
 
   const [formData, setFormData] = useState({
     patientId: "",
     dateTime: "",
     type: "initial" as AppointmentType,
+    isOnline: false,
     notes: "",
   });
   const [consultationData, setConsultationData] = useState(emptyConsultationData);
@@ -205,6 +209,7 @@ export function CalendarPage() {
       patientId: "",
       dateTime: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
       type: "initial",
+      isOnline: false,
       notes: "",
     });
     setConsultationData(emptyConsultationData);
@@ -221,6 +226,7 @@ export function CalendarPage() {
       patientId: "",
       dateTime: format(slotInfo.start, "yyyy-MM-dd'T'HH:mm"),
       type: "initial",
+      isOnline: false,
       notes: "",
     });
     setConsultationData(emptyConsultationData);
@@ -236,6 +242,7 @@ export function CalendarPage() {
       patientId: getPatientId(event.appointment.patient),
       dateTime: format(new Date(event.appointment.dateTime), "yyyy-MM-dd'T'HH:mm"),
       type: event.appointment.type,
+      isOnline: event.appointment.isOnline || false,
       notes: event.appointment.notes || "",
     });
 
@@ -266,6 +273,7 @@ export function CalendarPage() {
         patient: formData.patientId,
         dateTime: new Date(formData.dateTime).toISOString(),
         type: formData.type,
+        isOnline: formData.isOnline,
         notes: formData.notes || undefined,
       };
 
@@ -333,6 +341,22 @@ export function CalendarPage() {
       loadData();
     } catch (error) {
       toast.error(t('calendar.failedToDelete'));
+    }
+  };
+
+  const videoCallRoomName = selectedEvent ? `clinicamente-${selectedEvent.id}` : "";
+  const selectedPatientName = (() => {
+    const patient = patients.find((p) => p._id === formData.patientId);
+    return patient ? `${patient.firstName} ${patient.lastName}` : undefined;
+  })();
+
+  const handleCopyVideoLink = async () => {
+    if (!videoCallRoomName) return;
+    try {
+      await navigator.clipboard.writeText(`https://meet.jit.si/${videoCallRoomName}`);
+      toast.success(t('calendar.videoCall.linkCopied'));
+    } catch {
+      toast.error(t('calendar.videoCall.loadFailed'));
     }
   };
 
@@ -539,6 +563,19 @@ export function CalendarPage() {
                 </Select>
               </div>
 
+              {/* Online session */}
+              <div className="flex items-center justify-between rounded-2xl border border-gray-100 p-4">
+                <div>
+                  <Label className="text-sm font-semibold text-gray-700">{t('appointments.isOnline')}</Label>
+                  <p className="text-xs text-gray-500 mt-0.5">{t('appointments.isOnlineHelp')}</p>
+                </div>
+                <Switch
+                  checked={formData.isOnline}
+                  onCheckedChange={(checked) => setFormData({ ...formData, isOnline: checked })}
+                  aria-label={t('appointments.isOnline')}
+                />
+              </div>
+
               {/* Notes */}
               <div className="space-y-2">
                 <Label className="text-sm font-semibold text-gray-700">
@@ -555,10 +592,33 @@ export function CalendarPage() {
               </div>
             </div>
 
+            {selectedEvent && formData.isOnline && (
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setShowVideoCall(true)}
+                >
+                  <Video className="h-4 w-4 mr-2" />
+                  {t('calendar.videoCall.startButton')}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleCopyVideoLink}
+                  title={t('calendar.videoCall.copyLink')}
+                  aria-label={t('calendar.videoCall.copyLink')}
+                >
+                  <LinkIcon className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+
             {selectedEvent && (
               <div className="space-y-4 pt-4 border-t border-gray-100">
                 <div className="flex items-center justify-between">
-                 
+
                   {!linkedConsultation && (
                     <span className="text-xs text-gray-400">{t('calendar.sessionInfoHint')}</span>
                   )}
@@ -706,6 +766,15 @@ export function CalendarPage() {
         confirmLabel={t('common.delete')}
         onConfirm={confirmDelete}
       />
+
+      {videoCallRoomName && (
+        <VideoCallDialog
+          open={showVideoCall}
+          onOpenChange={setShowVideoCall}
+          roomName={videoCallRoomName}
+          patientName={selectedPatientName}
+        />
+      )}
     </div>
   );
 }
