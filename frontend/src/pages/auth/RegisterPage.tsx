@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { Check } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { organizationApi } from '../../api/organization';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
@@ -31,8 +32,8 @@ function StepIndicator({ step }: { step: Step }) {
   const { t } = useTranslation();
   const labels = [
     t('auth.register.stepData'),
+    t('auth.register.stepOrganization'),
     t('auth.register.stepBranding'),
-    t('auth.register.stepLogo'),
   ];
   return (
     <div className="flex items-center justify-center gap-2 mb-8">
@@ -116,15 +117,12 @@ export const RegisterPage: React.FC = () => {
     setStep(2);
   };
 
-  const handleCreateAccount = async () => {
+  const handleCreateAccount = async (e: React.FormEvent) => {
+    e.preventDefault();
     setIsLoading(true);
     try {
       const { confirmPassword, ...registerData } = formData;
-      await register({
-        ...registerData,
-        plan,
-        ...(useCustomBranding ? { clinicName: clinicName || formData.organizationName, primaryColor, accentColor } : {}),
-      });
+      await register({ ...registerData, plan });
       setStep(3);
     } catch (error: any) {
       console.error('Registration error:', error);
@@ -134,9 +132,24 @@ export const RegisterPage: React.FC = () => {
     }
   };
 
-  const finishToApp = () => {
-    toast.success(t('auth.register.registrationSuccess'));
-    navigate('/', { replace: true });
+  const finishToApp = async () => {
+    setIsLoading(true);
+    try {
+      if (useCustomBranding) {
+        await organizationApi.updateBranding({
+          clinicName: clinicName || formData.organizationName,
+          primaryColor,
+          accentColor,
+        });
+        await refreshUser();
+      }
+      toast.success(t('auth.register.registrationSuccess'));
+      navigate('/', { replace: true });
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || t('settings.branding.saveFailed'));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -154,7 +167,143 @@ export const RegisterPage: React.FC = () => {
         <StepIndicator step={step} />
 
         {step === 1 && (
-          <form onSubmit={handleNextFromStep1} className="space-y-6">
+          <form onSubmit={handleNextFromStep1} className="space-y-6 max-w-xl mx-auto">
+            {/* <h2 className="text-lg font-semibold text-gray-900">
+              {t('auth.register.yourInfo')} */}
+            {/* </h2> */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="firstName">
+                  {t('auth.register.firstName')} <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="firstName"
+                  name="firstName"
+                  required
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  placeholder={t('auth.register.firstNamePlaceholder')}
+                  className="mt-1"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="lastName">
+                  {t('auth.register.lastName')} <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="lastName"
+                  name="lastName"
+                  required
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  placeholder={t('auth.register.lastNamePlaceholder')}
+                  className="mt-1"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="email">
+                  {t('auth.register.email')} <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder={t('auth.register.emailPlaceholder')}
+                  className="mt-1"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="phone">{t('auth.register.phone')}</Label>
+                <Input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  placeholder={t('auth.register.phonePlaceholder')}
+                  className="mt-1"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="specialization">{t('auth.register.specialization')}</Label>
+                <Input
+                  id="specialization"
+                  name="specialization"
+                  value={formData.specialization}
+                  onChange={handleChange}
+                  placeholder={t('auth.register.specializationPlaceholder')}
+                  className="mt-1"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="licenseNumber">{t('auth.register.licenseNumber')}</Label>
+                <Input
+                  id="licenseNumber"
+                  name="licenseNumber"
+                  value={formData.licenseNumber}
+                  onChange={handleChange}
+                  placeholder={t('auth.register.licenseNumberPlaceholder')}
+                  className="mt-1"
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="password">
+                  {t('auth.register.password')} <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  className="mt-1"
+                />
+                <PasswordStrengthMeter password={formData.password} />
+              </div>
+
+              <div>
+                <Label htmlFor="confirmPassword">
+                  {t('auth.register.confirmPassword')} <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  autoComplete="new-password"
+                  required
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  className="mt-1"
+                />
+              </div>
+
+              {/* <p className="sm:col-span-2 text-xs text-gray-500 -mt-2">
+                {t('auth.register.passwordHelp')}
+              </p> */}
+            </div>
+
+            <Button type="submit" className="w-full">
+              {t('auth.register.continueButton')}
+            </Button>
+          </form>
+        )}
+
+        {step === 2 && (
+          <form onSubmit={handleCreateAccount} className="space-y-6 max-w-xl mx-auto">
             <div>
               <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('auth.register.choosePlan')}</h2>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -183,215 +332,86 @@ export const RegisterPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-6">
-              {/* Organization Information */}
-              <div className="lg:pr-10 lg:border-r lg:border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                  {t('auth.register.organizationInfo')}
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="sm:col-span-2">
-                    <Label htmlFor="organizationName">
-                      {t('auth.register.organizationName')} <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="organizationName"
-                      name="organizationName"
-                      required
-                      value={formData.organizationName}
-                      onChange={handleChange}
-                      placeholder={t('auth.register.organizationNamePlaceholder')}
-                      className="mt-1"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="organizationType">
-                      {t('auth.register.organizationType')} <span className="text-red-500">*</span>
-                    </Label>
-                    <Select
-                      value={formData.organizationType}
-                      onValueChange={(value) =>
-                        setFormData({ ...formData, organizationType: value as 'individual' | 'clinic' })
-                      }
-                    >
-                      <SelectTrigger id="organizationType" className="mt-1">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="individual">{t('auth.register.individualPractice')}</SelectItem>
-                        <SelectItem value="clinic">{t('auth.register.clinicMultipleDoctors')}</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="organizationEmail">{t('auth.register.organizationEmail')}</Label>
-                    <Input
-                      id="organizationEmail"
-                      name="organizationEmail"
-                      type="email"
-                      value={formData.organizationEmail}
-                      onChange={handleChange}
-                      placeholder={t('auth.register.organizationEmailPlaceholder')}
-                      className="mt-1"
-                    />
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <Label htmlFor="organizationPhone">{t('auth.register.organizationPhone')}</Label>
-                    <Input
-                      id="organizationPhone"
-                      name="organizationPhone"
-                      type="tel"
-                      value={formData.organizationPhone}
-                      onChange={handleChange}
-                      placeholder="+1 (555) 123-4567"
-                      className="mt-1"
-                    />
-                  </div>
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                {t('auth.register.organizationInfo')}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="sm:col-span-2">
+                  <Label htmlFor="organizationName">
+                    {t('auth.register.organizationName')} <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="organizationName"
+                    name="organizationName"
+                    required
+                    value={formData.organizationName}
+                    onChange={handleChange}
+                    placeholder={t('auth.register.organizationNamePlaceholder')}
+                    className="mt-1"
+                  />
                 </div>
-              </div>
 
-              {/* Doctor Information */}
-              <div>
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                  {t('auth.register.yourInfo')}
-                </h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="firstName">
-                      {t('auth.register.firstName')} <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="firstName"
-                      name="firstName"
-                      required
-                      value={formData.firstName}
-                      onChange={handleChange}
-                      placeholder={t('auth.register.firstNamePlaceholder')}
-                      className="mt-1"
-                    />
-                  </div>
+                <div>
+                  <Label htmlFor="organizationType">
+                    {t('auth.register.organizationType')} <span className="text-red-500">*</span>
+                  </Label>
+                  <Select
+                    value={formData.organizationType}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, organizationType: value as 'individual' | 'clinic' })
+                    }
+                  >
+                    <SelectTrigger id="organizationType" className="mt-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="individual">{t('auth.register.individualPractice')}</SelectItem>
+                      <SelectItem value="clinic">{t('auth.register.clinicMultipleDoctors')}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
 
-                  <div>
-                    <Label htmlFor="lastName">
-                      {t('auth.register.lastName')} <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="lastName"
-                      name="lastName"
-                      required
-                      value={formData.lastName}
-                      onChange={handleChange}
-                      placeholder={t('auth.register.lastNamePlaceholder')}
-                      className="mt-1"
-                    />
-                  </div>
+                <div>
+                  <Label htmlFor="organizationEmail">{t('auth.register.organizationEmail')}</Label>
+                  <Input
+                    id="organizationEmail"
+                    name="organizationEmail"
+                    type="email"
+                    value={formData.organizationEmail}
+                    onChange={handleChange}
+                    placeholder={t('auth.register.organizationEmailPlaceholder')}
+                    className="mt-1"
+                  />
+                </div>
 
-                  <div>
-                    <Label htmlFor="email">
-                      {t('auth.register.email')} <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
-                      required
-                      value={formData.email}
-                      onChange={handleChange}
-                      placeholder={t('auth.register.emailPlaceholder')}
-                      className="mt-1"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="phone">{t('auth.register.phone')}</Label>
-                    <Input
-                      id="phone"
-                      name="phone"
-                      type="tel"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      placeholder={t('auth.register.phonePlaceholder')}
-                      className="mt-1"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="specialization">{t('auth.register.specialization')}</Label>
-                    <Input
-                      id="specialization"
-                      name="specialization"
-                      value={formData.specialization}
-                      onChange={handleChange}
-                      placeholder={t('auth.register.specializationPlaceholder')}
-                      className="mt-1"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="licenseNumber">{t('auth.register.licenseNumber')}</Label>
-                    <Input
-                      id="licenseNumber"
-                      name="licenseNumber"
-                      value={formData.licenseNumber}
-                      onChange={handleChange}
-                      placeholder={t('auth.register.licenseNumberPlaceholder')}
-                      className="mt-1"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="password">
-                      {t('auth.register.password')} <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="password"
-                      name="password"
-                      type="password"
-                      autoComplete="new-password"
-                      required
-                      value={formData.password}
-                      onChange={handleChange}
-                      placeholder="••••••••"
-                      className="mt-1"
-                    />
-                    <PasswordStrengthMeter password={formData.password} />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="confirmPassword">
-                      {t('auth.register.confirmPassword')} <span className="text-red-500">*</span>
-                    </Label>
-                    <Input
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      type="password"
-                      autoComplete="new-password"
-                      required
-                      value={formData.confirmPassword}
-                      onChange={handleChange}
-                      placeholder="••••••••"
-                      className="mt-1"
-                    />
-                  </div>
-
-                  <p className="sm:col-span-2 text-xs text-gray-500 -mt-2">
-                    {t('auth.register.passwordHelp')}
-                  </p>
+                <div className="sm:col-span-2">
+                  <Label htmlFor="organizationPhone">{t('auth.register.organizationPhone')}</Label>
+                  <Input
+                    id="organizationPhone"
+                    name="organizationPhone"
+                    type="tel"
+                    value={formData.organizationPhone}
+                    onChange={handleChange}
+                    placeholder="+1 (555) 123-4567"
+                    className="mt-1"
+                  />
                 </div>
               </div>
             </div>
 
-            <Button type="submit" className="w-full">
-              {t('auth.register.continueButton')}
-            </Button>
+            <div className="flex gap-3">
+              <Button type="button" variant="outline" className="flex-1" onClick={() => setStep(1)} disabled={isLoading}>
+                {t('auth.register.back')}
+              </Button>
+              <Button type="submit" className="flex-1" disabled={isLoading}>
+                {isLoading ? t('auth.register.creatingAccount') : t('auth.register.createAccountButton')}
+              </Button>
+            </div>
           </form>
         )}
 
-        {step === 2 && (
+        {step === 3 && (
           <div className="space-y-6 max-w-xl mx-auto">
             <div className="space-y-2">
               <Label htmlFor="clinicName">{t('settings.branding.clinicName')}</Label>
@@ -408,7 +428,7 @@ export const RegisterPage: React.FC = () => {
                 <Label>{t('auth.register.customBranding')}</Label>
                 <p className="text-xs text-gray-500 mt-0.5">{t('auth.register.customBrandingHelp')}</p>
               </div>
-              <Switch checked={useCustomBranding} onCheckedChange={setUseCustomBranding} />
+              <Switch checked={useCustomBranding} onCheckedChange={setUseCustomBranding} aria-label={t('auth.register.customBranding')} />
             </div>
 
             {useCustomBranding && (
@@ -428,43 +448,29 @@ export const RegisterPage: React.FC = () => {
               </div>
             )}
 
-            <div className="flex gap-3">
-              <Button type="button" variant="outline" className="flex-1" onClick={() => setStep(1)} disabled={isLoading}>
-                {t('auth.register.back')}
-              </Button>
-              <Button type="button" className="flex-1" onClick={handleCreateAccount} disabled={isLoading}>
-                {isLoading ? t('auth.register.creatingAccount') : t('auth.register.createAccountButton')}
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {step === 3 && (
-          <div className="space-y-6 max-w-xl mx-auto text-center">
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900">{t('auth.register.addYourLogo')}</h2>
-              <p className="text-sm text-gray-500 mt-1">{t('auth.register.addYourLogoHelp')}</p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
-              <LogoUploader
-                label={t('settings.branding.logoMark')}
-                currentPath={organization?.branding?.logoMark}
-                variant="mark"
-                onUploaded={refreshUser}
-                shapeClass="w-16 h-16 rounded-2xl"
-              />
-              <LogoUploader
-                label={t('settings.branding.logoFull')}
-                currentPath={organization?.branding?.logoFull}
-                variant="full"
-                onUploaded={refreshUser}
-                shapeClass="w-40 h-16 rounded-xl"
-              />
+            <div className="border-t border-gray-100 pt-6">
+              <p className="text-sm font-medium text-gray-900 mb-1">{t('auth.register.addYourLogo')}</p>
+              <p className="text-xs text-gray-500 mb-4">{t('auth.register.addYourLogoHelp')}</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <LogoUploader
+                  label={t('settings.branding.logoMark')}
+                  currentPath={organization?.branding?.logoMark}
+                  variant="mark"
+                  onUploaded={refreshUser}
+                  shapeClass="w-16 h-16 rounded-2xl"
+                />
+                <LogoUploader
+                  label={t('settings.branding.logoFull')}
+                  currentPath={organization?.branding?.logoFull}
+                  variant="full"
+                  onUploaded={refreshUser}
+                  shapeClass="w-40 h-16 rounded-xl"
+                />
+              </div>
             </div>
 
-            <Button type="button" className="w-full" onClick={finishToApp}>
-              {t('auth.register.finish')}
+            <Button type="button" className="w-full" onClick={finishToApp} disabled={isLoading}>
+              {isLoading ? t('common.saving') : t('auth.register.finish')}
             </Button>
           </div>
         )}

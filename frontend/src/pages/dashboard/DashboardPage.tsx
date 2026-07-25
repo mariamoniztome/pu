@@ -17,10 +17,13 @@ import { appointmentsApi, patientsApi } from "../../api";
 import { Appointment } from "../../types/appointment";
 import { Patient } from "../../types/patient";
 import { useTranslation } from "../../hooks/useTranslation";
+import { useAuth } from "../../contexts/AuthContext";
 
 export function DashboardPage() {
   const { t, i18n } = useTranslation();
+  const { organization } = useAuth();
   const culture = i18n.language?.startsWith("pt") ? "pt-PT" : "en-US";
+  const timeZone = organization?.settings.timezone;
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -132,6 +135,7 @@ export function DashboardPage() {
       time: new Date(apt.dateTime).toLocaleTimeString(culture, {
         hour: "2-digit",
         minute: "2-digit",
+        timeZone,
       }),
       type: apt.type,
       completed: apt.status === "completed",
@@ -248,12 +252,14 @@ export function DashboardPage() {
                   {currentTime.toLocaleTimeString(culture, {
                     hour: "2-digit",
                     minute: "2-digit",
+                    timeZone,
                   })}
                 </div>
                 <div className="text-sm text-gray-700">
                   {currentTime.toLocaleDateString(culture, {
                     month: "short",
                     day: "numeric",
+                    timeZone,
                   })}
                 </div>
               </div>
@@ -380,12 +386,14 @@ export function DashboardPage() {
                 <button
                   onClick={handlePreviousMonth}
                   className="p-2 row-hover rounded-full"
+                  aria-label={t('dashboard.previousMonth')}
                 >
                   <ChevronLeft className="h-4 w-4 text-gray-600" />
                 </button>
                 <button
                   onClick={handleNextMonth}
                   className="p-2 row-hover rounded-full"
+                  aria-label={t('dashboard.nextMonth')}
                 >
                   <ChevronRight className="h-4 w-4 text-gray-600" />
                 </button>

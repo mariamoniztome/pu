@@ -118,7 +118,7 @@ function OrganizationTab() {
         <div className="rounded-2xl border border-gray-100 p-4 space-y-2">
           <div className="flex items-center justify-between">
             <p className="text-sm font-medium text-gray-900">{t('settings.dataSharing')}</p>
-            <Switch checked={allowDataSharing} onCheckedChange={setAllowDataSharing} />
+            <Switch checked={allowDataSharing} onCheckedChange={setAllowDataSharing} aria-label={t('settings.dataSharing')} />
           </div>
           <p className="text-xs text-gray-500">
             {allowDataSharing ? t('settings.dataSharingEnabled') : t('settings.dataSharingDisabled')}

@@ -77,8 +77,9 @@ export function QuickActionsDialog() {
         onClick={() => setIsOpen(true)}
         className="fixed bottom-8 right-8 w-16 h-16 rounded-full shadow-2xl z-50 bg-gradient-to-br from-primary-400 to-lilac-400 hover:from-primary-500 hover:to-lilac-500"
         size="icon"
+        aria-label={t('quickActions.title')}
       >
-        <span className="text-2xl">+</span>
+        <span className="text-2xl" aria-hidden="true">+</span>
       </Button>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>

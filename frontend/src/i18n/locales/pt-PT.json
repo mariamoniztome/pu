@@ -60,7 +60,8 @@
     "expandMenu": "Expandir menu",
     "collapse": "Recolher",
     "pinSidebar": "Fixar barra lateral",
-    "unpinSidebar": "Desafixar barra lateral"
+    "unpinSidebar": "Desafixar barra lateral",
+    "userMenu": "Menu do utilizador"
   },
   "dashboard": {
     "title": "Painel de Controlo",
@@ -108,7 +109,9 @@
     "percentWeekChange": "{{percentage}}% semana",
     "appointmentsCount_one": "{{count}} marcação",
     "appointmentsCount_other": "{{count}} marcações",
-    "newPatientsThisWeek": "Novos esta semana"
+    "newPatientsThisWeek": "Novos esta semana",
+    "previousMonth": "Mês anterior",
+    "nextMonth": "Mês seguinte"
   },
   "patients": {
     "title": "Pacientes",
@@ -253,6 +256,7 @@
       "sessionNumber": "Número da Sessão",
       "sessionNotes": "Notas da Sessão",
       "attachments": "Anexos",
+      "removeAttachment": "Remover anexo",
       "filesSelected": "{{count}} ficheiro(s) selecionado(s)",
       "uploadPrompt": "Clique para carregar ficheiros",
       "uploadHelp": "PDF, imagens",
@@ -554,7 +558,7 @@
       "backToLogin": "Voltar ao início de sessão"
     },
     "register": {
-      "createAccount": "Crie a Sua Conta",
+      "createAccount": "Criar conta",
       "subtitle": "Configure o seu sistema de gestão de clínica de psicologia",
       "organizationInfo": "Informação da Organização",
       "organizationName": "Nome da Organização",
@@ -594,12 +598,12 @@
       "customBrandingHelp": "Define já as cores da tua clínica, ou começa com a paleta por defeito e muda quando quiseres.",
       "stepData": "Os teus dados",
       "stepBranding": "Marca",
-      "stepLogo": "Logótipo",
       "continueButton": "Continuar",
       "back": "Voltar",
       "addYourLogo": "Adiciona o teu logótipo",
       "addYourLogoHelp": "Opcional — podes sempre adicionar ou mudar isto depois nas Definições.",
-      "finish": "Concluir"
+      "finish": "Concluir",
+      "stepOrganization": "A tua organização"
     },
     "acceptInvite": {
       "title": "Aceitar Convite",
@@ -869,6 +873,19 @@
         "q": "Posso mudar de plano depois?",
         "a": "Sim, podes mudar de plano a qualquer momento em Definições → Subscrição à medida que a tua prática cresce."
       }
+    },
+    "footerTagline": "Software de gestão de prática para psicólogos.",
+    "footerRights": "Todos os direitos reservados.",
+    "contact": {
+      "title": "Fala connosco",
+      "subtitle": "Dúvidas antes de começar? Envia-nos uma mensagem.",
+      "name": "Nome",
+      "email": "Email",
+      "message": "Mensagem",
+      "send": "Enviar mensagem",
+      "sending": "A enviar...",
+      "success": "Mensagem enviada — vamos responder em breve.",
+      "error": "Não foi possível enviar a mensagem. Tenta novamente."
     }
   },
   "consent": {

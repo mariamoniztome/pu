@@ -209,6 +209,7 @@ export function Layout() {
                   <button
                     onClick={() => setShowProfileMenu(!showProfileMenu)}
                     className="flex items-center gap-2 px-3 py-2 rounded-xl row-hover"
+                    aria-label={t('navigation.userMenu')}
                   >
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary-300 to-lilac-300 flex items-center justify-center">
                       <span className="text-white text-sm font-medium">
@@ -262,6 +263,10 @@ export function Layout() {
             <PageHeaderSlotContext.Provider value={headerSlot}>
               <Outlet />
             </PageHeaderSlotContext.Provider>
+
+            <footer className="mt-10 pt-6 border-t border-lilac-100/60 text-xs text-gray-400">
+              © {new Date().getFullYear()} {t('landing.brandName')}
+            </footer>
           </div>
         </main>
       </div>

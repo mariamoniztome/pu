@@ -118,6 +118,7 @@ function PermissionMatrixDialog({
                   checked={isBaseline || values[key]}
                   disabled={isBaseline}
                   onCheckedChange={(checked) => setValues((v) => ({ ...v, [key]: checked }))}
+                  aria-label={t(`settings.team.permissionLabels.${key}`)}
                 />
               </div>
             );
@@ -323,6 +324,7 @@ export function TeamTab() {
                           variant="ghost"
                           size="icon"
                           title={t('settings.team.permissions')}
+                          aria-label={t('settings.team.permissions')}
                           onClick={() => setPermissionsDoctor(doc)}
                         >
                           <Shield className="h-4 w-4 text-gray-600" />
@@ -332,6 +334,7 @@ export function TeamTab() {
                             variant="ghost"
                             size="icon"
                             title={t('doctors.deactivate')}
+                            aria-label={t('doctors.deactivate')}
                             onClick={() => handleDeactivate(doc._id)}
                           >
                             <UserX className="h-4 w-4 text-red-500" />
@@ -341,6 +344,7 @@ export function TeamTab() {
                             variant="ghost"
                             size="icon"
                             title={t('doctors.activate')}
+                            aria-label={t('doctors.activate')}
                             onClick={() => handleReactivate(doc._id)}
                           >
                             <UserCheck className="h-4 w-4 text-green-600" />

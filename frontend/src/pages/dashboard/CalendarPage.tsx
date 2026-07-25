@@ -639,6 +639,7 @@ export function CalendarPage() {
                             type="button"
                             onClick={() => handleDeleteAttachment(attachment.filename)}
                             className="text-gray-400 hover:text-red-600"
+                            aria-label={t('consultations.form.removeAttachment')}
                           >
                             <X className="h-3 w-3" />
                           </button>

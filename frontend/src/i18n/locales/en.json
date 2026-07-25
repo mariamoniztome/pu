@@ -60,7 +60,8 @@
     "expandMenu": "Expand menu",
     "collapse": "Collapse",
     "pinSidebar": "Pin sidebar open",
-    "unpinSidebar": "Unpin sidebar"
+    "unpinSidebar": "Unpin sidebar",
+    "userMenu": "User menu"
   },
   "dashboard": {
     "title": "Dashboard",
@@ -108,7 +109,9 @@
     "percentWeekChange": "{{percentage}}% week",
     "appointmentsCount_one": "{{count}} appointment",
     "appointmentsCount_other": "{{count}} appointments",
-    "newPatientsThisWeek": "New this week"
+    "newPatientsThisWeek": "New this week",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month"
   },
   "patients": {
     "title": "Patients",
@@ -253,6 +256,7 @@
       "sessionNumber": "Session Number",
       "sessionNotes": "Session Notes",
       "attachments": "Attachments",
+      "removeAttachment": "Remove attachment",
       "filesSelected": "{{count}} file(s) selected",
       "uploadPrompt": "Click to upload files",
       "uploadHelp": "PDF, images",
@@ -594,12 +598,12 @@
       "customBrandingHelp": "Set your clinic's colors now, or start with our default palette and change it anytime later.",
       "stepData": "Your details",
       "stepBranding": "Branding",
-      "stepLogo": "Logo",
       "continueButton": "Continue",
       "back": "Back",
       "addYourLogo": "Add your logo",
       "addYourLogoHelp": "Optional — you can always add or change this later in Settings.",
-      "finish": "Finish"
+      "finish": "Finish",
+      "stepOrganization": "Your organization"
     },
     "acceptInvite": {
       "title": "Accept Invitation",
@@ -869,6 +873,19 @@
         "q": "Can I change my plan later?",
         "a": "Yes, you can switch plans at any time from Settings → Subscription as your practice grows."
       }
+    },
+    "footerTagline": "Practice management software for psychologists.",
+    "footerRights": "All rights reserved.",
+    "contact": {
+      "title": "Get in touch",
+      "subtitle": "Questions before you start? Send us a message.",
+      "name": "Name",
+      "email": "Email",
+      "message": "Message",
+      "send": "Send message",
+      "sending": "Sending...",
+      "success": "Message sent — we'll get back to you soon.",
+      "error": "Couldn't send your message. Please try again."
     }
   },
   "consent": {

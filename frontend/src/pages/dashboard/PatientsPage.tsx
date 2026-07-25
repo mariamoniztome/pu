@@ -133,6 +133,7 @@ export function PatientsPage() {
           <button
             className='mt-2'
             title={t('common.edit')}
+            aria-label={t('common.edit')}
             onClick={() => handleEdit(params.data)}
           >
             <Edit className="h-4 w-4 mr-1 text-lilac-600 hover:text-lilac-800" />
@@ -140,10 +141,11 @@ export function PatientsPage() {
           <button
             className='mt-2'
             title={t('common.delete')}
+            aria-label={t('common.delete')}
             onClick={() => handleDelete(params.data._id)}
           >
             <Trash2 className="h-4 w-4 mr-1 text-red-500 hover:text-red-700" />
-            
+
           </button>
         </div>
       ),

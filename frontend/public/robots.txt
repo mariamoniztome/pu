@@ -1,0 +1,14 @@
+# Only the public marketing pages should be indexed — everything else
+# requires authentication and has no value being crawled.
+User-agent: *
+Allow: /$
+Allow: /login
+Allow: /register
+Disallow: /patients
+Disallow: /consultations
+Disallow: /reports
+Disallow: /payments
+Disallow: /settings
+
+# TODO: replace with your real production domain before launch
+Sitemap: https://YOUR-DOMAIN-HERE/sitemap.xml
