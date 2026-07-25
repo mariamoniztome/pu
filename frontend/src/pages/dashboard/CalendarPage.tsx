@@ -32,6 +32,7 @@ import { useTranslation } from "../../hooks/useTranslation";
 import { fileUrl } from "../../lib/fileUrl";
 import { PageHeaderAction } from "../../components/PageHeaderAction";
 import { useAuth } from "../../contexts/AuthContext";
+import { usePermissions } from "../../hooks/usePermissions";
 import { authAPI } from "../../api/auth";
 import { Doctor } from "../../types/auth";
 
@@ -81,8 +82,8 @@ function getPatientId(patient: Patient | string | null | undefined): string {
 export function CalendarPage() {
   const { t, i18n } = useTranslation();
   const { doctor: currentDoctor } = useAuth();
-  const canViewAllCalendars =
-    currentDoctor?.role === "owner" || currentDoctor?.permissions.canViewAllCalendars || false;
+  const { can } = usePermissions();
+  const canViewAllCalendars = can("canViewAllCalendars");
   const culture = i18n.language?.startsWith("pt") ? "pt-PT" : "en-US";
   const calendarMessages = useMemo(
     () => ({

@@ -16,6 +16,7 @@ import { cn } from '../lib/utils';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useTranslation } from '../hooks/useTranslation';
 import { useAuth } from '../contexts/AuthContext';
+import { usePermissions } from '../hooks/usePermissions';
 import { PageHeaderSlotContext } from '../contexts/PageHeaderContext';
 
 const SIDEBAR_PINNED_KEY = 'sidebar-pinned';
@@ -42,6 +43,7 @@ export function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { doctor, organization, logout } = useAuth();
+  const { can } = usePermissions();
   const [pinned, setPinned] = useState(() => localStorage.getItem(SIDEBAR_PINNED_KEY) === 'true');
   const [open, setOpen] = useState(pinned);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -67,8 +69,7 @@ export function Layout() {
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, [open, pinned]);
 
-  const canManageDoctors =
-    doctor?.role === 'owner' || doctor?.permissions.canManageDoctors || false;
+  const canManageDoctors = can('canManageDoctors');
 
   const navItems = getNavItems(t, canManageDoctors);
 

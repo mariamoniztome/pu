@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
 import bcrypt from 'bcryptjs';
+import { effectivePermissions } from '../utils/permissions.js';
 
 export interface IDoctor extends Document {
   organization: Types.ObjectId;
@@ -17,6 +18,8 @@ export interface IDoctor extends Document {
     canViewAllPatients: boolean;
     canManageBilling: boolean;
     canViewAllCalendars: boolean;
+    canManageBranding: boolean;
+    canManageTeamProfiles: boolean;
   };
   isActive: boolean;
   lastLogin?: Date;
@@ -94,6 +97,14 @@ const doctorSchema = new Schema<IDoctor>(
         type: Boolean,
         default: false,
       },
+      canManageBranding: {
+        type: Boolean,
+        default: false,
+      },
+      canManageTeamProfiles: {
+        type: Boolean,
+        default: false,
+      },
     },
     isActive: {
       type: Boolean,
@@ -105,8 +116,16 @@ const doctorSchema = new Schema<IDoctor>(
   },
   {
     timestamps: true,
+    toObject: { virtuals: true },
+    toJSON: { virtuals: true },
   }
 );
+
+// Computed, not persisted — see effectivePermissions() for why permissions
+// aren't forced by a save hook on every write.
+doctorSchema.virtual('effectivePermissions').get(function (this: IDoctor) {
+  return effectivePermissions(this);
+});
 
 // Indexes for performance
 doctorSchema.index({ organization: 1, isActive: 1 });
@@ -133,8 +152,16 @@ doctorSchema.methods.comparePassword = async function (
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-// Set owner permissions automatically
+// Seed role-baseline permissions on the initial document only. This used to
+// run on every save (including the lastLogin touch on every request), which
+// made it impossible for an owner to ever revoke canManageDoctors/
+// canViewAllPatients from an admin — the next save silently restored them.
+// Role-based access is now computed at read time via effectivePermissions(),
+// so this only needs to give a new document sane persisted defaults.
 doctorSchema.pre('save', function (next) {
+  if (!this.isNew) {
+    return next();
+  }
   if (this.role === 'owner') {
     this.permissions = {
       canManageOrganization: true,
@@ -142,6 +169,8 @@ doctorSchema.pre('save', function (next) {
       canViewAllPatients: true,
       canManageBilling: true,
       canViewAllCalendars: true,
+      canManageBranding: true,
+      canManageTeamProfiles: true,
     };
   } else if (this.role === 'admin') {
     this.permissions.canManageDoctors = true;

@@ -46,7 +46,10 @@ export interface Doctor {
     canViewAllPatients: boolean;
     canManageBilling: boolean;
     canViewAllCalendars: boolean;
+    canManageBranding: boolean;
+    canManageTeamProfiles: boolean;
   };
+  effectivePermissions?: Doctor['permissions'];
   isActive: boolean;
   lastLogin?: string;
   createdAt: string;

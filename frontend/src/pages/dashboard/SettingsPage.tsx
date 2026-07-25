@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import { usePermissions } from '../../hooks/usePermissions';
 import { Label } from '../../components/ui/label';
 import { Card } from '../../components/ui/card';
 import { useTranslation } from '../../hooks/useTranslation';
@@ -7,9 +8,9 @@ import { useTranslation } from '../../hooks/useTranslation';
 export const SettingsPage: React.FC = () => {
   const { t } = useTranslation();
   const { doctor, organization } = useAuth();
+  const { can } = usePermissions();
 
-  const canManageOrganization =
-    doctor?.role === 'owner' || doctor?.permissions.canManageOrganization;
+  const canManageOrganization = can('canManageOrganization');
 
   const getSubscriptionStatusColor = (status: string) => {
     switch (status) {

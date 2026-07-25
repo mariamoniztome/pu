@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { usePermissions } from '../../hooks/usePermissions';
 import { authAPI } from '../../api/auth';
 import type { Doctor, InviteDoctorData } from '../../types/auth';
 import { Button } from '../../components/ui/button';
@@ -16,6 +17,7 @@ import { PageHeaderAction } from '../../components/PageHeaderAction';
 export const DoctorsPage: React.FC = () => {
   const { t } = useTranslation();
   const { doctor: currentDoctor } = useAuth();
+  const { can } = usePermissions();
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showInviteDialog, setShowInviteDialog] = useState(false);
@@ -30,9 +32,7 @@ export const DoctorsPage: React.FC = () => {
     role: 'member',
   });
 
-  const canManageDoctors =
-    currentDoctor?.role === 'owner' ||
-    currentDoctor?.permissions.canManageDoctors;
+  const canManageDoctors = can('canManageDoctors');
 
   useEffect(() => {
     fetchDoctors();

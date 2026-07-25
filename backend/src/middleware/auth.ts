@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import Doctor from '../models/Doctor.js';
 import Organization from '../models/Organization.js';
+import { effectivePermissions, PermissionKey } from '../utils/permissions.js';
 
 // Extend Express Request type to include doctor and organization
 declare global {
@@ -18,10 +19,6 @@ export interface JwtPayload {
   organizationId: string;
   email: string;
   role: string;
-}
-
-export interface DoctorPermissions {
-  [key: string]: boolean;
 }
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
@@ -71,9 +68,13 @@ export const authenticate = async (
     req.doctor = doctor;
     req.organization = organization;
 
-    // Update last login
-    doctor.lastLogin = new Date();
-    await doctor.save();
+    // Update last login, throttled — this used to be a full doctor.save() on
+    // every authenticated request, which also re-ran the permissions-forcing
+    // save hook and made revoking a baseline permission impossible.
+    const staleThresholdMs = 15 * 60 * 1000;
+    if (!doctor.lastLogin || Date.now() - doctor.lastLogin.getTime() > staleThresholdMs) {
+      await Doctor.updateOne({ _id: doctor._id }, { $set: { lastLogin: new Date() } });
+    }
 
     next();
   } catch (error: any) {
@@ -89,14 +90,14 @@ export const authenticate = async (
   }
 };
 
-export const requirePermission = (permission: keyof DoctorPermissions) => {
+export const requirePermission = (permission: PermissionKey) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     if (!req.doctor) {
       res.status(401).json({ message: 'Not authenticated' });
       return;
     }
 
-    if (!req.doctor.permissions[permission] && req.doctor.role !== 'owner') {
+    if (!effectivePermissions(req.doctor)[permission]) {
       res.status(403).json({ message: 'Insufficient permissions' });
       return;
     }

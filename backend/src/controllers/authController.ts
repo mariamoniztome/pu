@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import Doctor from '../models/Doctor.js';
 import Organization from '../models/Organization.js';
 import { generateToken } from '../middleware/auth.js';
+import { PERMISSION_KEYS, isValidPermissionKey } from '../utils/permissions.js';
 
 // Register a new organization and doctor (owner)
 export const register = async (req: Request, res: Response): Promise<void> => {
@@ -312,6 +313,66 @@ export const updateDoctor = async (req: Request, res: Response): Promise<void> =
     res.status(200).json({ doctor });
   } catch (error: any) {
     res.status(500).json({ message: 'Failed to update doctor', error: error.message });
+  }
+};
+
+// Grant/revoke individual permission flags for a doctor. Separate from
+// updateDoctor because that endpoint replaces the whole `permissions`
+// sub-document on write — fine for role changes, but it would silently wipe
+// every other flag if used to toggle just one. This merges via dot-notation
+// $set instead, and only ever touches keys explicitly present in the request.
+export const updateDoctorPermissions = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { doctorId } = req.params;
+    const { permissions } = req.body as { permissions?: Record<string, unknown> };
+
+    const isManager = req.doctor.role === 'owner' || req.doctor.permissions.canManageDoctors;
+    if (!isManager) {
+      res.status(403).json({ message: 'Insufficient permissions' });
+      return;
+    }
+
+    if (req.doctor._id.toString() === doctorId) {
+      res.status(403).json({ message: 'You cannot change your own permissions' });
+      return;
+    }
+
+    if (!permissions || typeof permissions !== 'object') {
+      res.status(400).json({ message: 'permissions object is required' });
+      return;
+    }
+
+    const invalidKeys = Object.keys(permissions).filter((key) => !isValidPermissionKey(key));
+    if (invalidKeys.length > 0) {
+      res.status(400).json({ message: `Unknown permission key(s): ${invalidKeys.join(', ')}`, validKeys: PERMISSION_KEYS });
+      return;
+    }
+
+    const targetDoctor = await Doctor.findOne({ _id: doctorId, organization: req.organization._id });
+    if (!targetDoctor) {
+      res.status(404).json({ message: 'Doctor not found' });
+      return;
+    }
+
+    if (targetDoctor.role === 'owner') {
+      res.status(403).json({ message: "An owner's permissions can't be edited — they always have full access" });
+      return;
+    }
+
+    const setOps: Record<string, boolean> = {};
+    for (const [key, value] of Object.entries(permissions)) {
+      setOps[`permissions.${key}`] = Boolean(value);
+    }
+
+    const doctor = await Doctor.findOneAndUpdate(
+      { _id: doctorId, organization: req.organization._id },
+      { $set: setOps },
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    res.status(200).json({ doctor });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Failed to update permissions', error: error.message });
   }
 };
 
