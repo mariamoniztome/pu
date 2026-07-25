@@ -35,6 +35,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { usePermissions } from "../../hooks/usePermissions";
 import { authAPI } from "../../api/auth";
 import { Doctor } from "../../types/auth";
+import { ConfirmDialog } from "../../components/ui/confirm-dialog";
 
 const locales = {
   "en-US": enUS,
@@ -113,6 +114,7 @@ export function CalendarPage() {
   const [timeRange, setTimeRange] = useState<TimeRangeKey>("8-20");
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [viewedDoctorId, setViewedDoctorId] = useState("");
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const isViewingOthersCalendar = viewedDoctorId !== "" && viewedDoctorId !== currentDoctor?._id;
 
   const [formData, setFormData] = useState({
@@ -312,10 +314,14 @@ export function CalendarPage() {
     }
   };
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     if (!selectedEvent) return;
+    setShowDeleteConfirm(true);
+  };
 
-    if (!confirm(t('calendar.confirmDelete'))) return;
+  const confirmDelete = async () => {
+    setShowDeleteConfirm(false);
+    if (!selectedEvent) return;
 
     try {
       if (linkedConsultation) {
@@ -691,6 +697,14 @@ export function CalendarPage() {
           </form>
         </DialogContent>
       </Dialog>
+
+      <ConfirmDialog
+        open={showDeleteConfirm}
+        onOpenChange={setShowDeleteConfirm}
+        title={t('calendar.confirmDelete')}
+        confirmLabel={t('common.delete')}
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 }

@@ -525,7 +525,32 @@
       "noAccount": "Don't have an account? ",
       "registerHere": "Register here",
       "welcomeToast": "Welcome back!",
-      "failedToast": "Login failed. Please check your credentials."
+      "failedToast": "Login failed. Please check your credentials.",
+      "forgotPassword": "Forgot your password?"
+    },
+    "forgotPassword": {
+      "title": "Reset your password",
+      "subtitle": "Enter your email and we'll send you a link to reset your password",
+      "email": "Email",
+      "emailPlaceholder": "doctor@clinic.com",
+      "sendResetLink": "Send reset link",
+      "sending": "Sending...",
+      "successToast": "If an account exists for this email, a reset link has been sent.",
+      "failedToast": "Something went wrong. Please try again.",
+      "backToLogin": "Back to sign in"
+    },
+    "resetPassword": {
+      "title": "Choose a new password",
+      "subtitle": "Enter a new password for your account",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm new password",
+      "resetButton": "Reset password",
+      "resetting": "Resetting...",
+      "passwordsDoNotMatch": "Passwords do not match",
+      "passwordTooShort": "Password must be at least 8 characters",
+      "successToast": "Password reset successfully. You can now sign in.",
+      "failedToast": "This reset link is invalid or has expired.",
+      "backToLogin": "Back to sign in"
     },
     "register": {
       "createAccount": "Create Your Account",
@@ -576,6 +601,9 @@
     "confirmDeactivate": "Are you sure you want to deactivate this doctor?",
     "deactivatedSuccessfully": "Doctor deactivated successfully",
     "failedToDeactivate": "Failed to deactivate doctor",
+    "activate": "Activate",
+    "reactivatedSuccessfully": "Doctor reactivated successfully",
+    "failedToReactivate": "Failed to reactivate doctor",
     "inactive": "Inactive",
     "phone": "Phone:",
     "phoneLabel": "Phone",

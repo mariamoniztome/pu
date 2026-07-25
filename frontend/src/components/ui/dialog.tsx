@@ -11,6 +11,27 @@ const Dialog = ({ open, onOpenChange, children }: {
   onOpenChange?: (open: boolean) => void
   children: React.ReactNode
 }) => {
+  // Lock body scroll while open, compensating for the scrollbar width up
+  // front — otherwise a Radix Select opened on top of this dialog toggles
+  // its own scroll lock and the page visibly shifts.
+  React.useEffect(() => {
+    if (!open) return
+
+    const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth
+    const originalOverflow = document.body.style.overflow
+    const originalPaddingRight = document.body.style.paddingRight
+
+    document.body.style.overflow = "hidden"
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`
+    }
+
+    return () => {
+      document.body.style.overflow = originalOverflow
+      document.body.style.paddingRight = originalPaddingRight
+    }
+  }, [open])
+
   return (
     <DialogContext.Provider value={{ onOpenChange }}>
       {open && (

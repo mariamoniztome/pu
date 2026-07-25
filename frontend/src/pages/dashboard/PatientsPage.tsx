@@ -13,6 +13,7 @@ import { PatientForm } from '../../components/patients/PatientForm';
 import { PatientCard } from '../../components/patients/PatientCard';
 import { useTranslation } from '../../hooks/useTranslation';
 import { PageHeaderAction } from '../../components/PageHeaderAction';
+import { ConfirmDialog } from '../../components/ui/confirm-dialog';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -26,6 +27,7 @@ export function PatientsPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [showForm, setShowForm] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
+  const [patientToDelete, setPatientToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     loadPatients();
@@ -67,15 +69,21 @@ export function PatientsPage() {
     setShowForm(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm(t('patients.confirmDelete'))) return;
+  const handleDelete = (id: string) => {
+    setPatientToDelete(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!patientToDelete) return;
     try {
-      await patientsApi.delete(id);
+      await patientsApi.delete(patientToDelete);
       toast.success(t('patients.deletedSuccessfully'));
       loadPatients();
     } catch (error) {
       console.error('Failed to delete patient:', error);
       toast.error(t('patients.failedToDelete'));
+    } finally {
+      setPatientToDelete(null);
     }
   };
 
@@ -265,6 +273,14 @@ export function PatientsPage() {
         open={showForm}
         patient={selectedPatient}
         onClose={handleFormClose}
+      />
+
+      <ConfirmDialog
+        open={!!patientToDelete}
+        onOpenChange={(open) => !open && setPatientToDelete(null)}
+        title={t('patients.confirmDelete')}
+        confirmLabel={t('common.delete')}
+        onConfirm={confirmDelete}
       />
     </div>
   );

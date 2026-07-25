@@ -13,6 +13,7 @@ import { Switch } from '../ui/switch';
 import { toast } from 'sonner';
 import { useTranslation } from '../../hooks/useTranslation';
 import { fileUrl } from '../../lib/fileUrl';
+import { ConfirmDialog } from '../ui/confirm-dialog';
 
 const PERMISSION_KEYS = [
   'canManageOrganization',
@@ -143,6 +144,7 @@ export function TeamTab() {
   const [isLoading, setIsLoading] = useState(true);
   const [showInviteDialog, setShowInviteDialog] = useState(false);
   const [permissionsDoctor, setPermissionsDoctor] = useState<Doctor | null>(null);
+  const [doctorToDeactivate, setDoctorToDeactivate] = useState<string | null>(null);
   const [inviteData, setInviteData] = useState<InviteDoctorData>({
     firstName: '',
     lastName: '',
@@ -187,14 +189,30 @@ export function TeamTab() {
     }
   };
 
-  const handleDeactivate = async (doctorId: string) => {
-    if (!confirm(t('doctors.confirmDeactivate'))) return;
+  const handleDeactivate = (doctorId: string) => {
+    setDoctorToDeactivate(doctorId);
+  };
+
+  const confirmDeactivate = async () => {
+    if (!doctorToDeactivate) return;
     try {
-      await authAPI.deleteDoctor(doctorId);
+      await authAPI.deleteDoctor(doctorToDeactivate);
       toast.success(t('doctors.deactivatedSuccessfully'));
       fetchDoctors();
     } catch (error: any) {
       toast.error(error.response?.data?.message || t('doctors.failedToDeactivate'));
+    } finally {
+      setDoctorToDeactivate(null);
+    }
+  };
+
+  const handleReactivate = async (doctorId: string) => {
+    try {
+      await authAPI.reactivateDoctor(doctorId);
+      toast.success(t('doctors.reactivatedSuccessfully'));
+      fetchDoctors();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || t('doctors.failedToReactivate'));
     }
   };
 
@@ -268,14 +286,25 @@ export function TeamTab() {
                     <Shield className="h-4 w-4 mr-1" />
                     {t('settings.team.permissions')}
                   </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleDeactivate(doc._id)}
-                    className="text-red-600 hover:text-red-700"
-                  >
-                    {t('doctors.deactivate')}
-                  </Button>
+                  {doc.isActive ? (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDeactivate(doc._id)}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      {t('doctors.deactivate')}
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleReactivate(doc._id)}
+                      className="text-primary-600 hover:text-primary-700"
+                    >
+                      {t('doctors.activate')}
+                    </Button>
+                  )}
                 </div>
               )}
             </div>
@@ -355,6 +384,14 @@ export function TeamTab() {
           onSaved={fetchDoctors}
         />
       )}
+
+      <ConfirmDialog
+        open={!!doctorToDeactivate}
+        onOpenChange={(open) => !open && setDoctorToDeactivate(null)}
+        title={t('doctors.confirmDeactivate')}
+        confirmLabel={t('doctors.deactivate')}
+        onConfirm={confirmDeactivate}
+      />
     </div>
   );
 }

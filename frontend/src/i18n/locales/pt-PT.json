@@ -525,7 +525,32 @@
       "noAccount": "Ainda não tem conta? ",
       "registerHere": "Registe-se aqui",
       "welcomeToast": "Bem-vindo de volta!",
-      "failedToast": "Falha ao iniciar sessão. Verifique as suas credenciais."
+      "failedToast": "Falha ao iniciar sessão. Verifique as suas credenciais.",
+      "forgotPassword": "Esqueceu-se da palavra-passe?"
+    },
+    "forgotPassword": {
+      "title": "Repor a palavra-passe",
+      "subtitle": "Indique o seu email e enviamos-lhe um link para repor a palavra-passe",
+      "email": "Email",
+      "emailPlaceholder": "medico@clinica.com",
+      "sendResetLink": "Enviar link de reposição",
+      "sending": "A enviar...",
+      "successToast": "Se existir uma conta com este email, foi enviado um link de reposição.",
+      "failedToast": "Ocorreu um erro. Tente novamente.",
+      "backToLogin": "Voltar ao início de sessão"
+    },
+    "resetPassword": {
+      "title": "Escolha uma nova palavra-passe",
+      "subtitle": "Introduza uma nova palavra-passe para a sua conta",
+      "newPassword": "Nova palavra-passe",
+      "confirmPassword": "Confirmar nova palavra-passe",
+      "resetButton": "Repor palavra-passe",
+      "resetting": "A repor...",
+      "passwordsDoNotMatch": "As palavras-passe não coincidem",
+      "passwordTooShort": "A palavra-passe deve ter pelo menos 8 caracteres",
+      "successToast": "Palavra-passe reposta com sucesso. Já pode iniciar sessão.",
+      "failedToast": "Este link de reposição é inválido ou expirou.",
+      "backToLogin": "Voltar ao início de sessão"
     },
     "register": {
       "createAccount": "Crie a Sua Conta",
@@ -576,6 +601,9 @@
     "confirmDeactivate": "Tem a certeza que deseja desativar este médico?",
     "deactivatedSuccessfully": "Médico desativado com sucesso",
     "failedToDeactivate": "Falha ao desativar médico",
+    "activate": "Ativar",
+    "reactivatedSuccessfully": "Médico reativado com sucesso",
+    "failedToReactivate": "Falha ao reativar médico",
     "inactive": "Inativo",
     "phone": "Telefone:",
     "phoneLabel": "Telefone",

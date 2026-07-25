@@ -7,6 +7,8 @@ import { Label } from '../../components/ui/label';
 import { Card } from '../../components/ui/card';
 import { toast } from 'sonner';
 import { useTranslation } from '../../hooks/useTranslation';
+import { OrgLogo } from '../../components/branding/OrgLogo';
+import { loadOrgBrandingSnapshot } from '../../lib/orgBranding';
 
 export const LoginPage: React.FC = () => {
   const { t } = useTranslation();
@@ -18,6 +20,7 @@ export const LoginPage: React.FC = () => {
     email: '',
     password: '',
   });
+  const branding = loadOrgBrandingSnapshot();
 
   const from = (location.state as any)?.from?.pathname || '/';
 
@@ -48,8 +51,18 @@ export const LoginPage: React.FC = () => {
     <div className="auth-gradient-bg min-h-screen flex items-center justify-center px-4">
       <Card className="w-full max-w-md p-8">
         <div className="text-center mb-8">
+          {branding && (
+            <div className="flex justify-center mb-4">
+              <OrgLogo
+                variant="mark"
+                clinicName={branding.clinicName}
+                logoMark={branding.logoMark}
+                logoFull={branding.logoFull}
+              />
+            </div>
+          )}
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            {t('auth.login.welcomeBack')}
+            {branding?.clinicName || t('auth.login.welcomeBack')}
           </h1>
           <p className="text-gray-600">
             {t('auth.login.subtitle')}
@@ -73,7 +86,15 @@ export const LoginPage: React.FC = () => {
           </div>
 
           <div>
-            <Label htmlFor="password">{t('auth.login.password')}</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="password">{t('auth.login.password')}</Label>
+              <Link
+                to="/forgot-password"
+                className="text-xs font-medium text-lilac-600 hover:text-lilac-700"
+              >
+                {t('auth.login.forgotPassword')}
+              </Link>
+            </div>
             <Input
               id="password"
               name="password"

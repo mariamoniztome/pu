@@ -15,9 +15,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../componen
 import { useTranslation } from "../../hooks/useTranslation";
 import { exportReportToPdf } from "../../lib/exportReportPdf";
 import { PageHeaderAction } from "../../components/PageHeaderAction";
+import { ConfirmDialog } from "../../components/ui/confirm-dialog";
 
 export function ReportsPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const culture = i18n.language?.startsWith("pt") ? "pt-PT" : "en-US";
   const [reports, setReports] = useState<ExternalReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -25,6 +27,7 @@ export function ReportsPage() {
     null
   );
   const [viewReport, setViewReport] = useState<ExternalReport | null>(null);
+  const [reportToDelete, setReportToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     loadReports();
@@ -67,14 +70,19 @@ export function ReportsPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm(t('reports.confirmDelete'))) return;
-    
+  const handleDelete = (id: string) => {
+    setReportToDelete(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!reportToDelete) return;
     try {
-      await externalReportsApi.delete(id);
+      await externalReportsApi.delete(reportToDelete);
       loadReports();
     } catch (error) {
       console.error('Failed to delete report:', error);
+    } finally {
+      setReportToDelete(null);
     }
   };
 
@@ -177,7 +185,7 @@ export function ReportsPage() {
                 variant="outline"
                 size="sm"
                 title={t('reports.exportPdf')}
-                onClick={() => exportReportToPdf(report)}
+                onClick={() => exportReportToPdf(report, t, culture)}
               >
                 <FileDown className="h-4 w-4" />
               </Button>
@@ -214,7 +222,7 @@ export function ReportsPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => exportReportToPdf(viewReport)}
+                onClick={() => exportReportToPdf(viewReport, t, culture)}
               >
                 <FileDown className="h-4 w-4 mr-1" />
                 {t('reports.exportPdf')}
@@ -315,6 +323,14 @@ export function ReportsPage() {
           </DialogContent>
         </Dialog>
       )}
+
+      <ConfirmDialog
+        open={!!reportToDelete}
+        onOpenChange={(open) => !open && setReportToDelete(null)}
+        title={t('reports.confirmDelete')}
+        confirmLabel={t('common.delete')}
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import crypto from 'crypto';
 import Doctor from '../models/Doctor.js';
 import Organization from '../models/Organization.js';
 import { generateToken } from '../middleware/auth.js';
@@ -535,5 +536,71 @@ export const changePassword = async (req: Request, res: Response): Promise<void>
     res.status(200).json({ message: 'Password updated successfully' });
   } catch (error: any) {
     res.status(500).json({ message: 'Failed to change password', error: error.message });
+  }
+};
+
+// Request a password reset link (public — logged-out flow)
+export const forgotPassword = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { email } = req.body as { email?: string };
+    if (!email) {
+      res.status(400).json({ message: 'Email is required' });
+      return;
+    }
+
+    const doctor = await Doctor.findOne({ email: email.toLowerCase().trim() });
+
+    // Always respond the same way whether or not the account exists, so this
+    // endpoint can't be used to enumerate registered emails.
+    if (doctor) {
+      const rawToken = crypto.randomBytes(32).toString('hex');
+      doctor.resetPasswordToken = crypto.createHash('sha256').update(rawToken).digest('hex');
+      doctor.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+      await doctor.save({ validateBeforeSave: false });
+
+      // No email provider configured yet — log the link so the flow is
+      // testable end-to-end until one is wired up.
+      console.log(`Password reset requested for ${doctor.email}. Reset link: /reset-password/${rawToken}`);
+    }
+
+    res.status(200).json({ message: 'If an account exists for this email, a reset link has been sent.' });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Failed to process password reset request', error: error.message });
+  }
+};
+
+// Complete a password reset using the token from forgotPassword (public)
+export const resetPassword = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { token, newPassword } = req.body as { token?: string; newPassword?: string };
+
+    if (!token || !newPassword) {
+      res.status(400).json({ message: 'token and newPassword are required' });
+      return;
+    }
+    if (newPassword.length < 8) {
+      res.status(400).json({ message: 'New password must be at least 8 characters' });
+      return;
+    }
+
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+    const doctor = await Doctor.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: { $gt: new Date() },
+    }).select('+resetPasswordToken +resetPasswordExpires');
+
+    if (!doctor) {
+      res.status(400).json({ message: 'Invalid or expired reset token' });
+      return;
+    }
+
+    doctor.password = newPassword;
+    doctor.resetPasswordToken = undefined;
+    doctor.resetPasswordExpires = undefined;
+    await doctor.save();
+
+    res.status(200).json({ message: 'Password reset successfully' });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Failed to reset password', error: error.message });
   }
 };

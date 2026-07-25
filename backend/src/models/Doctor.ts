@@ -24,6 +24,8 @@ export interface IDoctor extends Document {
   };
   isActive: boolean;
   lastLogin?: Date;
+  resetPasswordToken?: string;
+  resetPasswordExpires?: Date;
   createdAt: Date;
   updatedAt: Date;
   comparePassword(candidatePassword: string): Promise<boolean>;
@@ -116,6 +118,14 @@ const doctorSchema = new Schema<IDoctor>(
     },
     lastLogin: {
       type: Date,
+    },
+    resetPasswordToken: {
+      type: String,
+      select: false,
+    },
+    resetPasswordExpires: {
+      type: Date,
+      select: false,
     },
   },
   {

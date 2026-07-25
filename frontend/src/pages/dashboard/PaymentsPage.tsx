@@ -15,6 +15,7 @@ import { PaymentCharts } from "../../components/payments/PaymentCharts";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../components/ui/dialog";
 import { useTranslation } from "../../hooks/useTranslation";
 import { PageHeaderAction } from "../../components/PageHeaderAction";
+import { ConfirmDialog } from "../../components/ui/confirm-dialog";
 
 export function PaymentsPage() {
   const { t } = useTranslation();
@@ -23,6 +24,7 @@ export function PaymentsPage() {
   const [showForm, setShowForm] = useState(false);
   const [selectedPayment, setSelectedPayment] = useState<Payment | null>(null);
   const [viewPayment, setViewPayment] = useState<Payment | null>(null);
+  const [paymentToDelete, setPaymentToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     loadPayments();
@@ -63,14 +65,19 @@ export function PaymentsPage() {
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm(t('payments.confirmDelete'))) return;
-    
+  const handleDelete = (id: string) => {
+    setPaymentToDelete(id);
+  };
+
+  const confirmDelete = async () => {
+    if (!paymentToDelete) return;
     try {
-      await paymentsApi.delete(id);
+      await paymentsApi.delete(paymentToDelete);
       loadPayments();
     } catch (error) {
       console.error('Failed to delete payment:', error);
+    } finally {
+      setPaymentToDelete(null);
     }
   };
 
@@ -328,6 +335,14 @@ export function PaymentsPage() {
           </DialogContent>
         </Dialog>
       )}
+
+      <ConfirmDialog
+        open={!!paymentToDelete}
+        onOpenChange={(open) => !open && setPaymentToDelete(null)}
+        title={t('payments.confirmDelete')}
+        confirmLabel={t('common.delete')}
+        onConfirm={confirmDelete}
+      />
     </div>
   );
 }

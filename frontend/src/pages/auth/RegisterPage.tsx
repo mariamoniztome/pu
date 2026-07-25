@@ -64,9 +64,9 @@ export const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="auth-gradient-bg min-h-screen flex items-center justify-center px-4 py-12">
-      <Card className="w-full max-w-2xl p-8">
-        <div className="text-center mb-8">
+    <div className="auth-gradient-bg min-h-screen flex items-center justify-center px-4 py-8">
+      <Card className="w-full max-w-4xl p-8">
+        <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             {t('auth.register.createAccount')}
           </h1>
@@ -76,197 +76,200 @@ export const RegisterPage: React.FC = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Organization Information */}
-          <div className="border-b pb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              {t('auth.register.organizationInfo')}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="md:col-span-2">
-                <Label htmlFor="organizationName">
-                  {t('auth.register.organizationName')} <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="organizationName"
-                  name="organizationName"
-                  required
-                  value={formData.organizationName}
-                  onChange={handleChange}
-                  placeholder={t('auth.register.organizationNamePlaceholder')}
-                  className="mt-1"
-                />
-              </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-6">
+            {/* Organization Information */}
+            <div className="lg:pr-10 lg:border-r lg:border-gray-200">
+              <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                {t('auth.register.organizationInfo')}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="sm:col-span-2">
+                  <Label htmlFor="organizationName">
+                    {t('auth.register.organizationName')} <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="organizationName"
+                    name="organizationName"
+                    required
+                    value={formData.organizationName}
+                    onChange={handleChange}
+                    placeholder={t('auth.register.organizationNamePlaceholder')}
+                    className="mt-1"
+                  />
+                </div>
 
-              <div>
-                <Label htmlFor="organizationType">
-                  {t('auth.register.organizationType')} <span className="text-red-500">*</span>
-                </Label>
-                <select
-                  id="organizationType"
-                  name="organizationType"
-                  required
-                  value={formData.organizationType}
-                  onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="individual">{t('auth.register.individualPractice')}</option>
-                  <option value="clinic">{t('auth.register.clinicMultipleDoctors')}</option>
-                </select>
-              </div>
+                <div>
+                  <Label htmlFor="organizationType">
+                    {t('auth.register.organizationType')} <span className="text-red-500">*</span>
+                  </Label>
+                  <select
+                    id="organizationType"
+                    name="organizationType"
+                    required
+                    value={formData.organizationType}
+                    onChange={handleChange}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  >
+                    <option value="individual">{t('auth.register.individualPractice')}</option>
+                    <option value="clinic">{t('auth.register.clinicMultipleDoctors')}</option>
+                  </select>
+                </div>
 
-              <div>
-                <Label htmlFor="organizationEmail">{t('auth.register.organizationEmail')}</Label>
-                <Input
-                  id="organizationEmail"
-                  name="organizationEmail"
-                  type="email"
-                  value={formData.organizationEmail}
-                  onChange={handleChange}
-                  placeholder={t('auth.register.organizationEmailPlaceholder')}
-                  className="mt-1"
-                />
-              </div>
+                <div>
+                  <Label htmlFor="organizationEmail">{t('auth.register.organizationEmail')}</Label>
+                  <Input
+                    id="organizationEmail"
+                    name="organizationEmail"
+                    type="email"
+                    value={formData.organizationEmail}
+                    onChange={handleChange}
+                    placeholder={t('auth.register.organizationEmailPlaceholder')}
+                    className="mt-1"
+                  />
+                </div>
 
-              <div className="md:col-span-2">
-                <Label htmlFor="organizationPhone">{t('auth.register.organizationPhone')}</Label>
-                <Input
-                  id="organizationPhone"
-                  name="organizationPhone"
-                  type="tel"
-                  value={formData.organizationPhone}
-                  onChange={handleChange}
-                  placeholder="+1 (555) 123-4567"
-                  className="mt-1"
-                />
+                <div className="sm:col-span-2">
+                  <Label htmlFor="organizationPhone">{t('auth.register.organizationPhone')}</Label>
+                  <Input
+                    id="organizationPhone"
+                    name="organizationPhone"
+                    type="tel"
+                    value={formData.organizationPhone}
+                    onChange={handleChange}
+                    placeholder="+1 (555) 123-4567"
+                    className="mt-1"
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Doctor Information */}
-          <div className="border-b pb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              {t('auth.register.yourInfo')}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="firstName">
-                  {t('auth.register.firstName')} <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="firstName"
-                  name="firstName"
-                  required
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  placeholder={t('auth.register.firstNamePlaceholder')}
-                  className="mt-1"
-                />
-              </div>
+            {/* Doctor Information */}
+            <div>
+              <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+                {t('auth.register.yourInfo')}
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="firstName">
+                    {t('auth.register.firstName')} <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="firstName"
+                    name="firstName"
+                    required
+                    value={formData.firstName}
+                    onChange={handleChange}
+                    placeholder={t('auth.register.firstNamePlaceholder')}
+                    className="mt-1"
+                  />
+                </div>
 
-              <div>
-                <Label htmlFor="lastName">
-                  {t('auth.register.lastName')} <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="lastName"
-                  name="lastName"
-                  required
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  placeholder={t('auth.register.lastNamePlaceholder')}
-                  className="mt-1"
-                />
-              </div>
+                <div>
+                  <Label htmlFor="lastName">
+                    {t('auth.register.lastName')} <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="lastName"
+                    name="lastName"
+                    required
+                    value={formData.lastName}
+                    onChange={handleChange}
+                    placeholder={t('auth.register.lastNamePlaceholder')}
+                    className="mt-1"
+                  />
+                </div>
 
-              <div>
-                <Label htmlFor="email">
-                  {t('auth.register.email')} <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
-                  value={formData.email}
-                  onChange={handleChange}
-                  placeholder={t('auth.register.emailPlaceholder')}
-                  className="mt-1"
-                />
-              </div>
+                <div>
+                  <Label htmlFor="email">
+                    {t('auth.register.email')} <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
+                    placeholder={t('auth.register.emailPlaceholder')}
+                    className="mt-1"
+                  />
+                </div>
 
-              <div>
-                <Label htmlFor="phone">{t('auth.register.phone')}</Label>
-                <Input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  placeholder={t('auth.register.phonePlaceholder')}
-                  className="mt-1"
-                />
-              </div>
+                <div>
+                  <Label htmlFor="phone">{t('auth.register.phone')}</Label>
+                  <Input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={handleChange}
+                    placeholder={t('auth.register.phonePlaceholder')}
+                    className="mt-1"
+                  />
+                </div>
 
-              <div>
-                <Label htmlFor="specialization">{t('auth.register.specialization')}</Label>
-                <Input
-                  id="specialization"
-                  name="specialization"
-                  value={formData.specialization}
-                  onChange={handleChange}
-                  placeholder={t('auth.register.specializationPlaceholder')}
-                  className="mt-1"
-                />
-              </div>
+                <div>
+                  <Label htmlFor="specialization">{t('auth.register.specialization')}</Label>
+                  <Input
+                    id="specialization"
+                    name="specialization"
+                    value={formData.specialization}
+                    onChange={handleChange}
+                    placeholder={t('auth.register.specializationPlaceholder')}
+                    className="mt-1"
+                  />
+                </div>
 
-              <div>
-                <Label htmlFor="licenseNumber">{t('auth.register.licenseNumber')}</Label>
-                <Input
-                  id="licenseNumber"
-                  name="licenseNumber"
-                  value={formData.licenseNumber}
-                  onChange={handleChange}
-                  placeholder={t('auth.register.licenseNumberPlaceholder')}
-                  className="mt-1"
-                />
-              </div>
+                <div>
+                  <Label htmlFor="licenseNumber">{t('auth.register.licenseNumber')}</Label>
+                  <Input
+                    id="licenseNumber"
+                    name="licenseNumber"
+                    value={formData.licenseNumber}
+                    onChange={handleChange}
+                    placeholder={t('auth.register.licenseNumberPlaceholder')}
+                    className="mt-1"
+                  />
+                </div>
 
-              <div>
-                <Label htmlFor="password">
-                  {t('auth.register.password')} <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  value={formData.password}
-                  onChange={handleChange}
-                  placeholder="••••••••"
-                  className="mt-1"
-                />
-                <p className="text-xs text-gray-500 mt-1">
+                <div>
+                  <Label htmlFor="password">
+                    {t('auth.register.password')} <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="new-password"
+                    required
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="••••••••"
+                    className="mt-1"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="confirmPassword">
+                    {t('auth.register.confirmPassword')} <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type="password"
+                    autoComplete="new-password"
+                    required
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    placeholder="••••••••"
+                    className="mt-1"
+                  />
+                </div>
+
+                <p className="sm:col-span-2 text-xs text-gray-500 -mt-2">
                   {t('auth.register.passwordHelp')}
                 </p>
-              </div>
-
-              <div>
-                <Label htmlFor="confirmPassword">
-                  {t('auth.register.confirmPassword')} <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  placeholder="••••••••"
-                  className="mt-1"
-                />
               </div>
             </div>
           </div>

@@ -64,6 +64,16 @@ export const authAPI = {
     return response.data;
   },
 
+  forgotPassword: async (email: string): Promise<{ message: string }> => {
+    const response = await axios.post('/auth/forgot-password', { email });
+    return response.data;
+  },
+
+  resetPassword: async (token: string, newPassword: string): Promise<{ message: string }> => {
+    const response = await axios.post('/auth/reset-password', { token, newPassword });
+    return response.data;
+  },
+
   // Delete/deactivate doctor
   deleteDoctor: async (doctorId: string): Promise<{ message: string }> => {
     const response = await axios.delete(`/auth/doctors/${doctorId}`);

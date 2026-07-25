@@ -16,6 +16,7 @@ import { LanguageSwitcher } from './LanguageSwitcher';
 import { useTranslation } from '../hooks/useTranslation';
 import { useAuth } from '../contexts/AuthContext';
 import { PageHeaderSlotContext } from '../contexts/PageHeaderContext';
+import { OrgLogo } from './branding/OrgLogo';
 
 const SIDEBAR_PINNED_KEY = 'sidebar-pinned';
 
@@ -112,12 +113,12 @@ export function Layout() {
         >
           <div className="pt-6 pb-4">
             <div className={cn('flex items-center gap-3 px-3', !isExpanded && 'justify-center')}>
-              <div className="w-12 h-12 bg-gradient-to-br from-primary-300 to-lilac-300 rounded-3xl flex items-center justify-center shadow-lg flex-shrink-0">
-                <span className="text-white font-bold text-xl">M</span>
-              </div>
-              {isExpanded && (
-                <h1 className="text-xl font-bold text-gray-800 whitespace-nowrap">Mindcare</h1>
-              )}
+              <OrgLogo
+                variant={isExpanded ? 'full' : 'mark'}
+                clinicName={organization?.branding?.clinicName || organization?.name}
+                logoMark={organization?.branding?.logoMark}
+                logoFull={organization?.branding?.logoFull}
+              />
             </div>
           </div>
 

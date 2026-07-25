@@ -1,6 +1,15 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { authAPI, setAuthToken, removeAuthToken, isAuthenticated } from '../api/auth';
 import type { Doctor, Organization, LoginData, RegisterData } from '../types/auth';
+import { saveOrgBrandingSnapshot } from '../lib/orgBranding';
+
+function snapshotBranding(organization: Organization) {
+  saveOrgBrandingSnapshot({
+    clinicName: organization.branding?.clinicName || organization.name,
+    logoFull: organization.branding?.logoFull,
+    logoMark: organization.branding?.logoMark,
+  });
+}
 
 interface AuthContextType {
   doctor: Doctor | null;
@@ -43,6 +52,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const data = await authAPI.getMe();
       setDoctor(data.doctor);
       setOrganization(data.organization);
+      snapshotBranding(data.organization);
     } catch (error) {
       console.error('Failed to refresh user:', error);
       removeAuthToken();
@@ -66,6 +76,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setAuthToken(response.token);
     setDoctor(response.doctor);
     setOrganization(response.organization);
+    snapshotBranding(response.organization);
   };
 
   const register = async (data: RegisterData) => {
@@ -73,6 +84,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setAuthToken(response.token);
     setDoctor(response.doctor);
     setOrganization(response.organization);
+    snapshotBranding(response.organization);
   };
 
   const logout = () => {
