@@ -4,6 +4,8 @@ import {
   login,
   getMe,
   inviteDoctor,
+  getInvite,
+  acceptInvite,
   getDoctors,
   updateDoctor,
   updateDoctorPermissions,
@@ -24,6 +26,8 @@ router.post('/register', register);
 router.post('/login', login);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
+router.get('/invite/:token', getInvite);
+router.post('/invite/accept', acceptInvite);
 
 // Protected routes
 router.get('/me', authenticate, getMe);

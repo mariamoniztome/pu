@@ -5,8 +5,16 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Card } from '../../components/ui/card';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '../../components/ui/select';
 import { toast } from 'sonner';
 import { useTranslation } from '../../hooks/useTranslation';
+import { PasswordStrengthMeter, passwordScore } from '../../components/auth/PasswordStrengthMeter';
 
 export const RegisterPage: React.FC = () => {
   const { t } = useTranslation();
@@ -38,6 +46,11 @@ export const RegisterPage: React.FC = () => {
 
     if (formData.password.length < 8) {
       toast.error(t('auth.register.passwordTooShort'));
+      return;
+    }
+
+    if (passwordScore(formData.password) < 2) {
+      toast.error(t('auth.passwordStrength.tooWeak'));
       return;
     }
 
@@ -79,7 +92,7 @@ export const RegisterPage: React.FC = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-6">
             {/* Organization Information */}
             <div className="lg:pr-10 lg:border-r lg:border-gray-200">
-              <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
                 {t('auth.register.organizationInfo')}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -102,17 +115,20 @@ export const RegisterPage: React.FC = () => {
                   <Label htmlFor="organizationType">
                     {t('auth.register.organizationType')} <span className="text-red-500">*</span>
                   </Label>
-                  <select
-                    id="organizationType"
-                    name="organizationType"
-                    required
+                  <Select
                     value={formData.organizationType}
-                    onChange={handleChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, organizationType: value as 'individual' | 'clinic' })
+                    }
                   >
-                    <option value="individual">{t('auth.register.individualPractice')}</option>
-                    <option value="clinic">{t('auth.register.clinicMultipleDoctors')}</option>
-                  </select>
+                    <SelectTrigger id="organizationType" className="mt-1">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="individual">{t('auth.register.individualPractice')}</SelectItem>
+                      <SelectItem value="clinic">{t('auth.register.clinicMultipleDoctors')}</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>
@@ -145,7 +161,7 @@ export const RegisterPage: React.FC = () => {
 
             {/* Doctor Information */}
             <div>
-              <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+              <h2 className="text-lg font-semibold text-gray-900 mb-4">
                 {t('auth.register.yourInfo')}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -248,6 +264,7 @@ export const RegisterPage: React.FC = () => {
                     placeholder="••••••••"
                     className="mt-1"
                   />
+                  <PasswordStrengthMeter password={formData.password} />
                 </div>
 
                 <div>

@@ -5,6 +5,7 @@ import Organization from '../models/Organization.js';
 import { generateToken } from '../middleware/auth.js';
 import { PERMISSION_KEYS, isValidPermissionKey } from '../utils/permissions.js';
 import { isGenuineImage } from '../middleware/upload.js';
+import { sendMail } from '../utils/mailer.js';
 import fs from 'fs';
 
 // Register a new organization and doctor (owner)
@@ -130,6 +131,12 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    // Invited doctors have no password until they accept the invite
+    if (doctor.invitePending || !doctor.password) {
+      res.status(401).json({ message: 'Please accept your invitation first — check your email for the invite link' });
+      return;
+    }
+
     // Verify password
     const isPasswordValid = await doctor.comparePassword(password);
     if (!isPasswordValid) {
@@ -187,14 +194,15 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-// Invite a new doctor to the organization
+// Invite a new doctor to the organization. The invitee receives an email
+// with a link where they review their pre-filled details and choose their
+// own password — no password is set (or known) by the inviter.
 export const inviteDoctor = async (req: Request, res: Response): Promise<void> => {
   try {
     const {
       firstName,
       lastName,
       email,
-      password,
       phone,
       specialization,
       licenseNumber,
@@ -209,13 +217,13 @@ export const inviteDoctor = async (req: Request, res: Response): Promise<void> =
     }
 
     // Check subscription limits
-    const doctorCount = await Doctor.countDocuments({ 
+    const doctorCount = await Doctor.countDocuments({
       organization: req.organization._id,
-      isActive: true 
+      isActive: true
     });
 
     if (doctorCount >= req.organization.subscription.maxDoctors) {
-      res.status(403).json({ 
+      res.status(403).json({
         message: 'Maximum number of doctors reached for your subscription plan',
         current: doctorCount,
         max: req.organization.subscription.maxDoctors
@@ -230,31 +238,142 @@ export const inviteDoctor = async (req: Request, res: Response): Promise<void> =
       return;
     }
 
-    // Create doctor
+    const rawToken = crypto.randomBytes(32).toString('hex');
+
     const doctor = await Doctor.create({
       organization: req.organization._id,
       firstName,
       lastName,
       email,
-      password,
       phone,
       specialization,
       licenseNumber,
       role: role || 'member',
       permissions: permissions || {},
       isActive: true,
+      invitePending: true,
+      inviteToken: crypto.createHash('sha256').update(rawToken).digest('hex'),
+      inviteExpires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
     });
 
-    // Return response (without password)
-    const { password: _doctorPassword, ...doctorResponse } = doctor.toObject();
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const inviteUrl = `${frontendUrl}/accept-invite/${rawToken}`;
+    const orgName = req.organization.name;
+
+    const { sent } = await sendMail({
+      to: doctor.email,
+      subject: `You've been invited to join ${orgName}`,
+      text: `Hello ${doctor.firstName},\n\n${req.doctor.firstName} ${req.doctor.lastName} invited you to join ${orgName}. Open the link below to review your details and choose your password:\n\n${inviteUrl}\n\nThis invitation expires in 7 days.`,
+      html: `<p>Hello ${doctor.firstName},</p><p><strong>${req.doctor.firstName} ${req.doctor.lastName}</strong> invited you to join <strong>${orgName}</strong>.</p><p><a href="${inviteUrl}">Accept the invitation</a> to review your details and choose your password.</p><p>This invitation expires in 7 days.</p>`,
+    });
+
+    if (!sent) {
+      console.log(`Invite created for ${doctor.email}. Invite link: ${inviteUrl}`);
+    }
+
+    const { password: _doctorPassword, inviteToken: _inviteToken, ...doctorResponse } = doctor.toObject();
 
     res.status(201).json({
       message: 'Doctor invited successfully',
       doctor: doctorResponse,
+      emailSent: sent,
+      // Only exposed when no email could be sent, so the inviter can pass
+      // the link along manually (dev / SMTP not configured).
+      ...(sent ? {} : { inviteUrl }),
     });
   } catch (error: any) {
     console.error('Invite doctor error:', error);
     res.status(500).json({ message: 'Failed to invite doctor', error: error.message });
+  }
+};
+
+// Look up a pending invitation by its token (public — the invitee is not
+// logged in). Returns the pre-filled details shown on the accept page.
+export const getInvite = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { token } = req.params;
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+
+    const doctor = await Doctor.findOne({
+      inviteToken: hashedToken,
+      inviteExpires: { $gt: new Date() },
+      invitePending: true,
+    }).select('+inviteToken +inviteExpires');
+
+    if (!doctor) {
+      res.status(404).json({ message: 'Invalid or expired invitation' });
+      return;
+    }
+
+    const organization = await Organization.findById(doctor.organization);
+
+    res.status(200).json({
+      invite: {
+        firstName: doctor.firstName,
+        lastName: doctor.lastName,
+        email: doctor.email,
+        phone: doctor.phone,
+        specialization: doctor.specialization,
+        licenseNumber: doctor.licenseNumber,
+        role: doctor.role,
+        organizationName: organization?.name,
+      },
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Failed to load invitation', error: error.message });
+  }
+};
+
+// Accept an invitation: the invitee chooses their password and is logged in.
+export const acceptInvite = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { token, password } = req.body as { token?: string; password?: string };
+
+    if (!token || !password) {
+      res.status(400).json({ message: 'token and password are required' });
+      return;
+    }
+    if (password.length < 8) {
+      res.status(400).json({ message: 'Password must be at least 8 characters' });
+      return;
+    }
+
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+    const doctor = await Doctor.findOne({
+      inviteToken: hashedToken,
+      inviteExpires: { $gt: new Date() },
+      invitePending: true,
+    }).select('+inviteToken +inviteExpires');
+
+    if (!doctor) {
+      res.status(404).json({ message: 'Invalid or expired invitation' });
+      return;
+    }
+
+    doctor.password = password;
+    doctor.invitePending = false;
+    doctor.inviteToken = undefined;
+    doctor.inviteExpires = undefined;
+    doctor.lastLogin = new Date();
+    await doctor.save();
+
+    const organization = await Organization.findById(doctor.organization);
+    if (!organization || !organization.isActive) {
+      res.status(401).json({ message: 'Organization not found or inactive' });
+      return;
+    }
+
+    const authToken = generateToken(doctor, organization);
+    const { password: _doctorPassword, ...doctorResponse } = doctor.toObject();
+
+    res.status(200).json({
+      message: 'Invitation accepted',
+      token: authToken,
+      doctor: doctorResponse,
+      organization,
+    });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Failed to accept invitation', error: error.message });
   }
 };
 
@@ -558,9 +677,17 @@ export const forgotPassword = async (req: Request, res: Response): Promise<void>
       doctor.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
       await doctor.save({ validateBeforeSave: false });
 
-      // No email provider configured yet — log the link so the flow is
-      // testable end-to-end until one is wired up.
-      console.log(`Password reset requested for ${doctor.email}. Reset link: /reset-password/${rawToken}`);
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+      const resetUrl = `${frontendUrl}/reset-password/${rawToken}`;
+      const { sent } = await sendMail({
+        to: doctor.email,
+        subject: 'Reset your password',
+        text: `Hello ${doctor.firstName},\n\nUse the link below to reset your password (valid for 1 hour):\n\n${resetUrl}\n\nIf you didn't request this, you can ignore this email.`,
+        html: `<p>Hello ${doctor.firstName},</p><p><a href="${resetUrl}">Reset your password</a> (valid for 1 hour).</p><p>If you didn't request this, you can ignore this email.</p>`,
+      });
+      if (!sent) {
+        console.log(`Password reset requested for ${doctor.email}. Reset link: ${resetUrl}`);
+      }
     }
 
     res.status(200).json({ message: 'If an account exists for this email, a reset link has been sent.' });

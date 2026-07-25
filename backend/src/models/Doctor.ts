@@ -23,6 +23,9 @@ export interface IDoctor extends Document {
     canManageTeamProfiles: boolean;
   };
   isActive: boolean;
+  invitePending: boolean;
+  inviteToken?: string;
+  inviteExpires?: Date;
   lastLogin?: Date;
   resetPasswordToken?: string;
   resetPasswordExpires?: Date;
@@ -58,7 +61,14 @@ const doctorSchema = new Schema<IDoctor>(
     },
     password: {
       type: String,
-      required: [true, 'Password is required'],
+      // Invited doctors have no password until they accept the invite and
+      // choose their own.
+      required: [
+        function (this: IDoctor) {
+          return !this.invitePending;
+        },
+        'Password is required',
+      ],
       minlength: [8, 'Password must be at least 8 characters'],
       select: false, // Don't return password by default
     },
@@ -115,6 +125,18 @@ const doctorSchema = new Schema<IDoctor>(
     isActive: {
       type: Boolean,
       default: true,
+    },
+    invitePending: {
+      type: Boolean,
+      default: false,
+    },
+    inviteToken: {
+      type: String,
+      select: false,
+    },
+    inviteExpires: {
+      type: Date,
+      select: false,
     },
     lastLogin: {
       type: Date,

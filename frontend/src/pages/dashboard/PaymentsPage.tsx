@@ -15,6 +15,7 @@ import { PaymentCharts } from "../../components/payments/PaymentCharts";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../components/ui/dialog";
 import { useTranslation } from "../../hooks/useTranslation";
 import { formatCurrency } from "../../lib/currency";
+import { fileUrl } from "../../lib/fileUrl";
 import { PageHeaderAction } from "../../components/PageHeaderAction";
 import { ConfirmDialog } from "../../components/ui/confirm-dialog";
 
@@ -157,7 +158,7 @@ export function PaymentsPage() {
                 {payment.receiptAttachment && (
                   <div className="mt-2">
                     <a
-                      href={`http://localhost:5000/${payment.receiptAttachment.path}`}
+                      href={fileUrl(payment.receiptAttachment.path)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex items-center text-sm text-lilac-600 hover:text-lilac-800 hover:underline"
@@ -302,7 +303,7 @@ export function PaymentsPage() {
                         size="sm"
                       >
                         <a
-                          href={`http://localhost:5000/${viewPayment.receiptAttachment.path}`}
+                          href={fileUrl(viewPayment.receiptAttachment.path)}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center"
@@ -317,7 +318,7 @@ export function PaymentsPage() {
                         onClick={() => {
                           if (viewPayment.receiptAttachment) {
                             const link = document.createElement('a');
-                            link.href = `http://localhost:5000/${viewPayment.receiptAttachment.path}`;
+                            link.href = fileUrl(viewPayment.receiptAttachment.path);
                             link.download = viewPayment.receiptAttachment.originalName;
                             document.body.appendChild(link);
                             link.click();

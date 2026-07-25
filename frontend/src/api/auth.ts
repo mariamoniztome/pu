@@ -1,5 +1,5 @@
 import axios from './axios';
-import type { RegisterData, LoginData, AuthResponse, InviteDoctorData, Doctor } from '../types/auth';
+import type { RegisterData, LoginData, AuthResponse, InviteDoctorData, InviteInfo, Doctor } from '../types/auth';
 
 export const authAPI = {
   // Register new organization and doctor
@@ -20,9 +20,25 @@ export const authAPI = {
     return response.data;
   },
 
-  // Invite a new doctor to the organization
-  inviteDoctor: async (data: InviteDoctorData): Promise<{ message: string; doctor: Doctor }> => {
+  // Invite a new doctor to the organization. The invitee sets their own
+  // password via the emailed link; inviteUrl is only returned when the
+  // server couldn't send the email (SMTP not configured).
+  inviteDoctor: async (
+    data: InviteDoctorData
+  ): Promise<{ message: string; doctor: Doctor; emailSent: boolean; inviteUrl?: string }> => {
     const response = await axios.post('/auth/doctors/invite', data);
+    return response.data;
+  },
+
+  // Look up a pending invitation (public)
+  getInvite: async (token: string): Promise<{ invite: InviteInfo }> => {
+    const response = await axios.get(`/auth/invite/${token}`);
+    return response.data;
+  },
+
+  // Accept an invitation by choosing a password; logs the invitee in
+  acceptInvite: async (token: string, password: string): Promise<AuthResponse> => {
+    const response = await axios.post('/auth/invite/accept', { token, password });
     return response.data;
   },
 

@@ -9,6 +9,7 @@ import { LoginPage } from './pages/auth/LoginPage';
 import { RegisterPage } from './pages/auth/RegisterPage';
 import { ForgotPasswordPage } from './pages/auth/ForgotPasswordPage';
 import { ResetPasswordPage } from './pages/auth/ResetPasswordPage';
+import { AcceptInvitePage } from './pages/auth/AcceptInvitePage';
 import { DashboardPage } from './pages/dashboard/DashboardPage';
 import { PatientsPage } from './pages/dashboard/PatientsPage';
 import { CalendarPage } from './pages/dashboard/CalendarPage';
@@ -28,6 +29,7 @@ function AppRoutes() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+        <Route path="/accept-invite/:token" element={<AcceptInvitePage />} />
 
         {/* Protected routes */}
         <Route

@@ -588,6 +588,31 @@
       "passwordTooShort": "A palavra-passe deve ter pelo menos 8 caracteres",
       "registrationSuccess": "Registo efetuado com sucesso! Bem-vindo à sua clínica.",
       "registrationFailed": "Falha no registo. Por favor, tente novamente."
+    },
+    "acceptInvite": {
+      "title": "Aceitar Convite",
+      "subtitle": "Reveja os seus dados e escolha uma palavra-passe para começar",
+      "subtitleWithOrg": "Foi convidado(a) para se juntar a {{org}}",
+      "roleLabel": "Cargo",
+      "choosePassword": "Escolha uma Palavra-passe",
+      "confirmPassword": "Confirmar Palavra-passe",
+      "acceptButton": "Aceitar e Criar Conta",
+      "accepting": "A criar conta...",
+      "successToast": "Bem-vindo(a)!",
+      "failedToast": "Não foi possível aceitar o convite",
+      "invalidTitle": "Convite não encontrado",
+      "invalidSubtitle": "Este link de convite é inválido ou expirou. Peça à sua organização para enviar um novo.",
+      "backToLogin": "Voltar ao início de sessão",
+      "passwordsDoNotMatch": "As palavras-passe não coincidem",
+      "passwordTooShort": "A palavra-passe deve ter pelo menos 8 caracteres"
+    },
+    "passwordStrength": {
+      "veryWeak": "Muito fraca",
+      "weak": "Fraca",
+      "fair": "Razoável",
+      "good": "Boa",
+      "strong": "Forte",
+      "tooWeak": "A palavra-passe é demasiado fraca — experimente uma mais longa e menos comum"
     }
   },
   "doctors": {
@@ -626,7 +651,14 @@
     "selectRole": "Selecione o cargo",
     "member": "Membro",
     "admin": "Administrador",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "inviteEmailSent": "Email de convite enviado para {{email}}",
+    "inviteEmailNote": "O médico convidado vai receber um email com um link para rever os seus dados e escolher a própria palavra-passe.",
+    "inviteLinkFallback": "O email não está configurado — copie o link de convite e partilhe-o diretamente.",
+    "copyInviteLink": "Copiar link",
+    "invitePending": "Convite pendente",
+    "sendInvite": "Enviar Convite",
+    "sendingInvite": "A enviar..."
   },
   "settings": {
     "title": "Definições",
