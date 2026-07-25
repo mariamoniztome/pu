@@ -93,7 +93,7 @@
     "totalPatientsLabel": "Total de pacientes",
     "todaysSchedule": "Agenda de Hoje",
     "noAppointmentsToday": "Sem consultas agendadas para hoje",
-    "scheduleClear": "A sua agenda está livre!",
+    "scheduleClear": "A agenda está livre!",
     "addAppointmentDialogTitle": "Adicionar Nova Consulta",
     "newConsultationDialogTitle": "Nova Sessão de Consulta",
     "weekDaysShort": [
@@ -522,7 +522,7 @@
   "auth": {
     "login": {
       "welcomeBack": "Bem-vindo de Volta",
-      "subtitle": "Inicie sessão na sua conta de clínica de psicologia",
+      "subtitle": "Inicie sessão na conta de clínica de psicologia",
       "email": "Email",
       "emailPlaceholder": "medico@clinica.com",
       "password": "Palavra-passe",
@@ -531,7 +531,7 @@
       "noAccount": "Ainda não tem conta? ",
       "registerHere": "Registe-se aqui",
       "welcomeToast": "Bem-vindo de volta!",
-      "failedToast": "Falha ao iniciar sessão. Verifique as suas credenciais.",
+      "failedToast": "Falha ao iniciar sessão. Verifique as credenciais.",
       "forgotPassword": "Esqueceu-se da palavra-passe?"
     },
     "forgotPassword": {
@@ -547,7 +547,7 @@
     },
     "resetPassword": {
       "title": "Escolha uma nova palavra-passe",
-      "subtitle": "Introduza uma nova palavra-passe para a sua conta",
+      "subtitle": "Introduza uma nova palavra-passe",
       "newPassword": "Nova palavra-passe",
       "confirmPassword": "Confirmar nova palavra-passe",
       "resetButton": "Repor palavra-passe",
@@ -563,14 +563,14 @@
       "subtitle": "Configure o seu sistema de gestão de clínica de psicologia",
       "organizationInfo": "Informação da Organização",
       "organizationName": "Nome da Organização",
-      "organizationNamePlaceholder": "A Minha Clínica de Psicologia",
+      "organizationNamePlaceholder": "Clínica ABC",
       "organizationType": "Tipo",
       "individualPractice": "Prática Individual",
       "clinicMultipleDoctors": "Clínica (Vários Médicos)",
       "organizationEmail": "Email da Organização",
       "organizationEmailPlaceholder": "contacto@clinica.com",
       "organizationPhone": "Telefone da Organização",
-      "yourInfo": "A Sua Informação",
+      "yourInfo": "A minha informação",
       "firstName": "Primeiro Nome",
       "firstNamePlaceholder": "João",
       "lastName": "Sobrenome",
@@ -592,7 +592,7 @@
       "signInHere": "Inicie sessão aqui",
       "passwordsDoNotMatch": "As palavras-passe não coincidem",
       "passwordTooShort": "A palavra-passe deve ter pelo menos 8 caracteres",
-      "registrationSuccess": "Registo efetuado com sucesso! Bem-vindo à sua clínica.",
+      "registrationSuccess": "Registo efetuado com sucesso! Bem-vinda à clínica.",
       "registrationFailed": "Falha no registo. Por favor, tente novamente.",
       "choosePlan": "Escolhe o teu plano",
       "customBranding": "Marca personalizada",
@@ -618,7 +618,7 @@
       "successToast": "Bem-vindo(a)!",
       "failedToast": "Não foi possível aceitar o convite",
       "invalidTitle": "Convite não encontrado",
-      "invalidSubtitle": "Este link de convite é inválido ou expirou. Peça à sua organização para enviar um novo.",
+      "invalidSubtitle": "Este link de convite é inválido ou expirou. Peça à organização para enviar um novo.",
       "backToLogin": "Voltar ao início de sessão",
       "passwordsDoNotMatch": "As palavras-passe não coincidem",
       "passwordTooShort": "A palavra-passe deve ter pelo menos 8 caracteres"

@@ -12,7 +12,16 @@ i18n
       en: { translation: enTranslations },
       'pt-PT': { translation: ptPtTranslations }
     },
-    fallbackLng: 'en',
+    // Portuguese is the product default. A bare "pt" (or "pt-BR") from
+    // navigator detection doesn't exact-match the "pt-PT" resource key, so
+    // without this mapping those visitors silently fell through all the way
+    // to English — most noticeable on first visit (e.g. registration),
+    // before a LanguageSwitcher choice gets cached in localStorage.
+    fallbackLng: {
+      pt: ['pt-PT'],
+      'pt-BR': ['pt-PT'],
+      default: ['pt-PT'],
+    },
     debug: false,
     interpolation: {
       escapeValue: false
