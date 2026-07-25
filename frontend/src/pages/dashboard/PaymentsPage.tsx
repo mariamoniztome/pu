@@ -14,6 +14,7 @@ import { PaymentForm } from "../../components/payments/PaymentForm";
 import { PaymentCharts } from "../../components/payments/PaymentCharts";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../components/ui/dialog";
 import { useTranslation } from "../../hooks/useTranslation";
+import { formatCurrency } from "../../lib/currency";
 import { PageHeaderAction } from "../../components/PageHeaderAction";
 import { ConfirmDialog } from "../../components/ui/confirm-dialog";
 
@@ -129,17 +130,16 @@ export function PaymentsPage() {
                 )}
                 <div className="text-sm">
                   <span className="font-medium">{t('payments.card.amount')}:</span>{" "}
-                  {payment.currency} {payment.amount.toFixed(2)}
+                  {formatCurrency(payment.amount, payment.currency)}
                 </div>
                 <div className="text-sm">
-                  <span className="font-medium">{t('payments.card.paid')}:</span> {payment.currency}{" "}
-                  {payment.amountPaid.toFixed(2)}
+                  <span className="font-medium">{t('payments.card.paid')}:</span>{" "}
+                  {formatCurrency(payment.amountPaid, payment.currency)}
                 </div>
                 {payment.amountPaid < payment.amount && (
                   <div className="text-sm text-red-600">
                     <span className="font-medium">{t('payments.card.balance')}:</span>{" "}
-                    {payment.currency}{" "}
-                    {(payment.amount - payment.amountPaid).toFixed(2)}
+                    {formatCurrency(payment.amount - payment.amountPaid, payment.currency)}
                   </div>
                 )}
                 {payment.paymentMethod && (
@@ -244,11 +244,11 @@ export function PaymentsPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <div className="text-sm font-semibold text-slate-700 mb-1">{t('payments.card.amount')}</div>
-                  <div className="text-lg font-bold">{viewPayment.currency} {viewPayment.amount.toFixed(2)}</div>
+                  <div className="text-lg font-bold">{formatCurrency(viewPayment.amount, viewPayment.currency)}</div>
                 </div>
                 <div>
                   <div className="text-sm font-semibold text-slate-700 mb-1">{t('payments.card.paid')}</div>
-                  <div className="text-lg font-bold text-green-600">{viewPayment.currency} {viewPayment.amountPaid.toFixed(2)}</div>
+                  <div className="text-lg font-bold text-green-600">{formatCurrency(viewPayment.amountPaid, viewPayment.currency)}</div>
                 </div>
               </div>
 
@@ -256,7 +256,7 @@ export function PaymentsPage() {
                 <div>
                   <div className="text-sm font-semibold text-slate-700 mb-1">{t('payments.card.balance')}</div>
                   <div className="text-lg font-bold text-red-600">
-                    {viewPayment.currency} {(viewPayment.amount - viewPayment.amountPaid).toFixed(2)}
+                    {formatCurrency(viewPayment.amount - viewPayment.amountPaid, viewPayment.currency)}
                   </div>
                 </div>
               )}
