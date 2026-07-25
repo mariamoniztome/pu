@@ -21,8 +21,10 @@ export interface Organization {
     allowDataSharing: boolean;
   };
   branding?: {
-    logo?: string;
+    logoFull?: string;
+    logoMark?: string;
     primaryColor?: string;
+    accentColor?: string;
     clinicName?: string;
   };
   isActive: boolean;
@@ -39,6 +41,7 @@ export interface Doctor {
   phone?: string;
   specialization?: string;
   licenseNumber?: string;
+  avatar?: string;
   role: 'owner' | 'admin' | 'member';
   permissions: {
     canManageOrganization: boolean;

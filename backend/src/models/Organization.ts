@@ -22,8 +22,10 @@ export interface IOrganization extends Document {
     allowDataSharing: boolean; // If true, all doctors can see all patients
   };
   branding?: {
-    logo?: string;
+    logoFull?: string;
+    logoMark?: string;
     primaryColor?: string;
+    accentColor?: string;
     clinicName?: string;
   };
   isActive: boolean;
@@ -110,8 +112,10 @@ const organizationSchema = new Schema<IOrganization>(
       },
     },
     branding: {
-      logo: String,
+      logoFull: String,
+      logoMark: String,
       primaryColor: String,
+      accentColor: String,
       clinicName: String,
     },
     isActive: {

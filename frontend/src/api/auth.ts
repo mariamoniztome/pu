@@ -38,6 +38,32 @@ export const authAPI = {
     return response.data;
   },
 
+  // Grant/revoke individual permission flags (merges, doesn't replace)
+  updateDoctorPermissions: async (
+    doctorId: string,
+    permissions: Partial<Doctor['permissions']>
+  ): Promise<{ doctor: Doctor }> => {
+    const response = await axios.put(`/auth/doctors/${doctorId}/permissions`, { permissions });
+    return response.data;
+  },
+
+  uploadAvatar: async (doctorId: string, file: File): Promise<{ doctor: Doctor }> => {
+    const formData = new FormData();
+    formData.append('avatar', file);
+    const response = await axios.post(`/auth/doctors/${doctorId}/avatar`, formData);
+    return response.data;
+  },
+
+  deleteAvatar: async (doctorId: string): Promise<{ message: string }> => {
+    const response = await axios.delete(`/auth/doctors/${doctorId}/avatar`);
+    return response.data;
+  },
+
+  changePassword: async (currentPassword: string, newPassword: string): Promise<{ message: string }> => {
+    const response = await axios.put('/auth/me/password', { currentPassword, newPassword });
+    return response.data;
+  },
+
   // Delete/deactivate doctor
   deleteDoctor: async (doctorId: string): Promise<{ message: string }> => {
     const response = await axios.delete(`/auth/doctors/${doctorId}`);

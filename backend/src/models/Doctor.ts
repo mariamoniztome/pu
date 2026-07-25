@@ -11,6 +11,7 @@ export interface IDoctor extends Document {
   phone?: string;
   specialization?: string;
   licenseNumber?: string;
+  avatar?: string;
   role: 'owner' | 'admin' | 'member';
   permissions: {
     canManageOrganization: boolean;
@@ -70,6 +71,9 @@ const doctorSchema = new Schema<IDoctor>(
     licenseNumber: {
       type: String,
       trim: true,
+    },
+    avatar: {
+      type: String,
     },
     role: {
       type: String,

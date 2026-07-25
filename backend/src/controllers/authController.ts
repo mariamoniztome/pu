@@ -3,6 +3,8 @@ import Doctor from '../models/Doctor.js';
 import Organization from '../models/Organization.js';
 import { generateToken } from '../middleware/auth.js';
 import { PERMISSION_KEYS, isValidPermissionKey } from '../utils/permissions.js';
+import { isGenuineImage } from '../middleware/upload.js';
+import fs from 'fs';
 
 // Register a new organization and doctor (owner)
 export const register = async (req: Request, res: Response): Promise<void> => {
@@ -416,5 +418,122 @@ export const deleteDoctor = async (req: Request, res: Response): Promise<void> =
     res.status(200).json({ message: 'Doctor deactivated successfully' });
   } catch (error: any) {
     res.status(500).json({ message: 'Failed to delete doctor', error: error.message });
+  }
+};
+
+// Upload/replace a doctor's avatar. Self, or a manager with
+// canManageTeamProfiles/canManageDoctors/owner.
+export const uploadAvatar = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { doctorId } = req.params;
+    const isSelf = req.doctor._id.toString() === doctorId;
+    const isManager =
+      req.doctor.role === 'owner' ||
+      req.doctor.permissions.canManageTeamProfiles ||
+      req.doctor.permissions.canManageDoctors;
+
+    if (!isSelf && !isManager) {
+      res.status(403).json({ message: 'Insufficient permissions' });
+      return;
+    }
+
+    const file = req.file;
+    if (!file) {
+      res.status(400).json({ message: 'No file uploaded' });
+      return;
+    }
+
+    if (!isGenuineImage(file.path)) {
+      fs.unlinkSync(file.path);
+      res.status(400).json({ message: 'File is not a valid PNG, JPEG, or WEBP image' });
+      return;
+    }
+
+    const targetDoctor = await Doctor.findOne({ _id: doctorId, organization: req.organization._id });
+    if (!targetDoctor) {
+      fs.unlinkSync(file.path);
+      res.status(404).json({ message: 'Doctor not found' });
+      return;
+    }
+
+    const previousPath = targetDoctor.avatar;
+    targetDoctor.avatar = file.path.replace(/\\/g, '/');
+    await targetDoctor.save();
+
+    if (previousPath && fs.existsSync(previousPath)) {
+      fs.unlinkSync(previousPath);
+    }
+
+    const { password: _password, ...doctorResponse } = targetDoctor.toObject();
+    res.status(200).json({ doctor: doctorResponse });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Failed to upload avatar', error: error.message });
+  }
+};
+
+export const deleteAvatar = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { doctorId } = req.params;
+    const isSelf = req.doctor._id.toString() === doctorId;
+    const isManager =
+      req.doctor.role === 'owner' ||
+      req.doctor.permissions.canManageTeamProfiles ||
+      req.doctor.permissions.canManageDoctors;
+
+    if (!isSelf && !isManager) {
+      res.status(403).json({ message: 'Insufficient permissions' });
+      return;
+    }
+
+    const targetDoctor = await Doctor.findOne({ _id: doctorId, organization: req.organization._id });
+    if (!targetDoctor) {
+      res.status(404).json({ message: 'Doctor not found' });
+      return;
+    }
+
+    if (targetDoctor.avatar && fs.existsSync(targetDoctor.avatar)) {
+      fs.unlinkSync(targetDoctor.avatar);
+    }
+    targetDoctor.avatar = undefined;
+    await targetDoctor.save();
+
+    res.status(200).json({ message: 'Avatar removed successfully' });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Failed to delete avatar', error: error.message });
+  }
+};
+
+// Change your own password
+export const changePassword = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { currentPassword, newPassword } = req.body as { currentPassword?: string; newPassword?: string };
+
+    if (!currentPassword || !newPassword) {
+      res.status(400).json({ message: 'currentPassword and newPassword are required' });
+      return;
+    }
+    if (newPassword.length < 8) {
+      res.status(400).json({ message: 'New password must be at least 8 characters' });
+      return;
+    }
+
+    const doctor = await Doctor.findById(req.doctor._id).select('+password');
+    if (!doctor) {
+      res.status(404).json({ message: 'Doctor not found' });
+      return;
+    }
+
+    const isValid = await doctor.comparePassword(currentPassword);
+    if (!isValid) {
+      res.status(401).json({ message: 'Current password is incorrect' });
+      return;
+    }
+
+    doctor.password = newPassword;
+    await doctor.save();
+
+    res.status(200).json({ message: 'Password updated successfully' });
+  } catch (error: any) {
+    res.status(500).json({ message: 'Failed to change password', error: error.message });
   }
 };
