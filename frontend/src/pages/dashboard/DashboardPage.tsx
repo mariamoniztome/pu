@@ -138,6 +138,21 @@ export function DashboardPage() {
       completed: apt.status === "completed",
     }));
 
+  // Soonest upcoming appointment that hasn't happened/been cancelled yet.
+  // appointmentsApi returns appointments sorted by dateTime descending, so
+  // we can't just take the first entry — filter and sort ascending here.
+  const now = new Date();
+  const nextAppointment = appointments
+    .filter((apt) => new Date(apt.dateTime) >= now && !["cancelled", "completed", "no-show"].includes(apt.status))
+    .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime())[0];
+  const nextAppointmentPatientName = nextAppointment
+    ? typeof nextAppointment.patient === "string"
+      ? nextAppointment.patient
+      : nextAppointment.patient
+      ? `${nextAppointment.patient.firstName} ${nextAppointment.patient.lastName}`
+      : t("dashboard.unknownPatient")
+    : null;
+
   const newPatients = patients.filter((p) => {
     const createdDate = new Date(p.createdAt);
     const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -276,13 +291,17 @@ export function DashboardPage() {
                   {t("dashboard.onlineSession")}
                 </h3>
                 <p className="text-sm text-gray-700 mb-4">
-                  {t("dashboard.videoConsultationReady")}
+                  {nextAppointmentPatientName
+                    ? t("dashboard.withPatient", { name: nextAppointmentPatientName })
+                    : t("dashboard.noUpcomingSessions")}
                 </p>
-                <div className="flex gap-2 justify-center">
-                  <div className="text-xs font-semibold text-gray-700 bg-white/40 backdrop-blur-sm px-4 py-2 rounded-full">
-                    {t("dashboard.available")}
+                {nextAppointmentPatientName && (
+                  <div className="flex gap-2 justify-center">
+                    <div className="text-xs font-semibold text-gray-700 bg-white/40 backdrop-blur-sm px-4 py-2 rounded-full">
+                      {t("dashboard.available")}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </Card>
           </div>

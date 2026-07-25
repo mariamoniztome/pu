@@ -45,6 +45,7 @@ export interface Doctor {
     canManageDoctors: boolean;
     canViewAllPatients: boolean;
     canManageBilling: boolean;
+    canViewAllCalendars: boolean;
   };
   isActive: boolean;
   lastLogin?: string;

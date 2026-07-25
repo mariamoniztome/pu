@@ -2,8 +2,8 @@ import api from './axios';
 import { Appointment } from '../types/appointment';
 
 export const appointmentsApi = {
-  getAll: async () => {
-    const response = await api.get<Appointment[]>('/appointments');
+  getAll: async (params?: { doctorId?: string }) => {
+    const response = await api.get<Appointment[]>('/appointments', { params });
     return response.data;
   },
   getById: async (id: string) => {

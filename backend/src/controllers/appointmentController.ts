@@ -1,14 +1,41 @@
 import { Request, Response } from 'express';
 import Appointment from '../models/Appointment.js';
+import Doctor from '../models/Doctor.js';
 import {
   addOrganizationContext,
   buildOrganizationFilter,
   sanitizeUpdateData,
 } from '../utils/multiTenancy.js';
 
+// Calendar visibility is intentionally independent of canViewAllPatients/
+// allowDataSharing — being able to see a colleague's schedule is a different
+// consent question than being able to read their patients' clinical notes.
+// Default (no doctorId) is always "my own appointments"; viewing someone
+// else's calendar is an explicit opt-in via ?doctorId=, gated by permission.
 export const getAllAppointments = async (req: Request, res: Response) => {
   try {
-    const filter = buildOrganizationFilter(req);
+    const { doctorId } = req.query;
+    const filter: any = { organization: req.organization._id };
+
+    if (doctorId && doctorId !== req.doctor._id.toString()) {
+      const canViewAllCalendars =
+        req.doctor.role === 'owner' || req.doctor.permissions.canViewAllCalendars;
+      if (!canViewAllCalendars) {
+        res.status(403).json({ error: 'Insufficient permissions to view another doctor\'s calendar' });
+        return;
+      }
+
+      const targetDoctor = await Doctor.findOne({ _id: doctorId, organization: req.organization._id });
+      if (!targetDoctor) {
+        res.status(404).json({ error: 'Doctor not found' });
+        return;
+      }
+
+      filter.doctor = doctorId;
+    } else {
+      filter.doctor = req.doctor._id;
+    }
+
     const appointments = await Appointment.find(filter)
       .populate('patient', 'firstName lastName email phone')
       .sort({ dateTime: -1 });

@@ -31,6 +31,9 @@ import { Consultation } from "../../types/consultation";
 import { useTranslation } from "../../hooks/useTranslation";
 import { fileUrl } from "../../lib/fileUrl";
 import { PageHeaderAction } from "../../components/PageHeaderAction";
+import { useAuth } from "../../contexts/AuthContext";
+import { authAPI } from "../../api/auth";
+import { Doctor } from "../../types/auth";
 
 const locales = {
   "en-US": enUS,
@@ -77,6 +80,9 @@ function getPatientId(patient: Patient | string | null | undefined): string {
 
 export function CalendarPage() {
   const { t, i18n } = useTranslation();
+  const { doctor: currentDoctor } = useAuth();
+  const canViewAllCalendars =
+    currentDoctor?.role === "owner" || currentDoctor?.permissions.canViewAllCalendars || false;
   const culture = i18n.language?.startsWith("pt") ? "pt-PT" : "en-US";
   const calendarMessages = useMemo(
     () => ({
@@ -104,6 +110,9 @@ export function CalendarPage() {
   const [linkedConsultation, setLinkedConsultation] = useState<Consultation | null>(null);
   const [loading, setLoading] = useState(false);
   const [timeRange, setTimeRange] = useState<TimeRangeKey>("8-20");
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [viewedDoctorId, setViewedDoctorId] = useState("");
+  const isViewingOthersCalendar = viewedDoctorId !== "" && viewedDoctorId !== currentDoctor?._id;
 
   const [formData, setFormData] = useState({
     patientId: "",
@@ -116,12 +125,21 @@ export function CalendarPage() {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [viewedDoctorId]);
+
+  useEffect(() => {
+    if (!canViewAllCalendars) return;
+    authAPI.getDoctors().then(({ doctors }) => {
+      setDoctors(doctors.filter((d) => d.isActive));
+    }).catch((error) => {
+      console.error("Failed to load doctors:", error);
+    });
+  }, [canViewAllCalendars]);
 
   const loadData = async () => {
     try {
       const [appointmentsData, patientsData, consultationsData] = await Promise.all([
-        appointmentsApi.getAll(),
+        appointmentsApi.getAll(isViewingOthersCalendar ? { doctorId: viewedDoctorId } : undefined),
         patientsApi.getAll(),
         consultationsApi.getAll(),
       ]);
@@ -192,6 +210,8 @@ export function CalendarPage() {
   };
 
   const handleSelectSlot = (slotInfo: { start: Date; end: Date }) => {
+    if (isViewingOthersCalendar) return;
+
     setSelectedEvent(null);
     setLinkedConsultation(null);
     setFormData({
@@ -206,6 +226,8 @@ export function CalendarPage() {
   };
 
   const handleSelectEvent = (event: CalendarEvent) => {
+    if (isViewingOthersCalendar) return;
+
     setSelectedEvent(event);
     setFormData({
       patientId: getPatientId(event.appointment.patient),
@@ -352,6 +374,29 @@ export function CalendarPage() {
     <div className="space-y-6">
       <PageHeaderAction>
         <div className="flex items-center gap-3">
+          {canViewAllCalendars && (
+            <Select
+              value={viewedDoctorId || currentDoctor?._id || ""}
+              onValueChange={(value) => setViewedDoctorId(value === currentDoctor?._id ? "" : value)}
+            >
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder={t('calendar.myCalendar')} />
+              </SelectTrigger>
+              <SelectContent>
+                {currentDoctor && (
+                  <SelectItem value={currentDoctor._id}>{t('calendar.myCalendar')}</SelectItem>
+                )}
+                {doctors
+                  .filter((d) => d._id !== currentDoctor?._id)
+                  .map((d) => (
+                    <SelectItem key={d._id} value={d._id}>
+                      {d.firstName} {d.lastName}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+          )}
+
           <Select
             value={timeRange}
             onValueChange={(value) => setTimeRange(value as TimeRangeKey)}
@@ -368,12 +413,22 @@ export function CalendarPage() {
             </SelectContent>
           </Select>
 
-          <Button onClick={openNewAppointment}>
-            <Plus className="h-5 w-5 mr-2" />
-            {t('calendar.newAppointment')}
-          </Button>
+          {!isViewingOthersCalendar && (
+            <Button onClick={openNewAppointment}>
+              <Plus className="h-5 w-5 mr-2" />
+              {t('calendar.newAppointment')}
+            </Button>
+          )}
         </div>
       </PageHeaderAction>
+
+      {isViewingOthersCalendar && (
+        <div className="text-sm text-gray-600 bg-lilac-50 border border-lilac-100 rounded-2xl px-4 py-2">
+          {t('calendar.viewingOthersCalendar', {
+            name: `${doctors.find((d) => d._id === viewedDoctorId)?.firstName || ""} ${doctors.find((d) => d._id === viewedDoctorId)?.lastName || ""}`.trim(),
+          })}
+        </div>
+      )}
 
       <Card className="rounded-2xl p-2 sm:p-4 border-gray-100 bg-white overflow-hidden">
         <div style={{ height: "calc(100vh - 166px)", minHeight: "600px" }}>
@@ -386,7 +441,7 @@ export function CalendarPage() {
             endAccessor="end"
             onSelectSlot={handleSelectSlot}
             onSelectEvent={handleSelectEvent}
-            selectable
+            selectable={!isViewingOthersCalendar}
             eventPropGetter={eventStyleGetter}
             views={["month", "week", "day", "agenda"]}
             defaultView="week"

@@ -16,6 +16,7 @@ export interface IDoctor extends Document {
     canManageDoctors: boolean;
     canViewAllPatients: boolean;
     canManageBilling: boolean;
+    canViewAllCalendars: boolean;
   };
   isActive: boolean;
   lastLogin?: Date;
@@ -89,6 +90,10 @@ const doctorSchema = new Schema<IDoctor>(
         type: Boolean,
         default: false,
       },
+      canViewAllCalendars: {
+        type: Boolean,
+        default: false,
+      },
     },
     isActive: {
       type: Boolean,
@@ -136,6 +141,7 @@ doctorSchema.pre('save', function (next) {
       canManageDoctors: true,
       canViewAllPatients: true,
       canManageBilling: true,
+      canViewAllCalendars: true,
     };
   } else if (this.role === 'admin') {
     this.permissions.canManageDoctors = true;
