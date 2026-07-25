@@ -12,6 +12,7 @@ import { Patient } from '../../types/patient';
 import { PatientForm } from '../../components/patients/PatientForm';
 import { PatientCard } from '../../components/patients/PatientCard';
 import { useTranslation } from '../../hooks/useTranslation';
+import { PageHeaderAction } from '../../components/PageHeaderAction';
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -159,16 +160,12 @@ export function PatientsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-1">{t('patients.title')}</h1>
-          <p className="text-gray-500">{t('patients.subtitle')}</p>
-        </div>
+      <PageHeaderAction>
         <Button onClick={() => setShowForm(true)}>
           <Plus className="h-5 w-5 mr-2" />
           {t('patients.addPatient')}
         </Button>
-      </div>
+      </PageHeaderAction>
 
       <div className="flex gap-4 items-center bg-white rounded-3xl p-4 shadow-sm">
         <div className="flex-1 flex gap-2">

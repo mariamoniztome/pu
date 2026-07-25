@@ -11,10 +11,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../componen
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../../components/ui/select';
 import { toast } from 'sonner';
 import { useTranslation } from '../../hooks/useTranslation';
+import { PageHeaderAction } from '../../components/PageHeaderAction';
 
 export const DoctorsPage: React.FC = () => {
   const { t } = useTranslation();
-  const { doctor: currentDoctor, organization } = useAuth();
+  const { doctor: currentDoctor } = useAuth();
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showInviteDialog, setShowInviteDialog] = useState(false);
@@ -109,21 +110,15 @@ export const DoctorsPage: React.FC = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">{t('doctors.title')}</h1>
-          <p className="text-gray-600 mt-1">
-            {t('doctors.subtitle', { organization: organization?.name })}
-          </p>
-        </div>
-        {canManageDoctors && (
+    <div className="space-y-6">
+      {canManageDoctors && (
+        <PageHeaderAction>
           <Button onClick={() => setShowInviteDialog(true)}>
             <Plus className="h-5 w-5 mr-2" />
             {t('doctors.inviteDoctor')}
           </Button>
-        )}
-      </div>
+        </PageHeaderAction>
+      )}
 
       <div className="grid gap-4">
         {doctors.map((doc) => (

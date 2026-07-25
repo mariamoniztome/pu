@@ -14,6 +14,7 @@ import { PaymentForm } from "../../components/payments/PaymentForm";
 import { PaymentCharts } from "../../components/payments/PaymentCharts";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../components/ui/dialog";
 import { useTranslation } from "../../hooks/useTranslation";
+import { PageHeaderAction } from "../../components/PageHeaderAction";
 
 export function PaymentsPage() {
   const { t } = useTranslation();
@@ -83,16 +84,12 @@ export function PaymentsPage() {
 
   return (
     <div className="space-y-6">
-    <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-800">{t('payments.title')}</h1>
-          <p className="text-slate-600 mt-1">{t('payments.subtitle')}</p>
-        </div>
+      <PageHeaderAction>
         <Button onClick={() => setShowForm(true)}>
           <Plus className="h-5 w-5 mr-2" />
           {t('payments.recordPayment')}
         </Button>
-      </div>
+      </PageHeaderAction>
 
       <PaymentCharts />
 

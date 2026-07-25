@@ -30,6 +30,7 @@ import { Patient } from "../../types/patient";
 import { Consultation } from "../../types/consultation";
 import { useTranslation } from "../../hooks/useTranslation";
 import { fileUrl } from "../../lib/fileUrl";
+import { PageHeaderAction } from "../../components/PageHeaderAction";
 
 const locales = {
   "en-US": enUS,
@@ -349,11 +350,7 @@ export function CalendarPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-1">{t('navigation.consultations')}</h1>
-          <p className="text-gray-500">{t('calendar.subtitle')}</p>
-        </div>
+      <PageHeaderAction>
         <div className="flex items-center gap-3">
           <Select
             value={timeRange}
@@ -376,10 +373,10 @@ export function CalendarPage() {
             {t('calendar.newAppointment')}
           </Button>
         </div>
-      </div>
+      </PageHeaderAction>
 
-      <Card className="rounded-2xl p-4 sm:p-6 shadow-sm border-gray-100 bg-white hover:bg-white hover:shadow-sm overflow-hidden">
-        <div style={{ height: "calc(100vh - 250px)", minHeight: "600px" }}>
+      <Card className="rounded-2xl p-2 sm:p-4 shadow-sm border-gray-100 bg-white hover:bg-white hover:shadow-sm overflow-hidden">
+        <div style={{ height: "calc(100vh - 166px)", minHeight: "600px" }}>
           <Calendar
             localizer={localizer}
             culture={culture}

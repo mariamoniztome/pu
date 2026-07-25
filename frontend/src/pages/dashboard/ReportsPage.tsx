@@ -14,6 +14,7 @@ import { ReportForm } from "../../components/reports/ReportForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "../../components/ui/dialog";
 import { useTranslation } from "../../hooks/useTranslation";
 import { exportReportToPdf } from "../../lib/exportReportPdf";
+import { PageHeaderAction } from "../../components/PageHeaderAction";
 
 export function ReportsPage() {
   const { t } = useTranslation();
@@ -87,18 +88,12 @@ export function ReportsPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-800">{t('reports.title')}</h1>
-          <p className="text-slate-600 mt-1">
-            {t('reports.subtitle')}
-          </p>
-        </div>
+      <PageHeaderAction>
         <Button onClick={() => setShowForm(true)}>
           <Plus className="h-5 w-5 mr-2" />
           {t('reports.newReport')}
         </Button>
-      </div>
+      </PageHeaderAction>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {reports.map((report) => (

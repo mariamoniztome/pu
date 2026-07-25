@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import {
   Users,
@@ -7,15 +7,18 @@ import {
   Euro,
   Home,
   Settings,
-  Menu,
+  Pin,
+  PinOff,
   LogOut,
   UserCircle,
-  Building,
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useTranslation } from '../hooks/useTranslation';
 import { useAuth } from '../contexts/AuthContext';
+import { PageHeaderSlotContext } from '../contexts/PageHeaderContext';
+
+const SIDEBAR_PINNED_KEY = 'sidebar-pinned';
 
 const getNavItems = (t: any, canManageDoctors: boolean) => {
   const items = [
@@ -25,12 +28,12 @@ const getNavItems = (t: any, canManageDoctors: boolean) => {
     { to: '/reports', label: t('navigation.reports'), icon: FileBarChart },
     { to: '/payments', label: t('navigation.payments'), icon: Euro },
   ];
-  
+
   // Add doctors page if user can manage doctors
   if (canManageDoctors) {
     items.push({ to: '/doctors', label: t('navigation.doctors'), icon: UserCircle });
   }
-  
+
   return items;
 };
 
@@ -39,12 +42,34 @@ export function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { doctor, organization, logout } = useAuth();
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [pinned, setPinned] = useState(() => localStorage.getItem(SIDEBAR_PINNED_KEY) === 'true');
+  const [open, setOpen] = useState(pinned);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [headerSlot, setHeaderSlot] = useState<HTMLDivElement | null>(null);
+  const asideRef = useRef<HTMLElement>(null);
 
-  const canManageDoctors = 
+  const isExpanded = pinned || open;
+
+  useEffect(() => {
+    localStorage.setItem(SIDEBAR_PINNED_KEY, String(pinned));
+  }, [pinned]);
+
+  useEffect(() => {
+    if (!open || pinned) return;
+
+    const handleOutsideClick = (event: MouseEvent) => {
+      if (asideRef.current && !asideRef.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, [open, pinned]);
+
+  const canManageDoctors =
     doctor?.role === 'owner' || doctor?.permissions.canManageDoctors || false;
-  
+
   const navItems = getNavItems(t, canManageDoctors);
 
   const handleLogout = () => {
@@ -57,22 +82,60 @@ export function Layout() {
     return location.pathname.startsWith(to);
   };
 
+  const { sectionTitle, sectionSubtitle } = useMemo(() => {
+    const path = location.pathname;
+    if (path === '/') {
+      return {
+        sectionTitle: doctor?.firstName
+          ? t('dashboard.greeting', { name: `${doctor.firstName}!` })
+          : t('navigation.dashboard'),
+        sectionSubtitle: t('dashboard.subtitle'),
+      };
+    }
+    if (path.startsWith('/patients')) {
+      return { sectionTitle: t('patients.title'), sectionSubtitle: t('patients.subtitle') };
+    }
+    if (path.startsWith('/consultations')) {
+      return { sectionTitle: t('navigation.consultations'), sectionSubtitle: t('calendar.subtitle') };
+    }
+    if (path.startsWith('/reports')) {
+      return { sectionTitle: t('reports.title'), sectionSubtitle: t('reports.subtitle') };
+    }
+    if (path.startsWith('/payments')) {
+      return { sectionTitle: t('payments.title'), sectionSubtitle: t('payments.subtitle') };
+    }
+    if (path.startsWith('/doctors')) {
+      return {
+        sectionTitle: t('doctors.title'),
+        sectionSubtitle: t('doctors.subtitle', { organization: organization?.name }),
+      };
+    }
+    if (path.startsWith('/settings')) {
+      return { sectionTitle: t('settings.title'), sectionSubtitle: undefined };
+    }
+    return { sectionTitle: organization?.name, sectionSubtitle: undefined };
+  }, [location.pathname, doctor?.firstName, organization?.name, t]);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-lilac-50 via-white to-primary-50">
       <div className="flex">
         <aside
+          ref={asideRef}
+          onMouseEnter={() => setOpen(true)}
+          onMouseLeave={() => !pinned && setOpen(false)}
+          onClick={() => !isExpanded && setOpen(true)}
           className={cn(
             'fixed left-0 top-0 h-screen bg-white/40 backdrop-blur-xl border-r border-lilac-100/50 transition-all duration-300 flex flex-col z-40',
             isExpanded ? 'w-64' : 'w-20'
           )}
         >
-          <div className="p-6">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-primary-300 to-lilac-300 rounded-3xl flex items-center justify-center shadow-lg">
+          <div className="pt-6 pb-4">
+            <div className={cn('flex items-center gap-3 px-3', !isExpanded && 'justify-center')}>
+              <div className="w-12 h-12 bg-gradient-to-br from-primary-300 to-lilac-300 rounded-3xl flex items-center justify-center shadow-lg flex-shrink-0">
                 <span className="text-white font-bold text-xl">M</span>
               </div>
               {isExpanded && (
-                <h1 className="text-xl font-bold text-gray-800">Mindcare</h1>
+                <h1 className="text-xl font-bold text-gray-800 whitespace-nowrap">Mindcare</h1>
               )}
             </div>
           </div>
@@ -88,6 +151,7 @@ export function Layout() {
                   to={item.to}
                   className={cn(
                     'flex items-center gap-3 px-4 py-4 rounded-3xl text-sm font-medium transition-all duration-300',
+                    !isExpanded && 'justify-center',
                     isActive
                       ? 'bg-gradient-to-r from-primary-200 to-lilac-200 text-gray-900 shadow-lg'
                       : 'text-gray-600 hover:bg-white/60 hover:text-gray-900'
@@ -95,7 +159,7 @@ export function Layout() {
                   title={!isExpanded ? item.label : undefined}
                 >
                   <Icon className="h-5 w-5 flex-shrink-0" />
-                  {isExpanded && <span>{item.label}</span>}
+                  {isExpanded && <span className="whitespace-nowrap">{item.label}</span>}
                 </Link>
               );
             })}
@@ -104,44 +168,60 @@ export function Layout() {
           <div className="px-3 pb-6 space-y-2">
             <Link
               to="/settings"
-              className="flex items-center gap-3 px-4 py-4 rounded-3xl text-sm font-medium transition-all duration-300 w-full text-gray-600 hover:bg-white/60 hover:text-gray-900"
+              className={cn(
+                'flex items-center gap-3 px-4 py-4 rounded-3xl text-sm font-medium transition-all duration-300 w-full text-gray-600 hover:bg-white/60 hover:text-gray-900',
+                !isExpanded && 'justify-center'
+              )}
               title={!isExpanded ? t('navigation.settings') : undefined}
             >
-              <Settings className="h-5 w-5" />
-              {isExpanded && <span>{t('navigation.settings')}</span>}
+              <Settings className="h-5 w-5 flex-shrink-0" />
+              {isExpanded && <span className="whitespace-nowrap">{t('navigation.settings')}</span>}
             </Link>
 
             {/* Help button disabled for now */}
 
             <button
-              onClick={() => setIsExpanded((v) => !v)}
-              className="flex items-center gap-3 px-4 py-4 rounded-3xl text-sm font-medium transition-all duration-300 w-full text-gray-600 hover:bg-white/60 hover:text-gray-900"
-              title={isExpanded ? t('navigation.collapseMenu') : t('navigation.expandMenu')}
+              onClick={(e) => {
+                e.stopPropagation();
+                setPinned((v) => !v);
+              }}
+              className={cn(
+                'flex items-center gap-3 px-4 py-4 rounded-3xl text-sm font-medium transition-all duration-300 w-full text-gray-600 hover:bg-white/60 hover:text-gray-900',
+                !isExpanded && 'justify-center'
+              )}
+              title={pinned ? t('navigation.unpinSidebar') : t('navigation.pinSidebar')}
             >
-              <Menu className="h-5 w-5" />
-              {isExpanded && <span>{t('navigation.collapse')}</span>}
+              {pinned ? <PinOff className="h-5 w-5 flex-shrink-0" /> : <Pin className="h-5 w-5 flex-shrink-0" />}
+              {isExpanded && (
+                <span className="whitespace-nowrap">
+                  {pinned ? t('navigation.unpinSidebar') : t('navigation.pinSidebar')}
+                </span>
+              )}
             </button>
           </div>
         </aside>
 
         <main
           className={cn(
-            'flex-1 p-8 overflow-x-hidden transition-all duration-300',
+            'flex-1 py-4 sm:py-6 lg:py-8 overflow-x-hidden transition-all duration-300',
             isExpanded ? 'ml-64' : 'ml-20'
           )}
         >
-          <div className="max-w-7xl mx-auto">
-            <div className="flex justify-between items-center mb-6">
-              <div className="flex items-center gap-3">
-                <Building className="h-5 w-5 text-gray-600" />
-                <span className="text-sm font-medium text-gray-700">
-                  {organization?.name}
-                </span>
+          <div className="max-w-[81rem] mx-auto">
+            <div className="flex flex-wrap justify-between items-center gap-3 mb-4">
+              <div className="min-w-0">
+                <h2 className="text-2xl font-bold text-gray-900 truncate leading-tight">
+                  {sectionTitle}
+                </h2>
+                {sectionSubtitle && (
+                  <p className="text-sm text-gray-500 truncate">{sectionSubtitle}</p>
+                )}
               </div>
-              
-              <div className="flex items-center gap-4">
+
+              <div className="flex items-center gap-3">
+                <div ref={setHeaderSlot} className="contents" />
                 <LanguageSwitcher />
-                
+
                 {/* User Profile Menu */}
                 <div className="relative">
                   <button
@@ -174,7 +254,7 @@ export function Layout() {
                           </p>
                           <p className="text-xs text-gray-500">{doctor?.email}</p>
                         </div>
-                        
+
                         <Link
                           to="/settings"
                           className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
@@ -208,7 +288,9 @@ export function Layout() {
                 </div>
               </div>
             </div>
-            <Outlet />
+            <PageHeaderSlotContext.Provider value={headerSlot}>
+              <Outlet />
+            </PageHeaderSlotContext.Provider>
           </div>
         </main>
       </div>

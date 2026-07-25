@@ -7,16 +7,9 @@ import {
   Check,
   Clock,
   Video,
-  X,
 } from "lucide-react";
 import { Card } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "../../components/ui/dialog";
 import { DashboardChart } from "../../components/shared/DashboardChart";
 import { AppointmentForm } from "../../components/appointments/AppointmentForm";
 import { ConsultationForm } from "../../components/consultations/ConsultationForm";
@@ -24,11 +17,9 @@ import { appointmentsApi, patientsApi } from "../../api";
 import { Appointment } from "../../types/appointment";
 import { Patient } from "../../types/patient";
 import { useTranslation } from "../../hooks/useTranslation";
-import { useAuth } from "../../contexts/AuthContext";
 
 export function DashboardPage() {
   const { t } = useTranslation();
-  const { doctor } = useAuth();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -235,14 +226,7 @@ export function DashboardPage() {
   if (error) {
     return (
       <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-1">
-            {t("dashboard.title")}
-          </h1>
-          <p className="text-red-500">
-            {t("dashboard.errorLoading", { error })}
-          </p>
-        </div>
+        <p className="text-red-500">{t("dashboard.errorLoading", { error })}</p>
       </div>
     );
   }
@@ -259,16 +243,6 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-1">
-          {t("dashboard.greeting", {
-            name: 
-                `${doctor?.firstName}!`
-              
-          })}
-        </h1>
-        {/* <p className="text-gray-500">{t("dashboard.subtitle")}</p> */}
-      </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
@@ -541,39 +515,17 @@ export function DashboardPage() {
         </div>
       </div>
 
-      <Dialog
-        open={isAppointmentDialogOpen}
-        onOpenChange={setIsAppointmentDialogOpen}
-      >
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader className="flex flex-row items-center justify-between">
-            <DialogTitle>{t("dashboard.addAppointmentDialogTitle")}</DialogTitle>
-            <Button variant="ghost" size="icon" onClick={() => setIsAppointmentDialogOpen(false)}>
-              <X className="h-4 w-4" />
-            </Button>
-          </DialogHeader>
-          <AppointmentForm onClose={handleAppointmentFormClose} />
-        </DialogContent>
-      </Dialog>
+      {isAppointmentDialogOpen && (
+        <AppointmentForm onClose={handleAppointmentFormClose} />
+      )}
 
-      <Dialog
-        open={isConsultationDialogOpen}
-        onOpenChange={setIsConsultationDialogOpen}
-      >
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader className="flex flex-row items-center justify-between">
-            <DialogTitle>{t("dashboard.newConsultationDialogTitle")}</DialogTitle>
-            <Button variant="ghost" size="icon" onClick={() => setIsConsultationDialogOpen(false)}>
-              <X className="h-4 w-4" />
-            </Button>
-          </DialogHeader>
-          <ConsultationForm
-            onClose={() => {
-              setIsConsultationDialogOpen(false);
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+      {isConsultationDialogOpen && (
+        <ConsultationForm
+          onClose={() => {
+            setIsConsultationDialogOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 }
