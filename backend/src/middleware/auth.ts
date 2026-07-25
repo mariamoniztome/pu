@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import Doctor from '../models/Doctor';
-import Organization from '../models/Organization';
+import Doctor from '../models/Doctor.js';
+import Organization from '../models/Organization.js';
 
 // Extend Express Request type to include doctor and organization
 declare global {

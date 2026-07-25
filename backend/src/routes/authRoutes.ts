@@ -7,8 +7,8 @@ import {
   getDoctors,
   updateDoctor,
   deleteDoctor,
-} from '../controllers/authController';
-import { authenticate, requirePermission } from '../middleware/auth';
+} from '../controllers/authController.js';
+import { authenticate, requirePermission } from '../middleware/auth.js';
 
 const router = express.Router();
 

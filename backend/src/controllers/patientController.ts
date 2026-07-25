@@ -1,19 +1,25 @@
 import { Request, Response } from 'express';
 import Patient from '../models/Patient.js';
 
+// A doctor can see/modify every patient in the organization only when BOTH
+// the organization allows data sharing AND they hold canViewAllPatients.
+// Every handler below must use this same rule — a previous inconsistency
+// (list used AND, single-record reads/writes used OR) let a doctor with
+// canViewAllPatients read/edit other doctors' patients by ID even while
+// data sharing was switched off.
+function canAccessAnyPatient(req: Request): boolean {
+  return Boolean(req.organization.settings.allowDataSharing && req.doctor.permissions.canViewAllPatients);
+}
+
 export const getAllPatients = async (req: Request, res: Response) => {
   try {
     // Filter by organization
     const filter: any = { organization: req.organization._id };
-    
-    // If organization doesn't allow data sharing, filter by doctor
-    if (!req.organization.settings.allowDataSharing) {
-      filter.doctor = req.doctor._id;
-    } else if (!req.doctor.permissions.canViewAllPatients) {
-      // If data sharing is allowed but doctor doesn't have permission, show only their patients
+
+    if (!canAccessAnyPatient(req)) {
       filter.doctor = req.doctor._id;
     }
-    
+
     const patients = await Patient.find(filter).sort({ createdAt: -1 });
     res.json(patients);
   } catch (error: any) {
@@ -28,8 +34,7 @@ export const getPatientById = async (req: Request, res: Response) => {
       organization: req.organization._id 
     };
     
-    // If organization doesn't allow data sharing, ensure it's the doctor's patient
-    if (!req.organization.settings.allowDataSharing && !req.doctor.permissions.canViewAllPatients) {
+    if (!canAccessAnyPatient(req)) {
       filter.doctor = req.doctor._id;
     }
     
@@ -67,8 +72,7 @@ export const updatePatient = async (req: Request, res: Response) => {
       organization: req.organization._id 
     };
     
-    // If organization doesn't allow data sharing, ensure it's the doctor's patient
-    if (!req.organization.settings.allowDataSharing && !req.doctor.permissions.canViewAllPatients) {
+    if (!canAccessAnyPatient(req)) {
       filter.doctor = req.doctor._id;
     }
     
@@ -98,8 +102,7 @@ export const deletePatient = async (req: Request, res: Response) => {
       organization: req.organization._id 
     };
     
-    // If organization doesn't allow data sharing, ensure it's the doctor's patient
-    if (!req.organization.settings.allowDataSharing && !req.doctor.permissions.canViewAllPatients) {
+    if (!canAccessAnyPatient(req)) {
       filter.doctor = req.doctor._id;
     }
     
@@ -130,8 +133,7 @@ export const searchPatients = async (req: Request, res: Response) => {
       ],
     };
     
-    // If organization doesn't allow data sharing, filter by doctor
-    if (!req.organization.settings.allowDataSharing && !req.doctor.permissions.canViewAllPatients) {
+    if (!canAccessAnyPatient(req)) {
       filter.doctor = req.doctor._id;
     }
 

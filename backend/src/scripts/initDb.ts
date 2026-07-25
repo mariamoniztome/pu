@@ -9,13 +9,13 @@
 
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import Organization from '../models/Organization';
-import Doctor from '../models/Doctor';
-import Patient from '../models/Patient';
-import Appointment from '../models/Appointment';
-import Consultation from '../models/Consultation';
-import Payment from '../models/Payment';
-import ExternalReport from '../models/ExternalReport';
+import Organization from '../models/Organization.js';
+import Doctor from '../models/Doctor.js';
+import Patient from '../models/Patient.js';
+import Appointment from '../models/Appointment.js';
+import Consultation from '../models/Consultation.js';
+import Payment from '../models/Payment.js';
+import ExternalReport from '../models/ExternalReport.js';
 
 dotenv.config();
 

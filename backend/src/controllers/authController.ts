@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import Doctor from '../models/Doctor';
-import Organization from '../models/Organization';
-import { generateToken } from '../middleware/auth';
+import Doctor from '../models/Doctor.js';
+import Organization from '../models/Organization.js';
+import { generateToken } from '../middleware/auth.js';
 
 // Register a new organization and doctor (owner)
 export const register = async (req: Request, res: Response): Promise<void> => {
@@ -85,8 +85,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const token = generateToken(doctor, organization);
 
     // Return response (without password)
-    const doctorResponse = doctor.toObject();
-    delete doctorResponse.password;
+    const { password: _doctorPassword, ...doctorResponse } = doctor.toObject();
 
     res.status(201).json({
       message: 'Registration successful',
@@ -158,8 +157,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     await doctor.save();
 
     // Return response (without password)
-    const doctorResponse = doctor.toObject();
-    delete doctorResponse.password;
+    const { password: _doctorPassword, ...doctorResponse } = doctor.toObject();
 
     res.status(200).json({
       message: 'Login successful',
@@ -244,8 +242,7 @@ export const inviteDoctor = async (req: Request, res: Response): Promise<void> =
     });
 
     // Return response (without password)
-    const doctorResponse = doctor.toObject();
-    delete doctorResponse.password;
+    const { password: _doctorPassword, ...doctorResponse } = doctor.toObject();
 
     res.status(201).json({
       message: 'Doctor invited successfully',
@@ -270,23 +267,36 @@ export const getDoctors = async (req: Request, res: Response): Promise<void> => 
   }
 };
 
+// Fields a doctor may change on their own profile. Deliberately excludes
+// role/permissions/isActive so self-updates can never self-escalate.
+const SELF_UPDATABLE_FIELDS = ['firstName', 'lastName', 'phone', 'specialization', 'licenseNumber'] as const;
+const MANAGER_UPDATABLE_FIELDS = [...SELF_UPDATABLE_FIELDS, 'role', 'permissions', 'isActive'] as const;
+
 // Update doctor
 export const updateDoctor = async (req: Request, res: Response): Promise<void> => {
   try {
     const { doctorId } = req.params;
-    const updates = req.body;
+    const isSelf = req.doctor._id.toString() === doctorId;
+    const isManager = req.doctor.role === 'owner' || req.doctor.permissions.canManageDoctors;
 
-    // Check permissions
-    if (req.doctor._id.toString() !== doctorId && 
-        !req.doctor.permissions.canManageDoctors && 
-        req.doctor.role !== 'owner') {
+    if (!isSelf && !isManager) {
       res.status(403).json({ message: 'Insufficient permissions' });
       return;
     }
 
-    // Don't allow password updates through this endpoint
-    delete updates.password;
-    delete updates.organization;
+    // A manager editing someone else can change role/permissions/isActive.
+    // Editing your own record (even as a manager) is restricted to profile
+    // fields only, so nobody can grant themselves new access.
+    const allowedFields = isManager && !isSelf ? MANAGER_UPDATABLE_FIELDS : SELF_UPDATABLE_FIELDS;
+    const updates: Record<string, any> = {};
+    for (const field of allowedFields) {
+      if (field in req.body) updates[field] = req.body[field];
+    }
+
+    if (updates.role === 'owner' && req.doctor.role !== 'owner') {
+      res.status(403).json({ message: 'Only an owner can grant the owner role' });
+      return;
+    }
 
     const doctor = await Doctor.findOneAndUpdate(
       { _id: doctorId, organization: req.organization._id },
