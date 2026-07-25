@@ -591,7 +591,15 @@
       "registrationFailed": "Falha no registo. Por favor, tente novamente.",
       "choosePlan": "Escolhe o teu plano",
       "customBranding": "Marca personalizada",
-      "customBrandingHelp": "Define já as cores da tua clínica, ou começa com a paleta por defeito e muda quando quiseres."
+      "customBrandingHelp": "Define já as cores da tua clínica, ou começa com a paleta por defeito e muda quando quiseres.",
+      "stepData": "Os teus dados",
+      "stepBranding": "Marca",
+      "stepLogo": "Logótipo",
+      "continueButton": "Continuar",
+      "back": "Voltar",
+      "addYourLogo": "Adiciona o teu logótipo",
+      "addYourLogoHelp": "Opcional — podes sempre adicionar ou mudar isto depois nas Definições.",
+      "finish": "Concluir"
     },
     "acceptInvite": {
       "title": "Aceitar Convite",
@@ -779,7 +787,13 @@
       "currentPlan": "Plano atual",
       "switchPlan": "Mudar para este plano",
       "billingSoon": "A mudança de plano e faturação estará disponível brevemente.",
-      "billingNote": "Precisas de um plano personalizado ou tens dúvidas sobre faturação? Contacta-nos e ajudamos-te."
+      "billingNote": "Precisas de um plano personalizado ou tens dúvidas sobre faturação? Contacta-nos e ajudamos-te.",
+      "status": {
+        "active": "Ativa",
+        "inactive": "Inativa",
+        "cancelled": "Cancelada",
+        "past_due": "Pagamento em atraso"
+      }
     },
     "access": {
       "yourRole": "O teu papel",
@@ -823,16 +837,43 @@
     "mockTimeAgo": "há 2 horas"
   },
   "landing": {
-    "brandName": "Psyclinic",
+    "brandName": "Clinicamente",
     "getStarted": "Começar",
     "heroTitle": "Gere a tua prática de psicologia sem a burocracia",
-    "heroSubtitle": "Pacientes, calendário, notas, faturação e relatórios num só lugar — pensado para praticantes solo e clínicas.",
+    "heroSubtitle": "Pacientes, calendário, notas, faturação e relatórios num só lugar. Pensado para praticantes solo e clínicas.",
     "pricingTitle": "Preços simples e transparentes",
     "pricingSubtitle": "Começa grátis. Muda de plano sempre que precisares de mais espaço.",
     "choosePlan": "Escolher plano",
     "free": "Grátis",
     "customPricing": "Personalizado",
     "perMonth": "/mês",
-    "pricingNote": "Depois de escolheres um plano, configuras a tua conta e convidas a tua equipa. Não é preciso cartão de crédito para começar."
+    "pricingNote": "Depois de escolheres um plano, configuras a tua conta e convidas a tua equipa. Não é preciso cartão de crédito para começar.",
+    "badgeTrial": "14 dias grátis",
+    "badgeNoCard": "Sem cartão de crédito",
+    "badgeCancelAnytime": "Cancela quando quiseres",
+    "faqTitle": "Perguntas frequentes",
+    "faq": {
+      "trial": {
+        "q": "O que acontece depois dos 14 dias de teste?",
+        "a": "Mantens acesso completo durante o teste. Depois, escolhe o plano que se adequa — os teus dados ficam exatamente como estavam, nada é apagado."
+      },
+      "invite": {
+        "q": "Posso convidar a minha equipa?",
+        "a": "Sim. Só o dono da conta se regista; depois de configurares a clínica, convida colegas em Definições → Equipa e controla o que cada pessoa pode aceder."
+      },
+      "security": {
+        "q": "Os dados dos meus pacientes estão seguros?",
+        "a": "Os dados são encriptados e o acesso é restringido por papel e permissão. Se lidas profissionalmente com registos clínicos sensíveis, recomendamos reveres o tratamento de dados com o teu próprio consultor jurídico/de conformidade antes de integrares clientes."
+      },
+      "changePlan": {
+        "q": "Posso mudar de plano depois?",
+        "a": "Sim, podes mudar de plano a qualquer momento em Definições → Subscrição à medida que a tua prática cresce."
+      }
+    }
+  },
+  "consent": {
+    "message": "Usamos cookies para perceber como os visitantes usam este site. Podes aceitar ou recusar cookies de análise.",
+    "accept": "Aceitar",
+    "reject": "Recusar"
   }
 }

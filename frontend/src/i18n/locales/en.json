@@ -555,7 +555,7 @@
     },
     "register": {
       "createAccount": "Create Your Account",
-      "subtitle": "Set up your psychology clinic management system",
+      "subtitle": "Set up your Clinicamente",
       "organizationInfo": "Organization Information",
       "organizationName": "Organization Name",
       "organizationNamePlaceholder": "My Psychology Clinic",
@@ -591,7 +591,15 @@
       "registrationFailed": "Registration failed. Please try again.",
       "choosePlan": "Choose your plan",
       "customBranding": "Custom branding",
-      "customBrandingHelp": "Set your clinic's colors now, or start with our default palette and change it anytime later."
+      "customBrandingHelp": "Set your clinic's colors now, or start with our default palette and change it anytime later.",
+      "stepData": "Your details",
+      "stepBranding": "Branding",
+      "stepLogo": "Logo",
+      "continueButton": "Continue",
+      "back": "Back",
+      "addYourLogo": "Add your logo",
+      "addYourLogoHelp": "Optional — you can always add or change this later in Settings.",
+      "finish": "Finish"
     },
     "acceptInvite": {
       "title": "Accept Invitation",
@@ -779,7 +787,13 @@
       "currentPlan": "Current plan",
       "switchPlan": "Switch to this plan",
       "billingSoon": "Plan changes and billing are coming soon.",
-      "billingNote": "Need a custom plan or have billing questions? Reach out and we'll help you sort it out."
+      "billingNote": "Need a custom plan or have billing questions? Reach out and we'll help you sort it out.",
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "cancelled": "Cancelled",
+        "past_due": "Past due"
+      }
     },
     "access": {
       "yourRole": "Your role",
@@ -823,16 +837,43 @@
     "mockTimeAgo": "2 hours ago"
   },
   "landing": {
-    "brandName": "Psyclinic",
+    "brandName": "Clinicamente",
     "getStarted": "Get started",
     "heroTitle": "Run your psychology practice, without the busywork",
-    "heroSubtitle": "Patients, calendar, notes, billing and reports in one place — built for solo practitioners and clinics alike.",
+    "heroSubtitle": "Patients, calendar, notes, billing and reports in one place. Built for solo practitioners and clinics alike.",
     "pricingTitle": "Simple, transparent pricing",
     "pricingSubtitle": "Start free. Upgrade whenever you need more room to grow.",
     "choosePlan": "Choose plan",
     "free": "Free",
     "customPricing": "Custom",
     "perMonth": "/month",
-    "pricingNote": "You'll set up your account and invite your team after choosing a plan. No credit card required to start."
+    "pricingNote": "You'll set up your account and invite your team after choosing a plan. No credit card required to start.",
+    "badgeTrial": "14-day free trial",
+    "badgeNoCard": "No credit card required",
+    "badgeCancelAnytime": "Cancel anytime",
+    "faqTitle": "Frequently asked questions",
+    "faq": {
+      "trial": {
+        "q": "What happens after the 14-day trial?",
+        "a": "You keep full access during the trial. Afterwards, pick a plan that fits — your data stays exactly as you left it, nothing is deleted."
+      },
+      "invite": {
+        "q": "Can I invite my team?",
+        "a": "Yes. Only the account owner registers; once your clinic is set up, invite colleagues from Settings → Team and control what each person can access."
+      },
+      "security": {
+        "q": "Is my patients' data secure?",
+        "a": "Data is encrypted and access is restricted by role and permission. If you handle sensitive clinical records professionally, we recommend reviewing our data handling with your own legal/compliance advisor before onboarding clients."
+      },
+      "changePlan": {
+        "q": "Can I change my plan later?",
+        "a": "Yes, you can switch plans at any time from Settings → Subscription as your practice grows."
+      }
+    }
+  },
+  "consent": {
+    "message": "We use cookies to understand how visitors use this site. You can accept or decline analytics cookies.",
+    "accept": "Accept",
+    "reject": "Decline"
   }
 }

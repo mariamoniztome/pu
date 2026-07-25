@@ -1,7 +1,7 @@
 {
   "name": "psychology-clinic-backend",
   "version": "1.0.0",
-  "description": "Backend API for Psychology Clinic Management System",
+  "description": "Backend API for Clinicamente",
   "main": "dist/server.js",
   "type": "module",
   "scripts": {

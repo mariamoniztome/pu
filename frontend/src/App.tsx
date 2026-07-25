@@ -1,9 +1,12 @@
+import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { useBrandingDocumentSync } from './hooks/useBrandingDocumentSync';
 import { Layout } from './components/Layout';
+import { ConsentBanner } from './components/ConsentBanner';
+import { trackPageview } from './lib/analytics';
 import { LandingPage } from './pages/marketing/LandingPage';
 import { LoginPage } from './pages/auth/LoginPage';
 import { RegisterPage } from './pages/auth/RegisterPage';
@@ -42,12 +45,29 @@ function HomeGate() {
   return <Layout />;
 }
 
+const PUBLIC_MARKETING_PATHS = ['/', '/login', '/register'];
+
+// Analytics is scoped to the public marketing surface only — never the
+// authenticated app, so clinical usage never gets sent to a third party.
+function PublicAnalytics() {
+  const location = useLocation();
+  const isPublicPage = PUBLIC_MARKETING_PATHS.includes(location.pathname);
+
+  useEffect(() => {
+    if (isPublicPage) trackPageview(location.pathname);
+  }, [location.pathname, isPublicPage]);
+
+  if (!isPublicPage) return null;
+  return <ConsentBanner />;
+}
+
 function AppRoutes() {
   useBrandingDocumentSync();
 
   return (
     <>
       <Toaster position="top-center" richColors />
+      <PublicAnalytics />
       <Routes>
         {/* Public routes */}
         <Route path="/login" element={<LoginPage />} />

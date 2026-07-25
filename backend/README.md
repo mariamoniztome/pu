@@ -1,6 +1,6 @@
-# Psychology Clinic Management System - Backend
+# Clinicamente - Backend
 
-This is the backend API for the Psychology Clinic Management System, built with Node.js, Express, MongoDB, and Mongoose.
+This is the backend API for the Clinicamente, built with Node.js, Express, MongoDB, and Mongoose.
 
 ## Tech Stack
 

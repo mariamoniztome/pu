@@ -1,4 +1,4 @@
-# Psychology Clinic Management System - Frontend
+# Clinicamente - Frontend
 
 A modern, full-featured web application for managing a psychology clinic, built with React, TypeScript, Tailwind CSS, shadcn/ui, and AG Grid.
 
@@ -89,7 +89,7 @@ Open your browser and navigate to:
 http://localhost:5173
 ```
 
-You should see the Psychology Clinic Management System dashboard.
+You should see the Clinicamente dashboard.
 
 ## Available Scripts
 

@@ -1,4 +1,4 @@
-# Psychology Clinic Management System
+# Clinicamente
 
 A complete full-stack application for managing a psychology clinic, featuring a modern React frontend and a Node.js backend with MongoDB.
 

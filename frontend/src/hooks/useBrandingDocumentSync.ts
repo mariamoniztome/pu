@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { loadOrgBrandingSnapshot } from '../lib/orgBranding';
 import { fileUrl } from '../lib/fileUrl';
 
-const DEFAULT_TITLE = 'Psychology Clinic Management System';
+const DEFAULT_TITLE = 'Clinicamente';
 
 /**
  * Keeps the browser tab title and favicon in sync with the org's branding —

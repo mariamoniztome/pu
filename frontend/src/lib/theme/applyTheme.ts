@@ -108,6 +108,16 @@ export function applyCachedThemeSync() {
   }
 }
 
+/**
+ * Visually resets to the stylesheet default palette without touching the
+ * cached org theme in localStorage — for surfaces that must never show a
+ * previously-logged-in org's colors (e.g. the public landing page), while
+ * still letting the authenticated app's FOUC-prevention cache survive.
+ */
+export function resetToDefaultTheme() {
+  clearVars();
+}
+
 /** Read a var's current computed value as a CSS color string (for JS-rendered charts). */
 export function themeColor(varName: string, alpha?: number): string {
   const triplet = getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
