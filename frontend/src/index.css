@@ -59,7 +59,13 @@ html {
 }
 
 .auth-gradient-bg {
-  background: linear-gradient(-45deg, #faf8ff, #f4ffe4, #f3f0ff, #e5ffc7);
+  background: linear-gradient(
+    -45deg,
+    hsl(var(--accent-50)),
+    hsl(var(--brand-50)),
+    hsl(var(--accent-100)),
+    hsl(var(--brand-100))
+  );
   background-size: 400% 400%;
   animation: auth-gradient-shift 18s ease infinite;
 }
@@ -80,6 +86,31 @@ html {
 
 @layer base {
   :root {
+        /* Brand scales (runtime-themeable). Values are H S% L% triplets so
+           Tailwind opacity modifiers (e.g. shadow-lilac-200/30) keep working.
+           Defaults below reproduce the original hardcoded green/lilac palette
+           exactly; ThemeContext overwrites them per-organization at runtime. */
+        --brand-50: 84 100% 94.7%;
+        --brand-100: 88 100% 89%;
+        --brand-200: 87 100% 79.2%;
+        --brand-300: 86 100% 67.3%;
+        --brand-400: 87 92.2% 60%;
+        --brand-500: 88 76.4% 49.8%;
+        --brand-600: 89 81.6% 38.4%;
+        --brand-700: 90 74.2% 30.4%;
+        --brand-800: 91 65.6% 25.1%;
+        --brand-900: 93 59.3% 22.2%;
+        --accent-50: 257 100% 98.6%;
+        --accent-100: 252 100% 97.1%;
+        --accent-200: 253 100% 94.5%;
+        --accent-300: 253 100% 90.2%;
+        --accent-400: 254 100% 83.7%;
+        --accent-500: 255 100% 77.3%;
+        --accent-600: 254 100% 70.4%;
+        --accent-700: 255 80.4% 60%;
+        --accent-800: 255 53.4% 50.4%;
+        --accent-900: 255 50.5% 41.2%;
+
         --background: 0 0% 100%;
         --foreground: 0 0% 3.9%;
         --card: 0 0% 100%;

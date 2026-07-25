@@ -4,6 +4,7 @@ import { Euro, TrendingUp, TrendingDown, Calendar } from 'lucide-react';
 import { paymentsApi } from '../../api';
 import { Payment } from '../../types/payment';
 import { useTranslation } from '../../hooks/useTranslation';
+import { themeColor } from '../../lib/theme/applyTheme';
 
 interface ChartData {
   label: string;
@@ -264,8 +265,8 @@ export function PaymentCharts() {
                 />
                 <defs>
                   <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#b8ff58" />
-                    <stop offset="100%" stopColor="#d8cdff" />
+                    <stop offset="0%" stopColor={themeColor('--brand-300')} />
+                    <stop offset="100%" stopColor={themeColor('--accent-300')} />
                   </linearGradient>
                 </defs>
               </svg>

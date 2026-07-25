@@ -6,16 +6,16 @@ export default {
   	extend: {
   		colors: {
   			primary: {
-  				'50': '#f4ffe4',
-  				'100': '#e5ffc7',
-  				'200': '#d0ff95',
-  				'300': '#b8ff58',
-  				'400': '#a3f73b',
-  				'500': '#84e01e',
-  				'600': '#65b212',
-  				'700': '#4d8714',
-  				'800': '#3f6a16',
-  				'900': '#355a17',
+  				'50': 'hsl(var(--brand-50) / <alpha-value>)',
+  				'100': 'hsl(var(--brand-100) / <alpha-value>)',
+  				'200': 'hsl(var(--brand-200) / <alpha-value>)',
+  				'300': 'hsl(var(--brand-300) / <alpha-value>)',
+  				'400': 'hsl(var(--brand-400) / <alpha-value>)',
+  				'500': 'hsl(var(--brand-500) / <alpha-value>)',
+  				'600': 'hsl(var(--brand-600) / <alpha-value>)',
+  				'700': 'hsl(var(--brand-700) / <alpha-value>)',
+  				'800': 'hsl(var(--brand-800) / <alpha-value>)',
+  				'900': 'hsl(var(--brand-900) / <alpha-value>)',
   				DEFAULT: 'hsl(var(--primary))',
   				foreground: 'hsl(var(--primary-foreground))'
   			},
@@ -34,16 +34,16 @@ export default {
   				foreground: 'hsl(var(--secondary-foreground))'
   			},
   			lilac: {
-  				'50': '#faf8ff',
-  				'100': '#f3f0ff',
-  				'200': '#e9e3ff',
-  				'300': '#d8cdff',
-  				'400': '#c0acff',
-  				'500': '#a88bff',
-  				'600': '#8b68ff',
-  				'700': '#7047eb',
-  				'800': '#5e3dc4',
-  				'900': '#4e349e'
+  				'50': 'hsl(var(--accent-50) / <alpha-value>)',
+  				'100': 'hsl(var(--accent-100) / <alpha-value>)',
+  				'200': 'hsl(var(--accent-200) / <alpha-value>)',
+  				'300': 'hsl(var(--accent-300) / <alpha-value>)',
+  				'400': 'hsl(var(--accent-400) / <alpha-value>)',
+  				'500': 'hsl(var(--accent-500) / <alpha-value>)',
+  				'600': 'hsl(var(--accent-600) / <alpha-value>)',
+  				'700': 'hsl(var(--accent-700) / <alpha-value>)',
+  				'800': 'hsl(var(--accent-800) / <alpha-value>)',
+  				'900': 'hsl(var(--accent-900) / <alpha-value>)'
   			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',

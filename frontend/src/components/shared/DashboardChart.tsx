@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { ResponsiveBar } from '@nivo/bar';
 import { Appointment } from '../../types/appointment';
 import { useTranslation } from '../../hooks/useTranslation';
+import { themeColor } from '../../lib/theme/applyTheme';
 
 interface DashboardChartProps {
   appointments: Appointment[];
@@ -72,7 +73,7 @@ export function DashboardChart({ appointments }: DashboardChartProps) {
         indexBy="type"
         margin={{ top: 20, right: 30, bottom: 20, left: 30 }}
         padding={0.3}
-        colors={['#6366f1', '#8b5cf6']}
+        colors={[themeColor('--brand-500'), themeColor('--accent-500')]}
         borderColor={{ from: 'color', modifiers: [['darker', 1.6]] }}
         axisTop={null}
         axisRight={null}

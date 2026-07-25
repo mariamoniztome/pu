@@ -112,7 +112,7 @@ export function BrandingTab() {
 
   return (
     <div className="space-y-6">
-      <p className="text-sm text-gray-500">{t('settings.branding.effectNote')}</p>
+      {/* <p className="text-sm text-gray-500">{t('settings.branding.effectNote')}</p> */}
 
       <div className="space-y-2 max-w-md">
         <Label htmlFor="clinicName">{t('settings.branding.clinicName')}</Label>
