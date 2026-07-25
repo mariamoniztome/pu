@@ -107,7 +107,9 @@
     ],
     "appointmentStatsChartLabel": "Gráfico de estatísticas de consultas",
     "failedToLoadData": "Falha ao carregar dados",
-    "percentWeekChange": "{{percentage}}% semana"
+    "percentWeekChange": "{{percentage}}% semana",
+    "appointmentsCount_one": "{{count}} marcação",
+    "appointmentsCount_other": "{{count}} marcações"
   },
   "patients": {
     "title": "Pacientes",
@@ -630,7 +632,59 @@
     "manageOrganization": "✓ Gerir Organização",
     "manageDoctors": "✓ Gerir Médicos",
     "viewAllPatients": "✓ Ver Todos os Pacientes",
-    "manageBilling": "✓ Gerir Faturação"
+    "manageBilling": "✓ Gerir Faturação",
+    "address": "Morada",
+    "tabs": {
+      "profile": "Perfil",
+      "team": "Equipa",
+      "branding": "Marca",
+      "organization": "Organização",
+      "subscription": "Subscrição",
+      "access": "Acesso"
+    },
+    "profile": {
+      "saved": "Perfil atualizado",
+      "saveFailed": "Falha ao atualizar perfil",
+      "avatarSaved": "Foto atualizada",
+      "avatarSaveFailed": "Falha ao atualizar foto",
+      "changePhoto": "Mudar foto",
+      "changePassword": "Mudar Palavra-passe",
+      "currentPassword": "Palavra-passe Atual",
+      "newPassword": "Nova Palavra-passe",
+      "passwordChanged": "Palavra-passe atualizada",
+      "passwordChangeFailed": "Falha ao atualizar palavra-passe",
+      "passwordTooShort": "A nova palavra-passe deve ter pelo menos 8 caracteres"
+    },
+    "branding": {
+      "effectNote": "As cores vão aplicar-se em toda a app quando o suporte de temas estiver pronto — por agora ficam guardadas.",
+      "clinicName": "Nome da Clínica",
+      "primaryColor": "Cor Primária",
+      "accentColor": "Cor de Destaque",
+      "logoMark": "Logo (menu recolhido)",
+      "logoFull": "Logo (menu expandido)",
+      "uploadLogo": "Carregar",
+      "noLogo": "Sem logo",
+      "saved": "Marca atualizada",
+      "saveFailed": "Falha ao atualizar marca",
+      "logoSaved": "Logo atualizado",
+      "logoSaveFailed": "Falha ao atualizar logo"
+    },
+    "team": {
+      "permissions": "Permissões",
+      "permissionsFor": "Permissões de {{name}}",
+      "permissionsSaved": "Permissões atualizadas",
+      "permissionsSaveFailed": "Falha ao atualizar permissões",
+      "inheritedFromRole": "Herdado do papel {{role}}",
+      "permissionLabels": {
+        "canManageOrganization": "Gerir organização",
+        "canManageDoctors": "Gerir médicos",
+        "canViewAllPatients": "Ver todos os pacientes",
+        "canManageBilling": "Gerir faturação",
+        "canViewAllCalendars": "Ver calendários de colegas",
+        "canManageBranding": "Gerir marca",
+        "canManageTeamProfiles": "Gerir perfis da equipa"
+      }
+    }
   },
   "quickActions": {
     "title": "Ações Rápidas",

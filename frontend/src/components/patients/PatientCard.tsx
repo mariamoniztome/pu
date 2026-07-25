@@ -28,7 +28,7 @@ const genderColors = {
         <CardTitle className="flex items-center justify-between">
           <span className="text-lg text-slate-800">{`${patient.firstName} ${patient.lastName}`}</span>
           <span className={`text-xs capitalize font-medium px-3 py-1.5 rounded-xl ${genderColors[patient.gender as keyof typeof genderColors]}`}>
-            {patient.gender}
+            {t(`common.${patient.gender}`)}
           </span>
         </CardTitle>
         <p className="text-sm text-slate-600 font-medium">{t('patients.ageYears', { age })}</p>

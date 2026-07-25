@@ -19,7 +19,8 @@ import { Patient } from "../../types/patient";
 import { useTranslation } from "../../hooks/useTranslation";
 
 export function DashboardPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const culture = i18n.language?.startsWith("pt") ? "pt-PT" : "en-US";
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -104,7 +105,7 @@ export function DashboardPage() {
 
   const { daysInMonth, startingDayOfWeek } = getDaysInMonth();
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
-  const monthName = currentMonth.toLocaleDateString("en-US", {
+  const monthName = currentMonth.toLocaleDateString(culture, {
     month: "long",
     year: "numeric",
   });
@@ -130,7 +131,7 @@ export function DashboardPage() {
           : apt.patient
           ? `${apt.patient.firstName} ${apt.patient.lastName}`
           : t("dashboard.unknownPatient"),
-      time: new Date(apt.dateTime).toLocaleTimeString("en-US", {
+      time: new Date(apt.dateTime).toLocaleTimeString(culture, {
         hour: "2-digit",
         minute: "2-digit",
       }),
@@ -168,36 +169,17 @@ export function DashboardPage() {
 
     appointments.forEach((apt) => {
       const aptDate = new Date(apt.dateTime);
-      const aptDay = aptDate.getDate();
 
-      // Check if appointment matches the calendar filter
-      let shouldInclude = false;
-
-      // switch (calendarFilter) {
-      //   case 'weekly':
-      //     // Show appointments from this week
-      //     const weekStart = new Date(today);
-      //     weekStart.setDate(today.getDate() - today.getDay());
-      //     const weekEnd = new Date(weekStart);
-      //     weekEnd.setDate(weekStart.getDate() + 6);
-
-      //     shouldInclude = aptDate >= weekStart && aptDate <= weekEnd;
-      //     break;
-
-      //   case 'monthly':
-      //     // Show appointments from this month
-      //     shouldInclude = aptYear === year && aptMonth === month;
-      //     break;
-
-      //   case 'all-time':
-      //     // Show all appointments
-      //     shouldInclude = true;
-      //     break;
-      // }
-
-      if (shouldInclude) {
-        daysWithAppointments[aptDay] = (daysWithAppointments[aptDay] || 0) + 1;
+      // Only count appointments within the month currently shown
+      if (
+        aptDate.getMonth() !== currentMonth.getMonth() ||
+        aptDate.getFullYear() !== currentMonth.getFullYear()
+      ) {
+        return;
       }
+
+      const aptDay = aptDate.getDate();
+      daysWithAppointments[aptDay] = (daysWithAppointments[aptDay] || 0) + 1;
     });
 
     return daysWithAppointments;
@@ -268,13 +250,13 @@ export function DashboardPage() {
                   <Clock className="h-7 w-7 text-gray-800" />
                 </div>
                 <div className="text-6xl font-bold text-gray-900 mb-1">
-                  {currentTime.toLocaleTimeString("en-US", {
+                  {currentTime.toLocaleTimeString(culture, {
                     hour: "2-digit",
                     minute: "2-digit",
                   })}
                 </div>
                 <div className="text-sm text-gray-700">
-                  {currentTime.toLocaleDateString("en-US", {
+                  {currentTime.toLocaleDateString(culture, {
                     month: "short",
                     day: "numeric",
                   })}
@@ -453,23 +435,29 @@ export function DashboardPage() {
                 const isToday = day === new Date().getDate();
 
                 return (
-                  <button
-                    key={day}
-                    className={`aspect-square flex flex-col items-center justify-center text-sm rounded-lg hover:bg-gray-100 transition-all duration-300 relative ${
-                      isToday
-                        ? "bg-gray-900 text-white hover:bg-gray-800"
-                        : "text-gray-700"
-                    }`}
-                  >
-                    {day}
+                  <div key={day} className="relative group">
+                    <button
+                      className={`w-full aspect-square flex flex-col items-center justify-center text-sm rounded-lg hover:bg-gray-100 transition-all duration-300 relative ${
+                        isToday
+                          ? "bg-gray-900 text-white hover:bg-gray-800"
+                          : "text-gray-700"
+                      }`}
+                    >
+                      {day}
+                      {hasAppointments > 0 && (
+                        <span
+                          className={`absolute bottom-1 w-1.5 h-1.5 rounded-full ${
+                            isToday ? "bg-white" : "bg-primary-500"
+                          }`}
+                        />
+                      )}
+                    </button>
                     {hasAppointments > 0 && (
-                      <span
-                        className={`absolute bottom-1 w-1.5 h-1.5 rounded-full ${
-                          isToday ? "bg-white" : "bg-primary-500"
-                        }`}
-                      />
+                      <div className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1 whitespace-nowrap rounded-md bg-gray-900 px-2 py-1 text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-10">
+                        {t("dashboard.appointmentsCount", { count: hasAppointments })}
+                      </div>
                     )}
-                  </button>
+                  </div>
                 );
               })}
             </div>

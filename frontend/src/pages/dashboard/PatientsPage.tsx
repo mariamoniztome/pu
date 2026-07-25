@@ -104,7 +104,7 @@ export function PatientsPage() {
       headerName: t('patients.columns.gender'),
       filter: true,
       sortable: true,
-      valueFormatter: (params) => params.value.charAt(0).toUpperCase() + params.value.slice(1),
+      valueFormatter: (params) => t(`common.${params.value}`),
     },
     {
       field: 'email',
@@ -226,7 +226,7 @@ export function PatientsPage() {
                 const csvData = patients.map(p => ({
                   [t('patients.columns.name')]: `${p.firstName} ${p.lastName}`,
                   [t('patients.columns.dateOfBirth')]: new Date(p.dateOfBirth).toLocaleDateString(),
-                  [t('patients.columns.gender')]: p.gender,
+                  [t('patients.columns.gender')]: t(`common.${p.gender}`),
                   [t('patients.columns.email')]: p.email || '',
                   [t('patients.columns.phone')]: p.phone,
                 }));

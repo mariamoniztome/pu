@@ -10,40 +10,28 @@ import {
   Pin,
   PinOff,
   LogOut,
-  UserCircle,
 } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useTranslation } from '../hooks/useTranslation';
 import { useAuth } from '../contexts/AuthContext';
-import { usePermissions } from '../hooks/usePermissions';
 import { PageHeaderSlotContext } from '../contexts/PageHeaderContext';
 
 const SIDEBAR_PINNED_KEY = 'sidebar-pinned';
 
-const getNavItems = (t: any, canManageDoctors: boolean) => {
-  const items = [
-    { to: '/', label: t('navigation.dashboard'), icon: Home },
-    { to: '/patients', label: t('navigation.patients'), icon: Users },
-    { to: '/consultations', label: t('navigation.consultations'), icon: CalendarClock },
-    { to: '/reports', label: t('navigation.reports'), icon: FileBarChart },
-    { to: '/payments', label: t('navigation.payments'), icon: Euro },
-  ];
-
-  // Add doctors page if user can manage doctors
-  if (canManageDoctors) {
-    items.push({ to: '/doctors', label: t('navigation.doctors'), icon: UserCircle });
-  }
-
-  return items;
-};
+const getNavItems = (t: any) => [
+  { to: '/', label: t('navigation.dashboard'), icon: Home },
+  { to: '/patients', label: t('navigation.patients'), icon: Users },
+  { to: '/consultations', label: t('navigation.consultations'), icon: CalendarClock },
+  { to: '/reports', label: t('navigation.reports'), icon: FileBarChart },
+  { to: '/payments', label: t('navigation.payments'), icon: Euro },
+];
 
 export function Layout() {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const { doctor, organization, logout } = useAuth();
-  const { can } = usePermissions();
   const [pinned, setPinned] = useState(() => localStorage.getItem(SIDEBAR_PINNED_KEY) === 'true');
   const [open, setOpen] = useState(pinned);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -69,9 +57,7 @@ export function Layout() {
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, [open, pinned]);
 
-  const canManageDoctors = can('canManageDoctors');
-
-  const navItems = getNavItems(t, canManageDoctors);
+  const navItems = getNavItems(t);
 
   const handleLogout = () => {
     logout();
@@ -104,12 +90,6 @@ export function Layout() {
     }
     if (path.startsWith('/payments')) {
       return { sectionTitle: t('payments.title'), sectionSubtitle: t('payments.subtitle') };
-    }
-    if (path.startsWith('/doctors')) {
-      return {
-        sectionTitle: t('doctors.title'),
-        sectionSubtitle: t('doctors.subtitle', { organization: organization?.name }),
-      };
     }
     if (path.startsWith('/settings')) {
       return { sectionTitle: t('settings.title'), sectionSubtitle: undefined };
@@ -264,17 +244,6 @@ export function Layout() {
                           <Settings className="h-4 w-4" />
                           {t('navigation.settings')}
                         </Link>
-
-                        {canManageDoctors && (
-                          <Link
-                            to="/doctors"
-                            className="flex items-center gap-2 px-4 py-2 text-sm text-gray-700 menu-item"
-                            onClick={() => setShowProfileMenu(false)}
-                          >
-                            <UserCircle className="h-4 w-4" />
-                            {t('navigation.manageDoctors')}
-                          </Link>
-                        )}
 
                         <button
                           onClick={handleLogout}

@@ -107,7 +107,9 @@
     ],
     "appointmentStatsChartLabel": "Appointment statistics chart",
     "failedToLoadData": "Failed to load data",
-    "percentWeekChange": "{{percentage}}% week"
+    "percentWeekChange": "{{percentage}}% week",
+    "appointmentsCount_one": "{{count}} appointment",
+    "appointmentsCount_other": "{{count}} appointments"
   },
   "patients": {
     "title": "Patients",
@@ -630,7 +632,59 @@
     "manageOrganization": "✓ Manage Organization",
     "manageDoctors": "✓ Manage Doctors",
     "viewAllPatients": "✓ View All Patients",
-    "manageBilling": "✓ Manage Billing"
+    "manageBilling": "✓ Manage Billing",
+    "address": "Address",
+    "tabs": {
+      "profile": "Profile",
+      "team": "Team",
+      "branding": "Branding",
+      "organization": "Organization",
+      "subscription": "Subscription",
+      "access": "Access"
+    },
+    "profile": {
+      "saved": "Profile updated",
+      "saveFailed": "Failed to update profile",
+      "avatarSaved": "Photo updated",
+      "avatarSaveFailed": "Failed to update photo",
+      "changePhoto": "Change photo",
+      "changePassword": "Change Password",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "passwordChanged": "Password updated",
+      "passwordChangeFailed": "Failed to update password",
+      "passwordTooShort": "New password must be at least 8 characters"
+    },
+    "branding": {
+      "effectNote": "Colors will take effect across the app once theming support ships — saved here in the meantime.",
+      "clinicName": "Clinic Name",
+      "primaryColor": "Primary Color",
+      "accentColor": "Accent Color",
+      "logoMark": "Logo (collapsed sidebar)",
+      "logoFull": "Logo (expanded sidebar)",
+      "uploadLogo": "Upload",
+      "noLogo": "No logo",
+      "saved": "Branding updated",
+      "saveFailed": "Failed to update branding",
+      "logoSaved": "Logo updated",
+      "logoSaveFailed": "Failed to update logo"
+    },
+    "team": {
+      "permissions": "Permissions",
+      "permissionsFor": "Permissions for {{name}}",
+      "permissionsSaved": "Permissions updated",
+      "permissionsSaveFailed": "Failed to update permissions",
+      "inheritedFromRole": "Inherited from the {{role}} role",
+      "permissionLabels": {
+        "canManageOrganization": "Manage organization",
+        "canManageDoctors": "Manage doctors",
+        "canViewAllPatients": "View all patients",
+        "canManageBilling": "Manage billing",
+        "canViewAllCalendars": "View colleagues' calendars",
+        "canManageBranding": "Manage branding",
+        "canManageTeamProfiles": "Manage team profiles"
+      }
+    }
   },
   "quickActions": {
     "title": "Quick Actions",

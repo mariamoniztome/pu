@@ -69,6 +69,12 @@ export const authAPI = {
     const response = await axios.delete(`/auth/doctors/${doctorId}`);
     return response.data;
   },
+
+  // Reactivate a previously deactivated doctor
+  reactivateDoctor: async (doctorId: string): Promise<{ doctor: Doctor }> => {
+    const response = await axios.put(`/auth/doctors/${doctorId}`, { isActive: true });
+    return response.data;
+  },
 };
 
 // Helper functions for token management

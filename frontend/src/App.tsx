@@ -10,14 +10,13 @@ import { PatientsPage } from './pages/dashboard/PatientsPage';
 import { CalendarPage } from './pages/dashboard/CalendarPage';
 import { ReportsPage } from './pages/dashboard/ReportsPage';
 import { PaymentsPage } from './pages/dashboard/PaymentsPage';
-import { DoctorsPage } from './pages/dashboard/DoctorsPage';
 import { SettingsPage } from './pages/dashboard/SettingsPage';
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Toaster position="top-right" richColors closeButton />
+        <Toaster position="top-center" richColors />
         <Routes>
           {/* Public routes */}
           <Route path="/login" element={<LoginPage />} />
@@ -39,7 +38,7 @@ function App() {
             <Route path="consultations" element={<CalendarPage />} />
             <Route path="reports" element={<ReportsPage />} />
             <Route path="payments" element={<PaymentsPage />} />
-            <Route path="doctors" element={<DoctorsPage />} />
+            <Route path="doctors" element={<Navigate to="/settings" replace />} />
             <Route path="settings" element={<SettingsPage />} />
           </Route>
 

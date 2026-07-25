@@ -163,8 +163,8 @@ export function PaymentCharts() {
           </div>
           <div className="flex items-center gap-2 text-sm">
             <span className="text-gray-600">{t('payments.charts.totalValue')} </span>
-            <span className="text-gray-900 font-semibold">
-              ${payments.filter(p => p.status === 'unpaid').reduce((sum, p) => sum + p.amount, 0).toLocaleString()}
+            <span className="">
+              EUR{payments.filter(p => p.status === 'unpaid').reduce((sum, p) => sum + p.amount, 0).toLocaleString()}
             </span>
           </div>
         </Card>
