@@ -9,6 +9,7 @@ import { useTranslation } from '../../hooks/useTranslation';
 import { OrgLogo } from '../../components/branding/OrgLogo';
 import { loadOrgBrandingSnapshot } from '../../lib/orgBranding';
 import { authAPI } from '../../api/auth';
+import { PasswordStrengthMeter } from '../../components/auth/PasswordStrengthMeter';
 
 export const ResetPasswordPage: React.FC = () => {
   const { t } = useTranslation();
@@ -80,6 +81,7 @@ export const ResetPasswordPage: React.FC = () => {
               placeholder="••••••••"
               className="mt-1"
             />
+            <PasswordStrengthMeter password={formData.password} />
           </div>
 
           <div>

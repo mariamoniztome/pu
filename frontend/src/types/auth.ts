@@ -54,6 +54,7 @@ export interface Doctor {
   };
   effectivePermissions?: Doctor['permissions'];
   isActive: boolean;
+  invitePending?: boolean;
   lastLogin?: string;
   createdAt: string;
   updatedAt: string;
@@ -89,10 +90,20 @@ export interface InviteDoctorData {
   firstName: string;
   lastName: string;
   email: string;
-  password: string;
   phone?: string;
   specialization?: string;
   licenseNumber?: string;
   role?: 'admin' | 'member';
   permissions?: Partial<Doctor['permissions']>;
+}
+
+export interface InviteInfo {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  specialization?: string;
+  licenseNumber?: string;
+  role: 'owner' | 'admin' | 'member';
+  organizationName?: string;
 }

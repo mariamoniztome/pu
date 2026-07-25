@@ -7,7 +7,15 @@ import { Card } from '../../components/ui/card';
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
 import { Switch } from '../../components/ui/switch';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '../../components/ui/select';
 import { cn } from '../../lib/utils';
+import { CURRENCIES, normalizeCurrency } from '../../lib/currency';
 import { useTranslation } from '../../hooks/useTranslation';
 import { toast } from 'sonner';
 import { TeamTab } from '../../components/settings/TeamTab';
@@ -23,7 +31,7 @@ function OrganizationTab() {
   const [phone, setPhone] = useState(organization?.phone || '');
   const [address, setAddress] = useState(organization?.address || '');
   const [timezone, setTimezone] = useState(organization?.settings.timezone || '');
-  const [currency, setCurrency] = useState(organization?.settings.currency || '');
+  const [currency, setCurrency] = useState(normalizeCurrency(organization?.settings.currency));
   const [allowDataSharing, setAllowDataSharing] = useState(organization?.settings.allowDataSharing || false);
   const [saving, setSaving] = useState(false);
 
@@ -61,7 +69,18 @@ function OrganizationTab() {
         </div>
         <div className="space-y-2">
           <Label htmlFor="currency">{t('settings.currency')}</Label>
-          <Input id="currency" value={currency} onChange={(e) => setCurrency(e.target.value)} />
+          <Select value={currency} onValueChange={(value) => setCurrency(normalizeCurrency(value))}>
+            <SelectTrigger id="currency">
+              <SelectValue placeholder={t('payments.form.currencyPlaceholder')} />
+            </SelectTrigger>
+            <SelectContent>
+              {CURRENCIES.map(({ code, symbol, label }) => (
+                <SelectItem key={code} value={code}>
+                  {code} ({symbol}) — {label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         </div>
       </div>
       <div className="flex items-center justify-between py-2">

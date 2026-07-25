@@ -16,6 +16,7 @@ import { useTranslation } from "../../hooks/useTranslation";
 import { exportReportToPdf } from "../../lib/exportReportPdf";
 import { PageHeaderAction } from "../../components/PageHeaderAction";
 import { ConfirmDialog } from "../../components/ui/confirm-dialog";
+import { fileUrl } from "../../lib/fileUrl";
 
 export function ReportsPage() {
   const { t, i18n } = useTranslation();
@@ -148,7 +149,7 @@ export function ReportsPage() {
                     {report.attachments.map((attachment, idx) => (
                       <a
                         key={idx}
-                        href={`http://localhost:5000/${attachment.path}`}
+                        href={fileUrl(attachment.path)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center text-sm text-lilac-600 hover:text-lilac-800 hover:underline"
@@ -290,7 +291,7 @@ export function ReportsPage() {
                             size="sm"
                           >
                             <a
-                              href={`http://localhost:5000/${attachment.path}`}
+                              href={fileUrl(attachment.path)}
                               target="_blank"
                               rel="noopener noreferrer"
                               className="flex items-center"
@@ -304,7 +305,7 @@ export function ReportsPage() {
                             size="sm"
                             onClick={() => {
                               const link = document.createElement('a');
-                              link.href = `http://localhost:5000/${attachment.path}`;
+                              link.href = fileUrl(attachment.path);
                               link.download = attachment.originalName;
                               document.body.appendChild(link);
                               link.click();

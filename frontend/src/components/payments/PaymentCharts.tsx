@@ -5,6 +5,8 @@ import { paymentsApi } from '../../api';
 import { Payment } from '../../types/payment';
 import { useTranslation } from '../../hooks/useTranslation';
 import { themeColor } from '../../lib/theme/applyTheme';
+import { useAuth } from '../../contexts/AuthContext';
+import { formatCurrency, normalizeCurrency } from '../../lib/currency';
 
 interface ChartData {
   label: string;
@@ -14,6 +16,8 @@ interface ChartData {
 
 export function PaymentCharts() {
   const { t } = useTranslation();
+  const { organization } = useAuth();
+  const orgCurrency = normalizeCurrency(organization?.settings.currency);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -115,7 +119,7 @@ export function PaymentCharts() {
             <div>
               <p className="text-sm text-gray-600 mb-1">{t('payments.charts.totalRevenue')}</p>
               <h3 className="text-2xl font-bold text-gray-900">
-                ${stats.totalRevenue.toLocaleString()}
+                {formatCurrency(stats.totalRevenue, orgCurrency)}
               </h3>
             </div>
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-200 to-primary-300 flex items-center justify-center">
@@ -165,7 +169,7 @@ export function PaymentCharts() {
           <div className="flex items-center gap-2 text-sm">
             <span className="text-gray-600">{t('payments.charts.totalValue')} </span>
             <span className="">
-              EUR{payments.filter(p => p.status === 'unpaid').reduce((sum, p) => sum + p.amount, 0).toLocaleString()}
+              {formatCurrency(payments.filter(p => p.status === 'unpaid').reduce((sum, p) => sum + p.amount, 0), orgCurrency)}
             </span>
           </div>
         </Card>
@@ -196,7 +200,7 @@ export function PaymentCharts() {
               <div className="flex items-center justify-between text-sm">
                 <span className="font-medium text-gray-700">{data.label}</span>
                 <span className="font-semibold text-gray-900">
-                  ${data.value.toLocaleString()}
+                  {formatCurrency(data.value, orgCurrency)}
                 </span>
               </div>
               <div className="relative h-10 bg-gradient-to-r from-gray-100 to-gray-50 rounded-full overflow-hidden">
@@ -223,7 +227,7 @@ export function PaymentCharts() {
                 <div key={item.method}>
                   <div className="flex items-center justify-between text-sm mb-1">
                     <span className="text-gray-700 capitalize">{item.method}</span>
-                    <span className="font-semibold text-gray-900">${item.amount.toLocaleString()}</span>
+                    <span className="font-semibold text-gray-900">{formatCurrency(item.amount, orgCurrency)}</span>
                   </div>
                   <div className="relative h-2 bg-gray-100 rounded-full overflow-hidden">
                     <div

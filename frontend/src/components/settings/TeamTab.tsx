@@ -149,12 +149,12 @@ export function TeamTab() {
     firstName: '',
     lastName: '',
     email: '',
-    password: '',
     phone: '',
     specialization: '',
     licenseNumber: '',
     role: 'member',
   });
+  const [isInviting, setIsInviting] = useState(false);
 
   useEffect(() => {
     fetchDoctors();
@@ -175,17 +175,35 @@ export function TeamTab() {
 
   const handleInvite = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsInviting(true);
     try {
-      await authAPI.inviteDoctor(inviteData);
-      toast.success(t('doctors.invitedSuccessfully'));
+      const response = await authAPI.inviteDoctor(inviteData);
+      if (response.emailSent) {
+        toast.success(t('doctors.inviteEmailSent', { email: inviteData.email }));
+      } else if (response.inviteUrl) {
+        // No SMTP configured — hand the link to the inviter to share manually
+        const inviteUrl = response.inviteUrl;
+        toast.success(t('doctors.invitedSuccessfully'), {
+          description: t('doctors.inviteLinkFallback'),
+          duration: 15000,
+          action: {
+            label: t('doctors.copyInviteLink'),
+            onClick: () => navigator.clipboard.writeText(inviteUrl),
+          },
+        });
+      } else {
+        toast.success(t('doctors.invitedSuccessfully'));
+      }
       setShowInviteDialog(false);
       setInviteData({
-        firstName: '', lastName: '', email: '', password: '',
+        firstName: '', lastName: '', email: '',
         phone: '', specialization: '', licenseNumber: '', role: 'member',
       });
       fetchDoctors();
     } catch (error: any) {
       toast.error(error.response?.data?.message || t('doctors.failedToInvite'));
+    } finally {
+      setIsInviting(false);
     }
   };
 
@@ -262,6 +280,11 @@ export function TeamTab() {
                       {t('doctors.inactive')}
                     </span>
                   )}
+                  {doc.invitePending && (
+                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                      {t('doctors.invitePending')}
+                    </span>
+                  )}
                 </div>
 
                 <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
@@ -313,48 +336,46 @@ export function TeamTab() {
       </div>
 
       <Dialog open={showInviteDialog} onOpenChange={setShowInviteDialog}>
-        <DialogContent>
+        <DialogContent className="max-w-[95vw]">
           <DialogHeader>
             <DialogTitle>{t('doctors.inviteNewDoctor')}</DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleInvite} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
+          <form onSubmit={handleInvite} className="space-y-5">
+            <p className="rounded-2xl bg-lilac-50/60 border border-lilac-100 px-4 py-3 text-sm text-gray-600">
+              {t('doctors.inviteEmailNote')}
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-5">
+              <div className="space-y-1.5">
                 <Label htmlFor="firstName">{t('doctors.firstName')} <span className="text-red-500">*</span></Label>
                 <Input id="firstName" required value={inviteData.firstName}
                   onChange={(e) => setInviteData({ ...inviteData, firstName: e.target.value })} />
               </div>
-              <div>
+              <div className="space-y-1.5">
                 <Label htmlFor="lastName">{t('doctors.lastName')} <span className="text-red-500">*</span></Label>
                 <Input id="lastName" required value={inviteData.lastName}
                   onChange={(e) => setInviteData({ ...inviteData, lastName: e.target.value })} />
               </div>
-              <div>
+              <div className="space-y-1.5">
                 <Label htmlFor="email">{t('doctors.email')} <span className="text-red-500">*</span></Label>
                 <Input id="email" type="email" required value={inviteData.email}
                   onChange={(e) => setInviteData({ ...inviteData, email: e.target.value })} />
               </div>
-              <div>
-                <Label htmlFor="password">{t('doctors.password')} <span className="text-red-500">*</span></Label>
-                <Input id="password" type="password" required value={inviteData.password}
-                  onChange={(e) => setInviteData({ ...inviteData, password: e.target.value })} />
-              </div>
-              <div>
+              <div className="space-y-1.5">
                 <Label htmlFor="phone">{t('doctors.phoneLabel')}</Label>
                 <Input id="phone" value={inviteData.phone}
                   onChange={(e) => setInviteData({ ...inviteData, phone: e.target.value })} />
               </div>
-              <div>
+              <div className="space-y-1.5">
                 <Label htmlFor="specialization">{t('doctors.specializationLabel')}</Label>
                 <Input id="specialization" value={inviteData.specialization}
                   onChange={(e) => setInviteData({ ...inviteData, specialization: e.target.value })} />
               </div>
-              <div>
+              <div className="space-y-1.5">
                 <Label htmlFor="licenseNumber">{t('doctors.licenseNumber')}</Label>
                 <Input id="licenseNumber" value={inviteData.licenseNumber}
                   onChange={(e) => setInviteData({ ...inviteData, licenseNumber: e.target.value })} />
               </div>
-              <div>
+              <div className="space-y-1.5">
                 <Label>{t('doctors.role')}</Label>
                 <Select value={inviteData.role} onValueChange={(value) => setInviteData({ ...inviteData, role: value as 'admin' | 'member' })}>
                   <SelectTrigger>
@@ -367,11 +388,13 @@ export function TeamTab() {
                 </Select>
               </div>
             </div>
-            <div className="flex justify-end gap-2 mt-6">
+            <div className="flex justify-end gap-2 pt-2">
               <Button type="button" variant="outline" onClick={() => setShowInviteDialog(false)}>
                 {t('common.cancel')}
               </Button>
-              <Button type="submit">{t('doctors.inviteDoctor')}</Button>
+              <Button type="submit" disabled={isInviting}>
+                {isInviting ? t('doctors.sendingInvite') : t('doctors.sendInvite')}
+              </Button>
             </div>
           </form>
         </DialogContent>

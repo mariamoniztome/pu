@@ -588,6 +588,31 @@
       "passwordTooShort": "Password must be at least 8 characters",
       "registrationSuccess": "Registration successful! Welcome to your clinic.",
       "registrationFailed": "Registration failed. Please try again."
+    },
+    "acceptInvite": {
+      "title": "Accept Invitation",
+      "subtitle": "Review your details and choose a password to get started",
+      "subtitleWithOrg": "You've been invited to join {{org}}",
+      "roleLabel": "Role",
+      "choosePassword": "Choose a Password",
+      "confirmPassword": "Confirm Password",
+      "acceptButton": "Accept & Create Account",
+      "accepting": "Creating account...",
+      "successToast": "Welcome aboard!",
+      "failedToast": "Failed to accept the invitation",
+      "invalidTitle": "Invitation not found",
+      "invalidSubtitle": "This invitation link is invalid or has expired. Ask your organization to send a new one.",
+      "backToLogin": "Back to sign in",
+      "passwordsDoNotMatch": "Passwords do not match",
+      "passwordTooShort": "Password must be at least 8 characters"
+    },
+    "passwordStrength": {
+      "veryWeak": "Very weak",
+      "weak": "Weak",
+      "fair": "Fair",
+      "good": "Good",
+      "strong": "Strong",
+      "tooWeak": "Password is too weak — try a longer, less common one"
     }
   },
   "doctors": {
@@ -626,7 +651,14 @@
     "selectRole": "Select role",
     "member": "Member",
     "admin": "Admin",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "inviteEmailSent": "Invitation email sent to {{email}}",
+    "inviteEmailNote": "The invited doctor will receive an email with a link to review their details and choose their own password.",
+    "inviteLinkFallback": "Email is not configured — copy the invite link and share it with them directly.",
+    "copyInviteLink": "Copy link",
+    "invitePending": "Invite pending",
+    "sendInvite": "Send Invitation",
+    "sendingInvite": "Sending..."
   },
   "settings": {
     "title": "Settings",

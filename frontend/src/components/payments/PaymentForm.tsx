@@ -16,6 +16,8 @@ import { paymentsApi, patientsApi } from "../../api";
 import { Payment } from "../../types/payment";
 import { Patient } from "../../types/patient";
 import { useTranslation } from "../../hooks/useTranslation";
+import { useAuth } from "../../contexts/AuthContext";
+import { CURRENCIES, normalizeCurrency } from "../../lib/currency";
 
 interface PaymentFormProps {
   payment?: Payment | null;
@@ -24,6 +26,8 @@ interface PaymentFormProps {
 
 export function PaymentForm({ payment, onClose }: PaymentFormProps) {
   const { t } = useTranslation();
+  const { organization } = useAuth();
+  const orgCurrency = normalizeCurrency(organization?.settings.currency);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [file, setFile] = useState<File | null>(null);
 
@@ -39,7 +43,7 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
   }>({
     patient: undefined,
     amount: "",
-    currency: "EUR",
+    currency: orgCurrency,
     amountPaid: "",
     paymentDate: "",
     paymentMethod: undefined,
@@ -60,7 +64,7 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
             ? payment.patient
             : payment.patient?._id || "",
         amount: payment.amount.toString(),
-        currency: payment.currency,
+        currency: normalizeCurrency(payment.currency),
         amountPaid: payment.amountPaid.toString(),
         paymentDate: payment.paymentDate
           ? payment.paymentDate.split("T")[0]
@@ -219,10 +223,11 @@ export function PaymentForm({ payment, onClose }: PaymentFormProps) {
                   <SelectValue placeholder={t('payments.form.currencyPlaceholder')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="USD">USD</SelectItem>
-                  <SelectItem value="EUR">EUR</SelectItem>
-                  <SelectItem value="GBP">GBP</SelectItem>
-                  <SelectItem value="CAD">CAD</SelectItem>
+                  {CURRENCIES.map(({ code, symbol }) => (
+                    <SelectItem key={code} value={code}>
+                      {code} ({symbol})
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
