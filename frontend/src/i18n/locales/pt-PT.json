@@ -216,7 +216,9 @@
       "cancelled": "Cancelado",
       "noShow": "Ausente"
     },
-    "loadPatientsError": "Impossível carregar pacientes. Certifique-se de que o servidor backend está em execução."
+    "loadPatientsError": "Impossível carregar pacientes. Certifique-se de que o servidor backend está em execução.",
+    "isOnline": "Sessão online",
+    "isOnlineHelp": "Adiciona uma videochamada a esta consulta"
   },
   "consultations": {
     "title": "Consultas Médicas",
@@ -467,10 +469,10 @@
     "newAppointment": "Nova Consulta",
     "timeRange": "Intervalo horário",
     "myCalendar": "O meu calendário",
-    "viewingOthersCalendar": "A ver o calendário de {{name}} — só leitura",
+    "viewingOthersCalendar": "A ver o calendário de {{name}}",
     "appointmentDetailsSection": "Detalhes da Marcação",
     "sessionInfoSection": "Notas da Sessão",
-    "sessionInfoHint": "Opcional — adicione depois da sessão acontecer",
+    "sessionInfoHint": "Opcional, adicione depois da sessão acontecer",
     "agenda": "Agenda",
     "back": "Anterior",
     "next": "Seguinte",
@@ -492,7 +494,14 @@
     "appointmentDeleted": "Consulta eliminada com sucesso",
     "failedToSave": "Falha ao guardar consulta",
     "failedToDelete": "Falha ao eliminar consulta",
-    "confirmDelete": "Tem a certeza que deseja eliminar esta consulta?"
+    "confirmDelete": "Tem a certeza que deseja eliminar esta consulta?",
+    "videoCall": {
+      "startButton": "Iniciar videochamada",
+      "copyLink": "Copiar link",
+      "linkCopied": "Link copiado, envie ao paciente",
+      "title": "Videochamada",
+      "loadFailed": "Falha ao carregar a videochamada"
+    }
   },
   "forms": {
     "validation": {
@@ -602,7 +611,7 @@
       "continueButton": "Continuar",
       "back": "Voltar",
       "addYourLogo": "Adiciona o teu logótipo",
-      "addYourLogoHelp": "Opcional — podes sempre adicionar ou mudar isto depois nas Definições.",
+      "addYourLogoHelp": "Opcional, podes sempre adicionar ou mudar isto depois nas Definições.",
       "finish": "Concluir",
       "stepOrganization": "A tua organização"
     },
@@ -629,7 +638,7 @@
       "fair": "Razoável",
       "good": "Boa",
       "strong": "Forte",
-      "tooWeak": "A palavra-passe é demasiado fraca — experimente uma mais longa e menos comum"
+      "tooWeak": "A palavra-passe é demasiado fraca. Experimente uma mais longa e menos comum"
     }
   },
   "doctors": {
@@ -672,7 +681,7 @@
     "cancel": "Cancelar",
     "inviteEmailSent": "Email de convite enviado para {{email}}",
     "inviteEmailNote": "O médico convidado vai receber um email com um link para rever os seus dados e escolher a própria palavra-passe.",
-    "inviteLinkFallback": "O email não está configurado — copie o link de convite e partilhe-o diretamente.",
+    "inviteLinkFallback": "O email não está configurado, copie o link de convite e partilhe-o diretamente.",
     "copyInviteLink": "Copiar link",
     "invitePending": "Convite pendente",
     "sendInvite": "Enviar Convite",
@@ -736,7 +745,6 @@
       "avatarRemoved": "Foto removida"
     },
     "branding": {
-      "effectNote": "As cores vão aplicar-se em toda a app quando o suporte de temas estiver pronto — por agora ficam guardadas.",
       "clinicName": "Nome da Clínica",
       "primaryColor": "Cor Primária",
       "accentColor": "Cor de Destaque",
@@ -860,7 +868,7 @@
     "faq": {
       "trial": {
         "q": "O que acontece depois dos 14 dias de teste?",
-        "a": "Mantens acesso completo durante o teste. Depois, escolhe o plano que se adequa — os teus dados ficam exatamente como estavam, nada é apagado."
+        "a": "Mantens acesso completo durante o teste. Depois, escolhe o plano que se adequa, os teus dados ficam exatamente como estavam, nada é apagado."
       },
       "invite": {
         "q": "Posso convidar a minha equipa?",
@@ -885,12 +893,12 @@
       "message": "Mensagem",
       "send": "Enviar mensagem",
       "sending": "A enviar...",
-      "success": "Mensagem enviada — vamos responder em breve.",
+      "success": "Mensagem enviada, vamos responder em breve.",
       "error": "Não foi possível enviar a mensagem. Tenta novamente.",
       "responseTimeTitle": "Resposta rápida",
       "responseTimeBody": "Costumamos responder dentro de 1 dia útil.",
       "anyQuestionTitle": "Qualquer dúvida é bem-vinda",
-      "anyQuestionBody": "Preços, funcionalidades, migrar os teus dados — pergunta à vontade."
+      "anyQuestionBody": "Preços, funcionalidades, migrar os teus dados, pergunta à vontade."
     },
     "featuresTitle": "Tudo o que a tua prática precisa",
     "featuresSubtitle": "Um só lugar para pacientes, sessões, faturação e a tua equipa.",
@@ -917,7 +925,7 @@
       },
       "branding": {
         "title": "A tua própria marca",
-        "body": "O nome, cores e logótipo da tua clínica — em toda a app."
+        "body": "O nome, cores e logótipo da tua clínica em toda a app."
       }
     },
     "footerProduct": "Produto",
@@ -953,11 +961,11 @@
       },
       "slowLoading": {
         "q": "A app está lenta ou uma página não carrega",
-        "a": "Tenta primeiro atualizar a página. Se persistir, pode ser um problema temporário do nosso lado — avisa-nos e vamos investigar."
+        "a": "Tenta primeiro atualizar a página. Se persistir, pode ser um problema temporário do nosso lado avisa-nos e vamos investigar."
       },
       "dataMissing": {
         "q": "Parece faltar um paciente ou uma consulta",
-        "a": "Verifica se a partilha de dados está ativa em Definições → Organização — dependendo das tuas permissões, podes só ver os teus próprios pacientes. Se não for isso, contacta-nos."
+        "a": "Verifica se a partilha de dados está ativa em Definições → Organização, dependendo das tuas permissões, podes só ver os teus próprios pacientes. Se não for isso, contacta-nos."
       }
     }
   }
