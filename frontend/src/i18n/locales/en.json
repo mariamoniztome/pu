@@ -87,10 +87,8 @@
     "patientStatistics": "Patient statistics",
     "allPatients": "All patients",
     "newPatients": "New patients",
-    "insurance": "Insurance",
     "unknownPatient": "Unknown",
     "totalPatientsLabel": "Total patients",
-    "insurancePatientsLabel": "Insurance patients",
     "todaysSchedule": "Today's Schedule",
     "noAppointmentsToday": "No appointments scheduled for today",
     "scheduleClear": "Your schedule is clear!",
@@ -109,7 +107,8 @@
     "failedToLoadData": "Failed to load data",
     "percentWeekChange": "{{percentage}}% week",
     "appointmentsCount_one": "{{count}} appointment",
-    "appointmentsCount_other": "{{count}} appointments"
+    "appointmentsCount_other": "{{count}} appointments",
+    "newPatientsThisWeek": "New this week"
   },
   "patients": {
     "title": "Patients",
@@ -447,7 +446,9 @@
       "revenueOverview": "Revenue Overview",
       "paymentMethods": "Payment Methods",
       "noPaymentMethods": "No payment methods recorded yet",
-      "paymentStatus": "Payment Status"
+      "paymentStatus": "Payment Status",
+      "daysCount_one": "{{count}} day",
+      "daysCount_other": "{{count}} days"
     }
   },
   "calendar": {
@@ -587,7 +588,10 @@
       "passwordsDoNotMatch": "Passwords do not match",
       "passwordTooShort": "Password must be at least 8 characters",
       "registrationSuccess": "Registration successful! Welcome to your clinic.",
-      "registrationFailed": "Registration failed. Please try again."
+      "registrationFailed": "Registration failed. Please try again.",
+      "choosePlan": "Choose your plan",
+      "customBranding": "Custom branding",
+      "customBrandingHelp": "Set your clinic's colors now, or start with our default palette and change it anytime later."
     },
     "acceptInvite": {
       "title": "Accept Invitation",
@@ -650,6 +654,7 @@
     "role": "Role",
     "selectRole": "Select role",
     "member": "Member",
+    "owner": "Owner",
     "admin": "Admin",
     "cancel": "Cancel",
     "inviteEmailSent": "Invitation email sent to {{email}}",
@@ -713,7 +718,9 @@
       "newPassword": "New Password",
       "passwordChanged": "Password updated",
       "passwordChangeFailed": "Failed to update password",
-      "passwordTooShort": "New password must be at least 8 characters"
+      "passwordTooShort": "New password must be at least 8 characters",
+      "removePhoto": "Remove photo",
+      "avatarRemoved": "Photo removed"
     },
     "branding": {
       "effectNote": "Colors will take effect across the app once theming support ships — saved here in the meantime.",
@@ -727,7 +734,8 @@
       "saved": "Branding updated",
       "saveFailed": "Failed to update branding",
       "logoSaved": "Logo updated",
-      "logoSaveFailed": "Failed to update logo"
+      "logoSaveFailed": "Failed to update logo",
+      "restoreDefaults": "Restore defaults"
     },
     "team": {
       "permissions": "Permissions",
@@ -743,7 +751,40 @@
         "canViewAllCalendars": "View colleagues' calendars",
         "canManageBranding": "Manage branding",
         "canManageTeamProfiles": "Manage team profiles"
-      }
+      },
+      "title": "Team members",
+      "subtitle_one": "{{count}} member",
+      "subtitle_other": "{{count}} members",
+      "columns": {
+        "member": "Member"
+      },
+      "you": "you",
+      "active": "Active"
+    },
+    "subscriptionTab": {
+      "title": "Your subscription",
+      "currentSince": "Active since {{date}}",
+      "plans": {
+        "free": "Free",
+        "basic": "Basic",
+        "professional": "Professional",
+        "enterprise": "Enterprise"
+      },
+      "doctorsLimit_one": "Up to {{count}} doctor",
+      "doctorsLimit_other": "Up to {{count}} doctors",
+      "unlimitedDoctors": "Unlimited doctors",
+      "patientsLimit_one": "Up to {{count}} patient",
+      "patientsLimit_other": "Up to {{count}} patients",
+      "unlimitedPatients": "Unlimited patients",
+      "currentPlan": "Current plan",
+      "switchPlan": "Switch to this plan",
+      "billingSoon": "Plan changes and billing are coming soon.",
+      "billingNote": "Need a custom plan or have billing questions? Reach out and we'll help you sort it out."
+    },
+    "access": {
+      "yourRole": "Your role",
+      "granted": "Granted",
+      "notGranted": "Not granted"
     }
   },
   "quickActions": {
@@ -780,5 +821,18 @@
     "consultationCompleted": "Consultation Completed",
     "followUpSession": "Follow-up session with patient",
     "mockTimeAgo": "2 hours ago"
+  },
+  "landing": {
+    "brandName": "Psyclinic",
+    "getStarted": "Get started",
+    "heroTitle": "Run your psychology practice, without the busywork",
+    "heroSubtitle": "Patients, calendar, notes, billing and reports in one place — built for solo practitioners and clinics alike.",
+    "pricingTitle": "Simple, transparent pricing",
+    "pricingSubtitle": "Start free. Upgrade whenever you need more room to grow.",
+    "choosePlan": "Choose plan",
+    "free": "Free",
+    "customPricing": "Custom",
+    "perMonth": "/month",
+    "pricingNote": "You'll set up your account and invite your team after choosing a plan. No credit card required to start."
   }
 }

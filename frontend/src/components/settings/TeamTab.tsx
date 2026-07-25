@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Plus, Shield } from 'lucide-react';
+import { Plus, Shield, UserX, UserCheck } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { authAPI } from '../../api/auth';
 import type { Doctor, InviteDoctorData } from '../../types/auth';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-import { Card } from '../ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../ui/select';
 import { Switch } from '../ui/switch';
@@ -49,8 +48,8 @@ function DoctorAvatar({ doctor, size = 12 }: { doctor: Doctor; size?: number }) 
     );
   }
   return (
-    <div className={`${sizeClass} rounded-full bg-lilac-100 flex items-center justify-center flex-shrink-0`}>
-      <span className="font-semibold text-lilac-700">
+    <div className={`${sizeClass} rounded-full bg-gradient-to-br from-primary-300 to-lilac-300 flex items-center justify-center flex-shrink-0`}>
+      <span className="font-semibold text-white">
         {doctor.firstName[0]}
         {doctor.lastName[0]}
       </span>
@@ -252,87 +251,109 @@ export function TeamTab() {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h3 className="text-base font-semibold text-gray-900">{t('settings.team.title')}</h3>
+          <p className="text-sm text-gray-500">{t('settings.team.subtitle', { count: doctors.length })}</p>
+        </div>
         <Button onClick={() => setShowInviteDialog(true)}>
-          <Plus className="h-5 w-5 mr-2" />
+          <Plus className="h-4 w-4 mr-2" />
           {t('doctors.inviteDoctor')}
         </Button>
       </div>
 
-      <div className="grid gap-4">
-        {doctors.map((doc) => (
-          <Card key={doc._id} className="p-6">
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center gap-3">
-                  <DoctorAvatar doctor={doc} />
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      {doc.firstName} {doc.lastName}
-                    </h3>
-                    <p className="text-sm text-gray-600">{doc.email}</p>
-                  </div>
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(doc.role)}`}>
-                    {doc.role.charAt(0).toUpperCase() + doc.role.slice(1)}
-                  </span>
-                  {!doc.isActive && (
-                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                      {t('doctors.inactive')}
-                    </span>
-                  )}
-                  {doc.invitePending && (
-                    <span className="px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
-                      {t('doctors.invitePending')}
-                    </span>
-                  )}
-                </div>
-
-                <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                  {doc.phone && (
-                    <div>
-                      <span className="text-gray-500">{t('doctors.phone')}</span>
-                      <p className="font-medium">{doc.phone}</p>
+      <div className="overflow-x-auto rounded-2xl border border-gray-100 bg-white">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="bg-gray-50/80 text-left text-xs font-medium text-gray-500 uppercase tracking-wide">
+              <th className="px-4 py-3">{t('settings.team.columns.member')}</th>
+              <th className="px-4 py-3">{t('doctors.role')}</th>
+              <th className="px-4 py-3 hidden md:table-cell">{t('doctors.phoneLabel')}</th>
+              <th className="px-4 py-3 hidden md:table-cell">{t('doctors.lastLogin')}</th>
+              <th className="px-4 py-3">{t('common.status')}</th>
+              <th className="px-4 py-3 text-right">{t('common.actions')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {doctors.map((doc) => {
+              const isSelf = doc._id === currentDoctor?._id;
+              const editable = !isSelf && doc.role !== 'owner';
+              return (
+                <tr key={doc._id} className="border-t border-gray-100 menu-item">
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <DoctorAvatar doctor={doc} size={8} />
+                      <div className="min-w-0">
+                        <p className="font-medium text-gray-900 truncate">
+                          {doc.firstName} {doc.lastName}
+                          {isSelf && <span className="text-gray-400 font-normal"> ({t('settings.team.you')})</span>}
+                        </p>
+                        <p className="text-xs text-gray-500 truncate">{doc.email}</p>
+                      </div>
                     </div>
-                  )}
-                  {doc.lastLogin && (
-                    <div>
-                      <span className="text-gray-500">{t('doctors.lastLogin')}</span>
-                      <p className="font-medium">{new Date(doc.lastLogin).toLocaleDateString()}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {doc._id !== currentDoctor?._id && doc.role !== 'owner' && (
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm" onClick={() => setPermissionsDoctor(doc)}>
-                    <Shield className="h-4 w-4 mr-1" />
-                    {t('settings.team.permissions')}
-                  </Button>
-                  {doc.isActive ? (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleDeactivate(doc._id)}
-                      className="text-red-600 hover:text-red-700"
-                    >
-                      {t('doctors.deactivate')}
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleReactivate(doc._id)}
-                      className="text-primary-600 hover:text-primary-700"
-                    >
-                      {t('doctors.activate')}
-                    </Button>
-                  )}
-                </div>
-              )}
-            </div>
-          </Card>
-        ))}
+                  </td>
+                  <td className="px-4 py-3">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getRoleBadgeColor(doc.role)}`}>
+                      {t(`doctors.${doc.role}`)}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 hidden md:table-cell text-gray-600">{doc.phone || '—'}</td>
+                  <td className="px-4 py-3 hidden md:table-cell text-gray-600">
+                    {doc.lastLogin ? new Date(doc.lastLogin).toLocaleDateString() : '—'}
+                  </td>
+                  <td className="px-4 py-3">
+                    {doc.invitePending ? (
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 whitespace-nowrap">
+                        {t('doctors.invitePending')}
+                      </span>
+                    ) : doc.isActive ? (
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                        {t('settings.team.active')}
+                      </span>
+                    ) : (
+                      <span className="px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                        {t('doctors.inactive')}
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-4 py-3">
+                    {editable && (
+                      <div className="flex items-center justify-end gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          title={t('settings.team.permissions')}
+                          onClick={() => setPermissionsDoctor(doc)}
+                        >
+                          <Shield className="h-4 w-4 text-gray-600" />
+                        </Button>
+                        {doc.isActive ? (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            title={t('doctors.deactivate')}
+                            onClick={() => handleDeactivate(doc._id)}
+                          >
+                            <UserX className="h-4 w-4 text-red-500" />
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            title={t('doctors.activate')}
+                            onClick={() => handleReactivate(doc._id)}
+                          >
+                            <UserCheck className="h-4 w-4 text-green-600" />
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       </div>
 
       <Dialog open={showInviteDialog} onOpenChange={setShowInviteDialog}>

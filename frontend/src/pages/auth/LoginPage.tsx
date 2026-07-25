@@ -30,7 +30,6 @@ export const LoginPage: React.FC = () => {
 
     try {
       await login(formData);
-      toast.success(t('auth.login.welcomeToast'));
       navigate(from, { replace: true });
     } catch (error: any) {
       console.error('Login error:', error);

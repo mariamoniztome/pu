@@ -254,8 +254,9 @@ export function PatientsPage() {
             </Button>
           </CardHeader>
           <CardContent>
-            <div className="ag-theme-alpine rounded-lg overflow-hidden" style={{ height: 600, width: '100%' }}>
+            <div className="ag-theme-alpine rounded-lg overflow-hidden" style={{ width: '100%' }}>
               <AgGridReact
+                domLayout="autoHeight"
                 rowData={patients}
                 columnDefs={columnDefs}
                 defaultColDef={defaultColDef}

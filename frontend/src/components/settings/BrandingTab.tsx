@@ -1,13 +1,17 @@
 import { useState, useRef } from 'react';
-import { Upload, X } from 'lucide-react';
+import { Upload, X, RotateCcw } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { organizationApi } from '../../api/organization';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
+import { ColorField } from '../ui/color-field';
 import { toast } from 'sonner';
 import { useTranslation } from '../../hooks/useTranslation';
 import { fileUrl } from '../../lib/fileUrl';
+
+const DEFAULT_PRIMARY = '#84e01e';
+const DEFAULT_ACCENT = '#8b68ff';
 
 function LogoUploader({
   label,
@@ -120,37 +124,37 @@ export function BrandingTab() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-md">
-        <div className="space-y-2">
-          <Label htmlFor="primaryColor">{t('settings.branding.primaryColor')}</Label>
-          <div className="flex items-center gap-2">
-            <input
-              id="primaryColor"
-              type="color"
-              value={primaryColor}
-              onChange={(e) => setPrimaryColor(e.target.value)}
-              className="h-10 w-10 rounded-lg border border-gray-200 cursor-pointer"
-            />
-            <Input value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} className="font-mono" />
-          </div>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="accentColor">{t('settings.branding.accentColor')}</Label>
-          <div className="flex items-center gap-2">
-            <input
-              id="accentColor"
-              type="color"
-              value={accentColor}
-              onChange={(e) => setAccentColor(e.target.value)}
-              className="h-10 w-10 rounded-lg border border-gray-200 cursor-pointer"
-            />
-            <Input value={accentColor} onChange={(e) => setAccentColor(e.target.value)} className="font-mono" />
-          </div>
-        </div>
+        <ColorField
+          id="primaryColor"
+          label={t('settings.branding.primaryColor')}
+          value={primaryColor}
+          onChange={setPrimaryColor}
+        />
+        <ColorField
+          id="accentColor"
+          label={t('settings.branding.accentColor')}
+          value={accentColor}
+          onChange={setAccentColor}
+        />
       </div>
 
-      <Button type="button" onClick={handleSave} disabled={saving}>
-        {saving ? t('common.saving') : t('common.save')}
-      </Button>
+      <div className="flex items-center gap-2">
+        <Button type="button" onClick={handleSave} disabled={saving}>
+          {saving ? t('common.saving') : t('common.save')}
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={() => {
+            setPrimaryColor(DEFAULT_PRIMARY);
+            setAccentColor(DEFAULT_ACCENT);
+          }}
+        >
+          <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
+          {t('settings.branding.restoreDefaults')}
+        </Button>
+      </div>
 
       <div className="border-t border-gray-100 pt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
         <LogoUploader

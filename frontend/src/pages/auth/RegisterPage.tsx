@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { Check } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Card } from '../../components/ui/card';
+import { Switch } from '../../components/ui/switch';
+import { ColorField } from '../../components/ui/color-field';
 import {
   Select,
   SelectTrigger,
@@ -13,14 +16,26 @@ import {
   SelectItem,
 } from '../../components/ui/select';
 import { toast } from 'sonner';
+import { cn } from '../../lib/utils';
 import { useTranslation } from '../../hooks/useTranslation';
 import { PasswordStrengthMeter, passwordScore } from '../../components/auth/PasswordStrengthMeter';
+import { PLANS, type PlanId } from '../../lib/plans';
+
+const DEFAULT_PRIMARY = '#84e01e';
+const DEFAULT_ACCENT = '#8b68ff';
 
 export const RegisterPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { register } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const planFromQuery = searchParams.get('plan');
+  const initialPlan: PlanId = PLANS.some((p) => p.id === planFromQuery) ? (planFromQuery as PlanId) : 'free';
+  const [plan, setPlan] = useState<PlanId>(initialPlan);
+  const [useCustomBranding, setUseCustomBranding] = useState(false);
+  const [primaryColor, setPrimaryColor] = useState(DEFAULT_PRIMARY);
+  const [accentColor, setAccentColor] = useState(DEFAULT_ACCENT);
   const [formData, setFormData] = useState({
     organizationName: '',
     organizationType: 'individual' as 'individual' | 'clinic',
@@ -58,7 +73,11 @@ export const RegisterPage: React.FC = () => {
 
     try {
       const { confirmPassword, ...registerData } = formData;
-      await register(registerData);
+      await register({
+        ...registerData,
+        plan,
+        ...(useCustomBranding ? { primaryColor, accentColor } : {}),
+      });
       toast.success(t('auth.register.registrationSuccess'));
       navigate('/', { replace: true });
     } catch (error: any) {
@@ -89,6 +108,34 @@ export const RegisterPage: React.FC = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('auth.register.choosePlan')}</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {PLANS.map((p) => {
+                const isSelected = plan === p.id;
+                return (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => setPlan(p.id)}
+                    className={cn(
+                      'relative rounded-2xl border p-3 text-left transition-colors',
+                      isSelected ? 'border-gray-900 ring-1 ring-gray-900 bg-gray-50/60' : 'border-gray-200 bg-white hover:border-gray-300'
+                    )}
+                  >
+                    {isSelected && <Check className="h-4 w-4 absolute top-3 right-3 text-gray-900" />}
+                    <p className="font-semibold text-gray-900 text-sm">{t(`settings.subscriptionTab.plans.${p.id}`)}</p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {p.maxDoctors === 0
+                        ? t('settings.subscriptionTab.unlimitedDoctors')
+                        : t('settings.subscriptionTab.doctorsLimit', { count: p.maxDoctors })}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-6">
             {/* Organization Information */}
             <div className="lg:pr-10 lg:border-r lg:border-gray-200">
@@ -156,6 +203,32 @@ export const RegisterPage: React.FC = () => {
                     className="mt-1"
                   />
                 </div>
+              </div>
+
+              <div className="mt-6 pt-6 border-t border-gray-100">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label>{t('auth.register.customBranding')}</Label>
+                    <p className="text-xs text-gray-500 mt-0.5">{t('auth.register.customBrandingHelp')}</p>
+                  </div>
+                  <Switch checked={useCustomBranding} onCheckedChange={setUseCustomBranding} />
+                </div>
+                {useCustomBranding && (
+                  <div className="grid grid-cols-2 gap-4 mt-4">
+                    <ColorField
+                      id="regPrimaryColor"
+                      label={t('settings.branding.primaryColor')}
+                      value={primaryColor}
+                      onChange={setPrimaryColor}
+                    />
+                    <ColorField
+                      id="regAccentColor"
+                      label={t('settings.branding.accentColor')}
+                      value={accentColor}
+                      onChange={setAccentColor}
+                    />
+                  </div>
+                )}
               </div>
             </div>
 

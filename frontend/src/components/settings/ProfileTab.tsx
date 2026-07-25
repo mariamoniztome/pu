@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Upload } from 'lucide-react';
+import { Upload, X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { authAPI } from '../../api/auth';
 import { Button } from '../ui/button';
@@ -54,6 +54,19 @@ export function ProfileTab() {
     }
   };
 
+  const handleRemoveAvatar = async () => {
+    setUploadingAvatar(true);
+    try {
+      await authAPI.deleteAvatar(doctor._id);
+      await refreshUser();
+      toast.success(t('settings.profile.avatarRemoved'));
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || t('settings.profile.avatarSaveFailed'));
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword.length < 8) {
@@ -74,78 +87,91 @@ export function ProfileTab() {
   };
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center gap-4">
-        {doctor.avatar ? (
-          <img src={fileUrl(doctor.avatar)} alt="" className="w-20 h-20 rounded-full object-cover" />
-        ) : (
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-300 to-lilac-300 flex items-center justify-center">
-            <span className="text-white text-2xl font-medium">
-              {doctor.firstName[0]}{doctor.lastName[0]}
-            </span>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-10 gap-y-8">
+      {/* Left column: avatar + profile fields */}
+      <div className="space-y-6">
+        <div className="flex items-center gap-4">
+          {doctor.avatar ? (
+            <img src={fileUrl(doctor.avatar)} alt="" className="w-20 h-20 rounded-full object-cover" />
+          ) : (
+            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary-300 to-lilac-300 flex items-center justify-center">
+              <span className="text-white text-2xl font-medium">
+                {doctor.firstName[0]}{doctor.lastName[0]}
+              </span>
+            </div>
+          )}
+          <div className="flex gap-2">
+            <Button type="button" variant="outline" size="sm" disabled={uploadingAvatar} onClick={() => avatarInputRef.current?.click()}>
+              <Upload className="h-4 w-4 mr-1" />
+              {t('settings.profile.changePhoto')}
+            </Button>
+            {doctor.avatar && (
+              <Button type="button" variant="outline" size="sm" disabled={uploadingAvatar} onClick={handleRemoveAvatar} title={t('settings.profile.removePhoto')}>
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+            <input
+              ref={avatarInputRef}
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              className="hidden"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) handleAvatarFile(file);
+                e.target.value = '';
+              }}
+            />
           </div>
-        )}
-        <div>
-          <Button type="button" variant="outline" size="sm" disabled={uploadingAvatar} onClick={() => avatarInputRef.current?.click()}>
-            <Upload className="h-4 w-4 mr-1" />
-            {t('settings.profile.changePhoto')}
-          </Button>
-          <input
-            ref={avatarInputRef}
-            type="file"
-            accept="image/png,image/jpeg,image/webp"
-            className="hidden"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) handleAvatarFile(file);
-              e.target.value = '';
-            }}
-          />
         </div>
+
+        <form onSubmit={handleSaveProfile} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="firstName">{t('doctors.firstName')}</Label>
+              <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="lastName">{t('doctors.lastName')}</Label>
+              <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="phone">{t('settings.phone')}</Label>
+              <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="licenseNumber">{t('settings.licenseNumber')}</Label>
+              <Input id="licenseNumber" value={licenseNumber} onChange={(e) => setLicenseNumber(e.target.value)} />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="specialization">{t('settings.specialization')}</Label>
+            <Input id="specialization" value={specialization} onChange={(e) => setSpecialization(e.target.value)} />
+          </div>
+          <Button type="submit" disabled={savingProfile}>
+            {savingProfile ? t('common.saving') : t('common.save')}
+          </Button>
+        </form>
       </div>
 
-      <form onSubmit={handleSaveProfile} className="space-y-4 max-w-md">
-        <div className="grid grid-cols-2 gap-4">
+      {/* Right column: account/security */}
+      <div className="lg:border-l lg:border-gray-100 lg:pl-10">
+        <form onSubmit={handleChangePassword} className="space-y-4">
+          <h3 className="text-sm font-semibold text-gray-900">{t('settings.profile.changePassword')}</h3>
           <div className="space-y-2">
-            <Label htmlFor="firstName">{t('doctors.firstName')}</Label>
-            <Input id="firstName" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+            <Label htmlFor="currentPassword">{t('settings.profile.currentPassword')}</Label>
+            <Input id="currentPassword" type="password" required value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="lastName">{t('doctors.lastName')}</Label>
-            <Input id="lastName" value={lastName} onChange={(e) => setLastName(e.target.value)} />
+            <Label htmlFor="newPassword">{t('settings.profile.newPassword')}</Label>
+            <Input id="newPassword" type="password" required value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
           </div>
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="phone">{t('settings.phone')}</Label>
-          <Input id="phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="specialization">{t('settings.specialization')}</Label>
-          <Input id="specialization" value={specialization} onChange={(e) => setSpecialization(e.target.value)} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="licenseNumber">{t('settings.licenseNumber')}</Label>
-          <Input id="licenseNumber" value={licenseNumber} onChange={(e) => setLicenseNumber(e.target.value)} />
-        </div>
-        <Button type="submit" disabled={savingProfile}>
-          {savingProfile ? t('common.saving') : t('common.save')}
-        </Button>
-      </form>
-
-      <form onSubmit={handleChangePassword} className="space-y-4 max-w-md border-t border-gray-100 pt-6">
-        <h3 className="text-sm font-semibold text-gray-900">{t('settings.profile.changePassword')}</h3>
-        <div className="space-y-2">
-          <Label htmlFor="currentPassword">{t('settings.profile.currentPassword')}</Label>
-          <Input id="currentPassword" type="password" required value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="newPassword">{t('settings.profile.newPassword')}</Label>
-          <Input id="newPassword" type="password" required value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
-        </div>
-        <Button type="submit" variant="outline" disabled={changingPassword}>
-          {changingPassword ? t('common.saving') : t('settings.profile.changePassword')}
-        </Button>
-      </form>
+          <Button type="submit" variant="outline" disabled={changingPassword}>
+            {changingPassword ? t('common.saving') : t('settings.profile.changePassword')}
+          </Button>
+        </form>
+      </div>
     </div>
   );
 }

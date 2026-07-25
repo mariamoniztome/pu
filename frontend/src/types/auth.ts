@@ -65,6 +65,10 @@ export interface RegisterData {
   organizationType: 'individual' | 'clinic';
   organizationEmail?: string;
   organizationPhone?: string;
+  plan?: 'free' | 'basic' | 'professional' | 'enterprise';
+  clinicName?: string;
+  primaryColor?: string;
+  accentColor?: string;
   firstName: string;
   lastName: string;
   email: string;

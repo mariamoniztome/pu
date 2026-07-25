@@ -104,7 +104,7 @@ export function PaymentCharts() {
     totalRevenue,
     paidInvoices,
     pendingInvoices,
-    avgPaymentTime: `${avgPaymentTime} days`,
+    avgPaymentTime: t('payments.charts.daysCount', { count: avgPaymentTime }),
   };
 
   if (loading) {

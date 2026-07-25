@@ -8,6 +8,15 @@ import { isGenuineImage } from '../middleware/upload.js';
 import { sendMail } from '../utils/mailer.js';
 import fs from 'fs';
 
+const PLAN_LIMITS: Record<string, { maxDoctors: number; maxPatients: number }> = {
+  free: { maxDoctors: 1, maxPatients: 50 },
+  basic: { maxDoctors: 3, maxPatients: 200 },
+  professional: { maxDoctors: 10, maxPatients: 1000 },
+  enterprise: { maxDoctors: 0, maxPatients: 0 }, // 0 = unlimited
+};
+
+const HEX_COLOR_RE = /^#[0-9a-fA-F]{6}$/;
+
 // Register a new organization and doctor (owner)
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -17,6 +26,10 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       organizationType,
       organizationEmail,
       organizationPhone,
+      plan,
+      clinicName,
+      primaryColor,
+      accentColor,
       // Doctor details
       firstName,
       lastName,
@@ -29,9 +42,20 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     // Validate required fields
     if (!organizationName || !email || !password || !firstName || !lastName) {
-      res.status(400).json({ 
-        message: 'Organization name, email, password, first name, and last name are required' 
+      res.status(400).json({
+        message: 'Organization name, email, password, first name, and last name are required'
       });
+      return;
+    }
+
+    const selectedPlan = PLAN_LIMITS[plan] ? plan : 'free';
+
+    if (primaryColor && !HEX_COLOR_RE.test(primaryColor)) {
+      res.status(400).json({ message: 'Invalid primary color' });
+      return;
+    }
+    if (accentColor && !HEX_COLOR_RE.test(accentColor)) {
+      res.status(400).json({ message: 'Invalid accent color' });
       return;
     }
 
@@ -56,11 +80,10 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       email: organizationEmail || email,
       phone: organizationPhone,
       subscription: {
-        plan: 'free',
+        plan: selectedPlan,
         status: 'active',
         startDate: new Date(),
-        maxDoctors: organizationType === 'clinic' ? 10 : 1,
-        maxPatients: 50,
+        ...PLAN_LIMITS[selectedPlan],
       },
       settings: {
         timezone: 'UTC',
@@ -69,6 +92,11 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         currency: 'EUR',
         allowDataSharing: organizationType === 'clinic',
       },
+      branding: (clinicName || primaryColor || accentColor) ? {
+        clinicName: clinicName || organizationName,
+        primaryColor,
+        accentColor,
+      } : undefined,
       isActive: true,
     });
 

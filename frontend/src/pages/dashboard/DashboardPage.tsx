@@ -26,9 +26,7 @@ export function DashboardPage() {
   const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [patientFilter, setPatientFilter] = useState<
-    "all" | "new" | "insurance"
-  >("all");
+  const [patientFilter, setPatientFilter] = useState<"all" | "new">("all");
   const [isAppointmentDialogOpen, setIsAppointmentDialogOpen] = useState(false);
   const [isConsultationDialogOpen, setIsConsultationDialogOpen] =
     useState(false);
@@ -159,9 +157,6 @@ export function DashboardPage() {
     const oneWeekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
     return createdDate > oneWeekAgo;
   });
-
-  const insurancePatients =
-    patients.length > 0 ? Math.floor(patients.length * 0.6) : 0;
 
   // Get calendar days with appointment indicators based on filter
   const getDaysWithAppointments = () => {
@@ -335,33 +330,17 @@ export function DashboardPage() {
                 >
                   {t("dashboard.newPatients")}
                 </button>
-                <button
-                  onClick={() => setPatientFilter("insurance")}
-                  className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-                    patientFilter === "insurance"
-                      ? "bg-gradient-to-r from-lilac-200 to-lilac-300 text-gray-800 shadow-md"
-                      : "text-gray-600 row-hover"
-                  }`}
-                >
-                  {t("dashboard.insurance")}
-                </button>
               </div>
 
               <div className="grid grid-cols-2 gap-4 py-4">
                 <div>
                   <div className="text-4xl font-bold text-gray-900 mb-1">
-                    {patientFilter === "new"
-                      ? newPatients.length
-                      : patientFilter === "insurance"
-                      ? insurancePatients
-                      : patients.length}
+                    {patientFilter === "new" ? newPatients.length : patients.length}
                   </div>
                   <div className="text-sm text-gray-500 flex items-center gap-1">
                     {patientFilter === "all"
                       ? t("dashboard.totalPatientsLabel")
-                      : patientFilter === "new"
-                      ? t("dashboard.newPatients")
-                      : t("dashboard.insurancePatientsLabel")}
+                      : t("dashboard.newPatients")}
                     <span
                       className={
                         weekChange.isIncrease
@@ -376,10 +355,10 @@ export function DashboardPage() {
                 </div>
                 <div>
                   <div className="text-4xl font-bold text-gray-900 mb-1">
-                    {insurancePatients}
+                    {newPatients.length}
                   </div>
                   <div className="text-sm text-gray-500">
-                    {t("dashboard.insurancePatientsLabel")}
+                    {t("dashboard.newPatientsThisWeek")}
                   </div>
                 </div>
               </div>

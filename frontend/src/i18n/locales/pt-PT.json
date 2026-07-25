@@ -87,10 +87,8 @@
     "patientStatistics": "Estatísticas de pacientes",
     "allPatients": "Todos os pacientes",
     "newPatients": "Novos pacientes",
-    "insurance": "Seguro",
     "unknownPatient": "Desconhecido",
     "totalPatientsLabel": "Total de pacientes",
-    "insurancePatientsLabel": "Pacientes com seguro",
     "todaysSchedule": "Agenda de Hoje",
     "noAppointmentsToday": "Sem consultas agendadas para hoje",
     "scheduleClear": "A sua agenda está livre!",
@@ -109,7 +107,8 @@
     "failedToLoadData": "Falha ao carregar dados",
     "percentWeekChange": "{{percentage}}% semana",
     "appointmentsCount_one": "{{count}} marcação",
-    "appointmentsCount_other": "{{count}} marcações"
+    "appointmentsCount_other": "{{count}} marcações",
+    "newPatientsThisWeek": "Novos esta semana"
   },
   "patients": {
     "title": "Pacientes",
@@ -447,7 +446,9 @@
       "revenueOverview": "Visão Geral da Receita",
       "paymentMethods": "Métodos de Pagamento",
       "noPaymentMethods": "Nenhum método de pagamento registado ainda",
-      "paymentStatus": "Estado do Pagamento"
+      "paymentStatus": "Estado do Pagamento",
+      "daysCount_one": "{{count}} dia",
+      "daysCount_other": "{{count}} dias"
     }
   },
   "calendar": {
@@ -587,7 +588,10 @@
       "passwordsDoNotMatch": "As palavras-passe não coincidem",
       "passwordTooShort": "A palavra-passe deve ter pelo menos 8 caracteres",
       "registrationSuccess": "Registo efetuado com sucesso! Bem-vindo à sua clínica.",
-      "registrationFailed": "Falha no registo. Por favor, tente novamente."
+      "registrationFailed": "Falha no registo. Por favor, tente novamente.",
+      "choosePlan": "Escolhe o teu plano",
+      "customBranding": "Marca personalizada",
+      "customBrandingHelp": "Define já as cores da tua clínica, ou começa com a paleta por defeito e muda quando quiseres."
     },
     "acceptInvite": {
       "title": "Aceitar Convite",
@@ -650,6 +654,7 @@
     "role": "Cargo",
     "selectRole": "Selecione o cargo",
     "member": "Membro",
+    "owner": "Dono",
     "admin": "Administrador",
     "cancel": "Cancelar",
     "inviteEmailSent": "Email de convite enviado para {{email}}",
@@ -713,7 +718,9 @@
       "newPassword": "Nova Palavra-passe",
       "passwordChanged": "Palavra-passe atualizada",
       "passwordChangeFailed": "Falha ao atualizar palavra-passe",
-      "passwordTooShort": "A nova palavra-passe deve ter pelo menos 8 caracteres"
+      "passwordTooShort": "A nova palavra-passe deve ter pelo menos 8 caracteres",
+      "removePhoto": "Remover foto",
+      "avatarRemoved": "Foto removida"
     },
     "branding": {
       "effectNote": "As cores vão aplicar-se em toda a app quando o suporte de temas estiver pronto — por agora ficam guardadas.",
@@ -727,7 +734,8 @@
       "saved": "Marca atualizada",
       "saveFailed": "Falha ao atualizar marca",
       "logoSaved": "Logo atualizado",
-      "logoSaveFailed": "Falha ao atualizar logo"
+      "logoSaveFailed": "Falha ao atualizar logo",
+      "restoreDefaults": "Repor cores por defeito"
     },
     "team": {
       "permissions": "Permissões",
@@ -743,7 +751,40 @@
         "canViewAllCalendars": "Ver calendários de colegas",
         "canManageBranding": "Gerir marca",
         "canManageTeamProfiles": "Gerir perfis da equipa"
-      }
+      },
+      "title": "Membros da equipa",
+      "subtitle_one": "{{count}} membro",
+      "subtitle_other": "{{count}} membros",
+      "columns": {
+        "member": "Membro"
+      },
+      "you": "tu",
+      "active": "Ativo"
+    },
+    "subscriptionTab": {
+      "title": "A tua subscrição",
+      "currentSince": "Ativa desde {{date}}",
+      "plans": {
+        "free": "Gratuito",
+        "basic": "Básico",
+        "professional": "Profissional",
+        "enterprise": "Empresarial"
+      },
+      "doctorsLimit_one": "Até {{count}} médico",
+      "doctorsLimit_other": "Até {{count}} médicos",
+      "unlimitedDoctors": "Médicos ilimitados",
+      "patientsLimit_one": "Até {{count}} paciente",
+      "patientsLimit_other": "Até {{count}} pacientes",
+      "unlimitedPatients": "Pacientes ilimitados",
+      "currentPlan": "Plano atual",
+      "switchPlan": "Mudar para este plano",
+      "billingSoon": "A mudança de plano e faturação estará disponível brevemente.",
+      "billingNote": "Precisas de um plano personalizado ou tens dúvidas sobre faturação? Contacta-nos e ajudamos-te."
+    },
+    "access": {
+      "yourRole": "O teu papel",
+      "granted": "Concedido",
+      "notGranted": "Não concedido"
     }
   },
   "quickActions": {
@@ -780,5 +821,18 @@
     "consultationCompleted": "Consulta Concluída",
     "followUpSession": "Sessão de seguimento com paciente",
     "mockTimeAgo": "há 2 horas"
+  },
+  "landing": {
+    "brandName": "Psyclinic",
+    "getStarted": "Começar",
+    "heroTitle": "Gere a tua prática de psicologia sem a burocracia",
+    "heroSubtitle": "Pacientes, calendário, notas, faturação e relatórios num só lugar — pensado para praticantes solo e clínicas.",
+    "pricingTitle": "Preços simples e transparentes",
+    "pricingSubtitle": "Começa grátis. Muda de plano sempre que precisares de mais espaço.",
+    "choosePlan": "Escolher plano",
+    "free": "Grátis",
+    "customPricing": "Personalizado",
+    "perMonth": "/mês",
+    "pricingNote": "Depois de escolheres um plano, configuras a tua conta e convidas a tua equipa. Não é preciso cartão de crédito para começar."
   }
 }
