@@ -21,13 +21,13 @@ export const getAllAppointments = async (req: Request, res: Response) => {
       const canViewAllCalendars =
         req.doctor.role === 'owner' || req.doctor.permissions.canViewAllCalendars;
       if (!canViewAllCalendars) {
-        res.status(403).json({ error: 'Insufficient permissions to view another doctor\'s calendar' });
+        res.status(403).json({ message: req.t('appointments.insufficientPermissionsCalendar') });
         return;
       }
 
       const targetDoctor = await Doctor.findOne({ _id: doctorId, organization: req.organization._id });
       if (!targetDoctor) {
-        res.status(404).json({ error: 'Doctor not found' });
+        res.status(404).json({ message: req.t('common.doctorNotFound') });
         return;
       }
 
@@ -41,7 +41,7 @@ export const getAllAppointments = async (req: Request, res: Response) => {
       .sort({ dateTime: -1 });
     res.json(appointments);
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to fetch appointments', message: error.message });
+    res.status(500).json({ message: req.t('appointments.fetchFailed'), error: error.message });
   }
 };
 
@@ -51,11 +51,11 @@ export const getAppointmentById = async (req: Request, res: Response) => {
     const appointment = await Appointment.findOne(filter)
       .populate('patient', 'firstName lastName email phone');
     if (!appointment) {
-      return res.status(404).json({ error: 'Appointment not found' });
+      return res.status(404).json({ message: req.t('appointments.notFound') });
     }
     res.json(appointment);
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to fetch appointment', message: error.message });
+    res.status(500).json({ message: req.t('appointments.fetchOneFailed'), error: error.message });
   }
 };
 
@@ -67,7 +67,7 @@ export const getAppointmentsByPatient = async (req: Request, res: Response) => {
       .sort({ dateTime: -1 });
     res.json(appointments);
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to fetch appointments', message: error.message });
+    res.status(500).json({ message: req.t('appointments.fetchFailed'), error: error.message });
   }
 };
 
@@ -79,7 +79,7 @@ export const createAppointment = async (req: Request, res: Response) => {
     await appointment.populate('patient', 'firstName lastName email phone');
     res.status(201).json(appointment);
   } catch (error: any) {
-    res.status(400).json({ error: 'Failed to create appointment', message: error.message });
+    res.status(400).json({ message: req.t('appointments.createFailed'), error: error.message });
   }
 };
 
@@ -94,11 +94,11 @@ export const updateAppointment = async (req: Request, res: Response) => {
     ).populate('patient', 'firstName lastName email phone');
 
     if (!appointment) {
-      return res.status(404).json({ error: 'Appointment not found' });
+      return res.status(404).json({ message: req.t('appointments.notFound') });
     }
     res.json(appointment);
   } catch (error: any) {
-    res.status(400).json({ error: 'Failed to update appointment', message: error.message });
+    res.status(400).json({ message: req.t('appointments.updateFailed'), error: error.message });
   }
 };
 
@@ -107,11 +107,11 @@ export const deleteAppointment = async (req: Request, res: Response) => {
     const filter = buildOrganizationFilter(req, { _id: req.params.id });
     const appointment = await Appointment.findOneAndDelete(filter);
     if (!appointment) {
-      return res.status(404).json({ error: 'Appointment not found' });
+      return res.status(404).json({ message: req.t('appointments.notFound') });
     }
-    res.json({ message: 'Appointment deleted successfully' });
+    res.json({ message: req.t('appointments.deletedSuccessfully') });
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to delete appointment', message: error.message });
+    res.status(500).json({ message: req.t('appointments.deleteFailed'), error: error.message });
   }
 };
 
@@ -128,6 +128,6 @@ export const getUpcomingAppointments = async (req: Request, res: Response) => {
       .limit(20);
     res.json(appointments);
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to fetch upcoming appointments', message: error.message });
+    res.status(500).json({ message: req.t('appointments.fetchUpcomingFailed'), error: error.message });
   }
 };

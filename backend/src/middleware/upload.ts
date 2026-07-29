@@ -38,7 +38,7 @@ const fileFilter = (req: Express.Request, file: Express.Multer.File, cb: multer.
   if (allowedMimes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error(`File type not allowed: ${file.mimetype}`));
+    cb(new Error(req.t('upload.fileTypeNotAllowed', { mimetype: file.mimetype })));
   }
 };
 
@@ -76,7 +76,7 @@ const imageFileFilter = (req: Express.Request, file: Express.Multer.File, cb: mu
   if (allowedMimes.includes(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(new Error(`Image type not allowed: ${file.mimetype}`));
+    cb(new Error(req.t('upload.imageTypeNotAllowed', { mimetype: file.mimetype })));
   }
 };
 
@@ -114,22 +114,22 @@ export function isGenuineImage(filePath: string): boolean {
   return isPng || isJpeg || isWebp;
 }
 
-export const handleMulterError = (err: any, req: any, res: any, next: any) => {
+export const handleMulterError = (err: any, req: Express.Request, res: any, next: any) => {
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
       return res.status(400).json({
         error: 'File too large',
-        message: `Maximum file size is ${maxFileSize / (1024 * 1024)}MB`,
+        message: req.t('upload.fileTooLarge', { maxMB: maxFileSize / (1024 * 1024) }),
       });
     }
     return res.status(400).json({
       error: 'File upload error',
-      message: err.message,
+      message: err.message || req.t('upload.fileUploadError'),
     });
   } else if (err) {
     return res.status(400).json({
       error: 'File upload error',
-      message: err.message,
+      message: err.message || req.t('upload.fileUploadError'),
     });
   }
   next();

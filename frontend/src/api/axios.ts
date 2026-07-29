@@ -1,4 +1,5 @@
 import axios from "axios";
+import i18n from "../i18n/config";
 
 // Creates an Axios instance with default configuration
 const api = axios.create({
@@ -6,12 +7,15 @@ const api = axios.create({
   withCredentials: false,
 });
 
-// Request interceptor to set appropriate Content-Type
+// Request interceptor to set appropriate Content-Type and forward the active
+// UI language, so backend-generated messages (toasts, error text) come back
+// in the same language as the rest of the interface instead of always English.
 api.interceptors.request.use((config) => {
   // Don't set Content-Type for FormData - let the browser handle it
   if (!(config.data instanceof FormData)) {
     config.headers["Content-Type"] = "application/json";
   }
+  config.headers["Accept-Language"] = i18n.language;
   return config;
 });
 

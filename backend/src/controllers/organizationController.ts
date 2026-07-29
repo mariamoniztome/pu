@@ -26,7 +26,7 @@ export const updateOrganization = async (req: Request, res: Response): Promise<v
 
     res.status(200).json({ organization });
   } catch (error: any) {
-    res.status(400).json({ message: 'Failed to update organization', error: error.message });
+    res.status(400).json({ message: req.t('organization.updateFailed'), error: error.message });
   }
 };
 
@@ -41,11 +41,11 @@ export const updateBranding = async (req: Request, res: Response): Promise<void>
     };
 
     if (primaryColor !== undefined && primaryColor !== '' && !HEX_COLOR_RE.test(primaryColor)) {
-      res.status(400).json({ message: 'primaryColor must be a hex color like #22c55e' });
+      res.status(400).json({ message: req.t('organization.invalidPrimaryColorHex') });
       return;
     }
     if (accentColor !== undefined && accentColor !== '' && !HEX_COLOR_RE.test(accentColor)) {
-      res.status(400).json({ message: 'accentColor must be a hex color like #a855f7' });
+      res.status(400).json({ message: req.t('organization.invalidAccentColorHex') });
       return;
     }
 
@@ -62,7 +62,7 @@ export const updateBranding = async (req: Request, res: Response): Promise<void>
 
     res.status(200).json({ organization });
   } catch (error: any) {
-    res.status(400).json({ message: 'Failed to update branding', error: error.message });
+    res.status(400).json({ message: req.t('organization.updateBrandingFailed'), error: error.message });
   }
 };
 
@@ -72,20 +72,20 @@ export const uploadBrandingLogo = async (req: Request, res: Response): Promise<v
     const file = req.file;
 
     if (!file) {
-      res.status(400).json({ message: 'No file uploaded' });
+      res.status(400).json({ message: req.t('common.noFileUploaded') });
       return;
     }
 
     if (!isGenuineImage(file.path)) {
       fs.unlinkSync(file.path);
-      res.status(400).json({ message: 'File is not a valid PNG, JPEG, or WEBP image' });
+      res.status(400).json({ message: req.t('common.invalidImageFile') });
       return;
     }
 
     const organization = await Organization.findById(req.organization._id);
     if (!organization) {
       fs.unlinkSync(file.path);
-      res.status(404).json({ message: 'Organization not found' });
+      res.status(404).json({ message: req.t('common.organizationNotFound') });
       return;
     }
 
@@ -101,7 +101,7 @@ export const uploadBrandingLogo = async (req: Request, res: Response): Promise<v
 
     res.status(200).json({ organization });
   } catch (error: any) {
-    res.status(500).json({ message: 'Failed to upload logo', error: error.message });
+    res.status(500).json({ message: req.t('organization.uploadLogoFailed'), error: error.message });
   }
 };
 
@@ -112,7 +112,7 @@ export const deleteBrandingLogo = async (req: Request, res: Response): Promise<v
 
     const organization = await Organization.findById(req.organization._id);
     if (!organization) {
-      res.status(404).json({ message: 'Organization not found' });
+      res.status(404).json({ message: req.t('common.organizationNotFound') });
       return;
     }
 
@@ -128,6 +128,6 @@ export const deleteBrandingLogo = async (req: Request, res: Response): Promise<v
 
     res.status(200).json({ organization });
   } catch (error: any) {
-    res.status(500).json({ message: 'Failed to delete logo', error: error.message });
+    res.status(500).json({ message: req.t('organization.deleteLogoFailed'), error: error.message });
   }
 };

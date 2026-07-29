@@ -266,6 +266,12 @@ export function CalendarPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.patientId) {
+      toast.error(t('appointments.requiredFields'));
+      return;
+    }
+
     setLoading(true);
 
     try {

@@ -19,19 +19,19 @@ export const errorHandler = (
   if (err.name === 'CastError') {
     return res.status(400).json({
       error: 'Invalid ID',
-      message: 'The provided ID is not valid',
+      message: req.t('errorHandler.invalidId'),
     });
   }
 
   if (err.code === 11000) {
     return res.status(409).json({
       error: 'Duplicate Entry',
-      message: 'A record with this value already exists',
+      message: req.t('errorHandler.duplicateEntry'),
     });
   }
 
   res.status(err.status || 500).json({
     error: err.name || 'Internal Server Error',
-    message: err.message || 'Something went wrong',
+    message: err.message || req.t('errorHandler.somethingWentWrong'),
   });
 };

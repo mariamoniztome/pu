@@ -23,28 +23,28 @@ export const getAllPatients = async (req: Request, res: Response) => {
     const patients = await Patient.find(filter).sort({ createdAt: -1 });
     res.json(patients);
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to fetch patients', message: error.message });
+    res.status(500).json({ message: req.t('patients.fetchFailed'), error: error.message });
   }
 };
 
 export const getPatientById = async (req: Request, res: Response) => {
   try {
-    const filter: any = { 
-      _id: req.params.id, 
-      organization: req.organization._id 
+    const filter: any = {
+      _id: req.params.id,
+      organization: req.organization._id
     };
-    
+
     if (!canAccessAnyPatient(req)) {
       filter.doctor = req.doctor._id;
     }
-    
+
     const patient = await Patient.findOne(filter);
     if (!patient) {
-      return res.status(404).json({ error: 'Patient not found' });
+      return res.status(404).json({ message: req.t('patients.notFound') });
     }
     res.json(patient);
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to fetch patient', message: error.message });
+    res.status(500).json({ message: req.t('patients.fetchOneFailed'), error: error.message });
   }
 };
 
@@ -56,63 +56,63 @@ export const createPatient = async (req: Request, res: Response) => {
       organization: req.organization._id,
       doctor: req.doctor._id,
     };
-    
+
     const patient = new Patient(patientData);
     await patient.save();
     res.status(201).json(patient);
   } catch (error: any) {
-    res.status(400).json({ error: 'Failed to create patient', message: error.message });
+    res.status(400).json({ message: req.t('patients.createFailed'), error: error.message });
   }
 };
 
 export const updatePatient = async (req: Request, res: Response) => {
   try {
-    const filter: any = { 
-      _id: req.params.id, 
-      organization: req.organization._id 
+    const filter: any = {
+      _id: req.params.id,
+      organization: req.organization._id
     };
-    
+
     if (!canAccessAnyPatient(req)) {
       filter.doctor = req.doctor._id;
     }
-    
+
     // Don't allow changing organization or doctor through this endpoint
     const updateData = { ...req.body };
     delete updateData.organization;
     delete updateData.doctor;
-    
+
     const patient = await Patient.findOneAndUpdate(
       filter,
       updateData,
       { new: true, runValidators: true }
     );
     if (!patient) {
-      return res.status(404).json({ error: 'Patient not found' });
+      return res.status(404).json({ message: req.t('patients.notFound') });
     }
     res.json(patient);
   } catch (error: any) {
-    res.status(400).json({ error: 'Failed to update patient', message: error.message });
+    res.status(400).json({ message: req.t('patients.updateFailed'), error: error.message });
   }
 };
 
 export const deletePatient = async (req: Request, res: Response) => {
   try {
-    const filter: any = { 
-      _id: req.params.id, 
-      organization: req.organization._id 
+    const filter: any = {
+      _id: req.params.id,
+      organization: req.organization._id
     };
-    
+
     if (!canAccessAnyPatient(req)) {
       filter.doctor = req.doctor._id;
     }
-    
+
     const patient = await Patient.findOneAndDelete(filter);
     if (!patient) {
-      return res.status(404).json({ error: 'Patient not found' });
+      return res.status(404).json({ message: req.t('patients.notFound') });
     }
-    res.json({ message: 'Patient deleted successfully' });
+    res.json({ message: req.t('patients.deletedSuccessfully') });
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to delete patient', message: error.message });
+    res.status(500).json({ message: req.t('patients.deleteFailed'), error: error.message });
   }
 };
 
@@ -120,7 +120,7 @@ export const searchPatients = async (req: Request, res: Response) => {
   try {
     const { q } = req.query;
     if (!q) {
-      return res.status(400).json({ error: 'Search query is required' });
+      return res.status(400).json({ message: req.t('patients.searchQueryRequired') });
     }
 
     const filter: any = {
@@ -132,7 +132,7 @@ export const searchPatients = async (req: Request, res: Response) => {
         { phone: { $regex: q, $options: 'i' } },
       ],
     };
-    
+
     if (!canAccessAnyPatient(req)) {
       filter.doctor = req.doctor._id;
     }
@@ -141,6 +141,6 @@ export const searchPatients = async (req: Request, res: Response) => {
 
     res.json(patients);
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to search patients', message: error.message });
+    res.status(500).json({ message: req.t('patients.searchFailed'), error: error.message });
   }
 };

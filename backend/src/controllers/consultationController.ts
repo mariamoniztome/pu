@@ -17,7 +17,7 @@ export const getAllConsultations = async (req: Request, res: Response) => {
       .sort({ date: -1 });
     res.json(consultations);
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to fetch consultations', message: error.message });
+    res.status(500).json({ message: req.t('consultations.fetchFailed'), error: error.message });
   }
 };
 
@@ -28,11 +28,11 @@ export const getConsultationById = async (req: Request, res: Response) => {
       .populate('patient', 'firstName lastName email phone')
       .populate('appointment');
     if (!consultation) {
-      return res.status(404).json({ error: 'Consultation not found' });
+      return res.status(404).json({ message: req.t('consultations.notFound') });
     }
     res.json(consultation);
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to fetch consultation', message: error.message });
+    res.status(500).json({ message: req.t('consultations.fetchOneFailed'), error: error.message });
   }
 };
 
@@ -44,7 +44,7 @@ export const getConsultationsByPatient = async (req: Request, res: Response) => 
       .sort({ date: -1 });
     res.json(consultations);
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to fetch consultations', message: error.message });
+    res.status(500).json({ message: req.t('consultations.fetchFailed'), error: error.message });
   }
 };
 
@@ -75,7 +75,7 @@ export const createConsultation = async (req: Request, res: Response) => {
     await consultation.populate('patient', 'firstName lastName email phone');
     res.status(201).json(consultation);
   } catch (error: any) {
-    res.status(400).json({ error: 'Failed to create consultation', message: error.message });
+    res.status(400).json({ message: req.t('consultations.createFailed'), error: error.message });
   }
 };
 
@@ -112,11 +112,11 @@ export const updateConsultation = async (req: Request, res: Response) => {
     ).populate('patient', 'firstName lastName email phone');
 
     if (!consultation) {
-      return res.status(404).json({ error: 'Consultation not found' });
+      return res.status(404).json({ message: req.t('consultations.notFound') });
     }
     res.json(consultation);
   } catch (error: any) {
-    res.status(400).json({ error: 'Failed to update consultation', message: error.message });
+    res.status(400).json({ message: req.t('consultations.updateFailed'), error: error.message });
   }
 };
 
@@ -125,7 +125,7 @@ export const deleteConsultation = async (req: Request, res: Response) => {
     const filter = buildOrganizationFilter(req, { _id: req.params.id });
     const consultation = await Consultation.findOne(filter);
     if (!consultation) {
-      return res.status(404).json({ error: 'Consultation not found' });
+      return res.status(404).json({ message: req.t('consultations.notFound') });
     }
 
     if (consultation.attachments && consultation.attachments.length > 0) {
@@ -141,9 +141,9 @@ export const deleteConsultation = async (req: Request, res: Response) => {
     }
 
     await Consultation.findOneAndDelete(filter);
-    res.json({ message: 'Consultation deleted successfully' });
+    res.json({ message: req.t('consultations.deletedSuccessfully') });
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to delete consultation', message: error.message });
+    res.status(500).json({ message: req.t('consultations.deleteFailed'), error: error.message });
   }
 };
 
@@ -154,7 +154,7 @@ export const deleteConsultationAttachment = async (req: Request, res: Response) 
     const consultation = await Consultation.findOne(filter);
 
     if (!consultation) {
-      return res.status(404).json({ error: 'Consultation not found' });
+      return res.status(404).json({ message: req.t('consultations.notFound') });
     }
 
     const attachmentIndex = consultation.attachments.findIndex(
@@ -162,7 +162,7 @@ export const deleteConsultationAttachment = async (req: Request, res: Response) 
     );
 
     if (attachmentIndex === -1) {
-      return res.status(404).json({ error: 'Attachment not found' });
+      return res.status(404).json({ message: req.t('common.attachmentNotFound') });
     }
 
     const attachment = consultation.attachments[attachmentIndex];
@@ -178,8 +178,8 @@ export const deleteConsultationAttachment = async (req: Request, res: Response) 
     consultation.attachments.splice(attachmentIndex, 1);
     await consultation.save();
 
-    res.json({ message: 'Attachment deleted successfully' });
+    res.json({ message: req.t('common.attachmentDeletedSuccessfully') });
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to delete attachment', message: error.message });
+    res.status(500).json({ message: req.t('common.deleteAttachmentFailed'), error: error.message });
   }
 };

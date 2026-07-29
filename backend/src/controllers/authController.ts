@@ -43,7 +43,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     // Validate required fields
     if (!organizationName || !email || !password || !firstName || !lastName) {
       res.status(400).json({
-        message: 'Organization name, email, password, first name, and last name are required'
+        message: req.t('auth.registerRequiredFields')
       });
       return;
     }
@@ -51,25 +51,25 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const selectedPlan = PLAN_LIMITS[plan] ? plan : 'free';
 
     if (primaryColor && !HEX_COLOR_RE.test(primaryColor)) {
-      res.status(400).json({ message: 'Invalid primary color' });
+      res.status(400).json({ message: req.t('auth.invalidPrimaryColor') });
       return;
     }
     if (accentColor && !HEX_COLOR_RE.test(accentColor)) {
-      res.status(400).json({ message: 'Invalid accent color' });
+      res.status(400).json({ message: req.t('auth.invalidAccentColor') });
       return;
     }
 
     // Check if organization email already exists
     const existingOrg = await Organization.findOne({ email: organizationEmail || email });
     if (existingOrg) {
-      res.status(400).json({ message: 'Organization email already registered' });
+      res.status(400).json({ message: req.t('auth.organizationEmailTaken') });
       return;
     }
 
     // Check if doctor email already exists
     const existingDoctor = await Doctor.findOne({ email });
     if (existingDoctor) {
-      res.status(400).json({ message: 'Doctor email already registered' });
+      res.status(400).json({ message: req.t('auth.doctorEmailTaken') });
       return;
     }
 
@@ -121,16 +121,16 @@ export const register = async (req: Request, res: Response): Promise<void> => {
     const { password: _doctorPassword, ...doctorResponse } = doctor.toObject();
 
     res.status(201).json({
-      message: 'Registration successful',
+      message: req.t('auth.registrationSuccessful'),
       token,
       doctor: doctorResponse,
       organization,
     });
   } catch (error: any) {
     console.error('Registration error:', error);
-    res.status(500).json({ 
-      message: 'Registration failed', 
-      error: error.message 
+    res.status(500).json({
+      message: req.t('auth.registrationFailed'),
+      error: error.message
     });
   }
 };
@@ -142,48 +142,48 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     // Validate input
     if (!email || !password) {
-      res.status(400).json({ message: 'Email and password are required' });
+      res.status(400).json({ message: req.t('auth.emailPasswordRequired') });
       return;
     }
 
     // Find doctor with password field
     const doctor = await Doctor.findOne({ email }).select('+password');
     if (!doctor) {
-      res.status(401).json({ message: 'Invalid credentials' });
+      res.status(401).json({ message: req.t('auth.invalidCredentials') });
       return;
     }
 
     // Check if doctor is active
     if (!doctor.isActive) {
-      res.status(401).json({ message: 'Account is inactive' });
+      res.status(401).json({ message: req.t('auth.accountInactive') });
       return;
     }
 
     // Invited doctors have no password until they accept the invite
     if (doctor.invitePending || !doctor.password) {
-      res.status(401).json({ message: 'Please accept your invitation first — check your email for the invite link' });
+      res.status(401).json({ message: req.t('auth.acceptInviteFirst') });
       return;
     }
 
     // Verify password
     const isPasswordValid = await doctor.comparePassword(password);
     if (!isPasswordValid) {
-      res.status(401).json({ message: 'Invalid credentials' });
+      res.status(401).json({ message: req.t('auth.invalidCredentials') });
       return;
     }
 
     // Get organization
     const organization = await Organization.findById(doctor.organization);
     if (!organization || !organization.isActive) {
-      res.status(401).json({ message: 'Organization not found or inactive' });
+      res.status(401).json({ message: req.t('common.organizationNotFoundOrInactive') });
       return;
     }
 
     // Check subscription
     if (organization.subscription.status !== 'active') {
-      res.status(403).json({ 
-        message: 'Subscription inactive', 
-        subscriptionStatus: organization.subscription.status 
+      res.status(403).json({
+        message: req.t('auth.subscriptionInactive'),
+        subscriptionStatus: organization.subscription.status
       });
       return;
     }
@@ -199,14 +199,14 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     const { password: _doctorPassword, ...doctorResponse } = doctor.toObject();
 
     res.status(200).json({
-      message: 'Login successful',
+      message: req.t('auth.loginSuccessful'),
       token,
       doctor: doctorResponse,
       organization,
     });
   } catch (error: any) {
     console.error('Login error:', error);
-    res.status(500).json({ message: 'Login failed', error: error.message });
+    res.status(500).json({ message: req.t('auth.loginFailed'), error: error.message });
   }
 };
 
@@ -218,7 +218,7 @@ export const getMe = async (req: Request, res: Response): Promise<void> => {
       organization: req.organization,
     });
   } catch (error: any) {
-    res.status(500).json({ message: 'Failed to get user info', error: error.message });
+    res.status(500).json({ message: req.t('auth.getUserInfoFailed'), error: error.message });
   }
 };
 
@@ -240,7 +240,7 @@ export const inviteDoctor = async (req: Request, res: Response): Promise<void> =
 
     // Check if requesting doctor has permission
     if (!req.doctor.permissions.canManageDoctors && req.doctor.role !== 'owner') {
-      res.status(403).json({ message: 'Insufficient permissions' });
+      res.status(403).json({ message: req.t('common.insufficientPermissions') });
       return;
     }
 
@@ -252,7 +252,7 @@ export const inviteDoctor = async (req: Request, res: Response): Promise<void> =
 
     if (doctorCount >= req.organization.subscription.maxDoctors) {
       res.status(403).json({
-        message: 'Maximum number of doctors reached for your subscription plan',
+        message: req.t('auth.maxDoctorsReached'),
         current: doctorCount,
         max: req.organization.subscription.maxDoctors
       });
@@ -262,7 +262,7 @@ export const inviteDoctor = async (req: Request, res: Response): Promise<void> =
     // Check if email already exists
     const existingDoctor = await Doctor.findOne({ email });
     if (existingDoctor) {
-      res.status(400).json({ message: 'Email already registered' });
+      res.status(400).json({ message: req.t('auth.emailAlreadyRegistered') });
       return;
     }
 
@@ -302,7 +302,7 @@ export const inviteDoctor = async (req: Request, res: Response): Promise<void> =
     const { password: _doctorPassword, inviteToken: _inviteToken, ...doctorResponse } = doctor.toObject();
 
     res.status(201).json({
-      message: 'Doctor invited successfully',
+      message: req.t('auth.invitedSuccessfully'),
       doctor: doctorResponse,
       emailSent: sent,
       // Only exposed when no email could be sent, so the inviter can pass
@@ -311,7 +311,7 @@ export const inviteDoctor = async (req: Request, res: Response): Promise<void> =
     });
   } catch (error: any) {
     console.error('Invite doctor error:', error);
-    res.status(500).json({ message: 'Failed to invite doctor', error: error.message });
+    res.status(500).json({ message: req.t('auth.inviteDoctorFailed'), error: error.message });
   }
 };
 
@@ -329,7 +329,7 @@ export const getInvite = async (req: Request, res: Response): Promise<void> => {
     }).select('+inviteToken +inviteExpires');
 
     if (!doctor) {
-      res.status(404).json({ message: 'Invalid or expired invitation' });
+      res.status(404).json({ message: req.t('auth.invalidOrExpiredInvitation') });
       return;
     }
 
@@ -348,7 +348,7 @@ export const getInvite = async (req: Request, res: Response): Promise<void> => {
       },
     });
   } catch (error: any) {
-    res.status(500).json({ message: 'Failed to load invitation', error: error.message });
+    res.status(500).json({ message: req.t('auth.loadInvitationFailed'), error: error.message });
   }
 };
 
@@ -358,11 +358,11 @@ export const acceptInvite = async (req: Request, res: Response): Promise<void> =
     const { token, password } = req.body as { token?: string; password?: string };
 
     if (!token || !password) {
-      res.status(400).json({ message: 'token and password are required' });
+      res.status(400).json({ message: req.t('auth.tokenPasswordRequired') });
       return;
     }
     if (password.length < 8) {
-      res.status(400).json({ message: 'Password must be at least 8 characters' });
+      res.status(400).json({ message: req.t('common.passwordMinLength', { min: 8 }) });
       return;
     }
 
@@ -374,7 +374,7 @@ export const acceptInvite = async (req: Request, res: Response): Promise<void> =
     }).select('+inviteToken +inviteExpires');
 
     if (!doctor) {
-      res.status(404).json({ message: 'Invalid or expired invitation' });
+      res.status(404).json({ message: req.t('auth.invalidOrExpiredInvitation') });
       return;
     }
 
@@ -387,7 +387,7 @@ export const acceptInvite = async (req: Request, res: Response): Promise<void> =
 
     const organization = await Organization.findById(doctor.organization);
     if (!organization || !organization.isActive) {
-      res.status(401).json({ message: 'Organization not found or inactive' });
+      res.status(401).json({ message: req.t('common.organizationNotFoundOrInactive') });
       return;
     }
 
@@ -395,26 +395,26 @@ export const acceptInvite = async (req: Request, res: Response): Promise<void> =
     const { password: _doctorPassword, ...doctorResponse } = doctor.toObject();
 
     res.status(200).json({
-      message: 'Invitation accepted',
+      message: req.t('auth.invitationAccepted'),
       token: authToken,
       doctor: doctorResponse,
       organization,
     });
   } catch (error: any) {
-    res.status(500).json({ message: 'Failed to accept invitation', error: error.message });
+    res.status(500).json({ message: req.t('auth.acceptInvitationFailed'), error: error.message });
   }
 };
 
 // Get all doctors in the organization
 export const getDoctors = async (req: Request, res: Response): Promise<void> => {
   try {
-    const doctors = await Doctor.find({ 
-      organization: req.organization._id 
+    const doctors = await Doctor.find({
+      organization: req.organization._id
     }).select('-password');
 
     res.status(200).json({ doctors });
   } catch (error: any) {
-    res.status(500).json({ message: 'Failed to get doctors', error: error.message });
+    res.status(500).json({ message: req.t('auth.getDoctorsFailed'), error: error.message });
   }
 };
 
@@ -431,7 +431,7 @@ export const updateDoctor = async (req: Request, res: Response): Promise<void> =
     const isManager = req.doctor.role === 'owner' || req.doctor.permissions.canManageDoctors;
 
     if (!isSelf && !isManager) {
-      res.status(403).json({ message: 'Insufficient permissions' });
+      res.status(403).json({ message: req.t('common.insufficientPermissions') });
       return;
     }
 
@@ -445,7 +445,7 @@ export const updateDoctor = async (req: Request, res: Response): Promise<void> =
     }
 
     if (updates.role === 'owner' && req.doctor.role !== 'owner') {
-      res.status(403).json({ message: 'Only an owner can grant the owner role' });
+      res.status(403).json({ message: req.t('auth.onlyOwnerCanGrantOwnerRole') });
       return;
     }
 
@@ -456,13 +456,13 @@ export const updateDoctor = async (req: Request, res: Response): Promise<void> =
     ).select('-password');
 
     if (!doctor) {
-      res.status(404).json({ message: 'Doctor not found' });
+      res.status(404).json({ message: req.t('common.doctorNotFound') });
       return;
     }
 
     res.status(200).json({ doctor });
   } catch (error: any) {
-    res.status(500).json({ message: 'Failed to update doctor', error: error.message });
+    res.status(500).json({ message: req.t('auth.updateDoctorFailed'), error: error.message });
   }
 };
 
@@ -478,34 +478,37 @@ export const updateDoctorPermissions = async (req: Request, res: Response): Prom
 
     const isManager = req.doctor.role === 'owner' || req.doctor.permissions.canManageDoctors;
     if (!isManager) {
-      res.status(403).json({ message: 'Insufficient permissions' });
+      res.status(403).json({ message: req.t('common.insufficientPermissions') });
       return;
     }
 
     if (req.doctor._id.toString() === doctorId) {
-      res.status(403).json({ message: 'You cannot change your own permissions' });
+      res.status(403).json({ message: req.t('auth.cannotChangeOwnPermissions') });
       return;
     }
 
     if (!permissions || typeof permissions !== 'object') {
-      res.status(400).json({ message: 'permissions object is required' });
+      res.status(400).json({ message: req.t('auth.permissionsObjectRequired') });
       return;
     }
 
     const invalidKeys = Object.keys(permissions).filter((key) => !isValidPermissionKey(key));
     if (invalidKeys.length > 0) {
-      res.status(400).json({ message: `Unknown permission key(s): ${invalidKeys.join(', ')}`, validKeys: PERMISSION_KEYS });
+      res.status(400).json({
+        message: req.t('auth.unknownPermissionKeys', { keys: invalidKeys.join(', ') }),
+        validKeys: PERMISSION_KEYS
+      });
       return;
     }
 
     const targetDoctor = await Doctor.findOne({ _id: doctorId, organization: req.organization._id });
     if (!targetDoctor) {
-      res.status(404).json({ message: 'Doctor not found' });
+      res.status(404).json({ message: req.t('common.doctorNotFound') });
       return;
     }
 
     if (targetDoctor.role === 'owner') {
-      res.status(403).json({ message: "An owner's permissions can't be edited — they always have full access" });
+      res.status(403).json({ message: req.t('auth.ownerPermissionsCannotBeEdited') });
       return;
     }
 
@@ -522,7 +525,7 @@ export const updateDoctorPermissions = async (req: Request, res: Response): Prom
 
     res.status(200).json({ doctor });
   } catch (error: any) {
-    res.status(500).json({ message: 'Failed to update permissions', error: error.message });
+    res.status(500).json({ message: req.t('auth.updatePermissionsFailed'), error: error.message });
   }
 };
 
@@ -533,29 +536,29 @@ export const deleteDoctor = async (req: Request, res: Response): Promise<void> =
 
     // Check permissions
     if (!req.doctor.permissions.canManageDoctors && req.doctor.role !== 'owner') {
-      res.status(403).json({ message: 'Insufficient permissions' });
+      res.status(403).json({ message: req.t('common.insufficientPermissions') });
       return;
     }
 
     // Don't allow deleting yourself
     if (req.doctor._id.toString() === doctorId) {
-      res.status(400).json({ message: 'Cannot delete your own account' });
+      res.status(400).json({ message: req.t('auth.cannotDeleteOwnAccount') });
       return;
     }
 
     // Don't allow deleting the owner
-    const targetDoctor = await Doctor.findOne({ 
-      _id: doctorId, 
-      organization: req.organization._id 
+    const targetDoctor = await Doctor.findOne({
+      _id: doctorId,
+      organization: req.organization._id
     });
 
     if (!targetDoctor) {
-      res.status(404).json({ message: 'Doctor not found' });
+      res.status(404).json({ message: req.t('common.doctorNotFound') });
       return;
     }
 
     if (targetDoctor.role === 'owner') {
-      res.status(400).json({ message: 'Cannot delete organization owner' });
+      res.status(400).json({ message: req.t('auth.cannotDeleteOwner') });
       return;
     }
 
@@ -563,9 +566,9 @@ export const deleteDoctor = async (req: Request, res: Response): Promise<void> =
     targetDoctor.isActive = false;
     await targetDoctor.save();
 
-    res.status(200).json({ message: 'Doctor deactivated successfully' });
+    res.status(200).json({ message: req.t('auth.deactivatedSuccessfully') });
   } catch (error: any) {
-    res.status(500).json({ message: 'Failed to delete doctor', error: error.message });
+    res.status(500).json({ message: req.t('auth.deleteDoctorFailed'), error: error.message });
   }
 };
 
@@ -581,26 +584,26 @@ export const uploadAvatar = async (req: Request, res: Response): Promise<void> =
       req.doctor.permissions.canManageDoctors;
 
     if (!isSelf && !isManager) {
-      res.status(403).json({ message: 'Insufficient permissions' });
+      res.status(403).json({ message: req.t('common.insufficientPermissions') });
       return;
     }
 
     const file = req.file;
     if (!file) {
-      res.status(400).json({ message: 'No file uploaded' });
+      res.status(400).json({ message: req.t('common.noFileUploaded') });
       return;
     }
 
     if (!isGenuineImage(file.path)) {
       fs.unlinkSync(file.path);
-      res.status(400).json({ message: 'File is not a valid PNG, JPEG, or WEBP image' });
+      res.status(400).json({ message: req.t('common.invalidImageFile') });
       return;
     }
 
     const targetDoctor = await Doctor.findOne({ _id: doctorId, organization: req.organization._id });
     if (!targetDoctor) {
       fs.unlinkSync(file.path);
-      res.status(404).json({ message: 'Doctor not found' });
+      res.status(404).json({ message: req.t('common.doctorNotFound') });
       return;
     }
 
@@ -615,7 +618,7 @@ export const uploadAvatar = async (req: Request, res: Response): Promise<void> =
     const { password: _password, ...doctorResponse } = targetDoctor.toObject();
     res.status(200).json({ doctor: doctorResponse });
   } catch (error: any) {
-    res.status(500).json({ message: 'Failed to upload avatar', error: error.message });
+    res.status(500).json({ message: req.t('auth.uploadAvatarFailed'), error: error.message });
   }
 };
 
@@ -629,13 +632,13 @@ export const deleteAvatar = async (req: Request, res: Response): Promise<void> =
       req.doctor.permissions.canManageDoctors;
 
     if (!isSelf && !isManager) {
-      res.status(403).json({ message: 'Insufficient permissions' });
+      res.status(403).json({ message: req.t('common.insufficientPermissions') });
       return;
     }
 
     const targetDoctor = await Doctor.findOne({ _id: doctorId, organization: req.organization._id });
     if (!targetDoctor) {
-      res.status(404).json({ message: 'Doctor not found' });
+      res.status(404).json({ message: req.t('common.doctorNotFound') });
       return;
     }
 
@@ -645,9 +648,9 @@ export const deleteAvatar = async (req: Request, res: Response): Promise<void> =
     targetDoctor.avatar = undefined;
     await targetDoctor.save();
 
-    res.status(200).json({ message: 'Avatar removed successfully' });
+    res.status(200).json({ message: req.t('auth.avatarRemovedSuccessfully') });
   } catch (error: any) {
-    res.status(500).json({ message: 'Failed to delete avatar', error: error.message });
+    res.status(500).json({ message: req.t('auth.deleteAvatarFailed'), error: error.message });
   }
 };
 
@@ -657,32 +660,32 @@ export const changePassword = async (req: Request, res: Response): Promise<void>
     const { currentPassword, newPassword } = req.body as { currentPassword?: string; newPassword?: string };
 
     if (!currentPassword || !newPassword) {
-      res.status(400).json({ message: 'currentPassword and newPassword are required' });
+      res.status(400).json({ message: req.t('auth.currentNewPasswordRequired') });
       return;
     }
     if (newPassword.length < 8) {
-      res.status(400).json({ message: 'New password must be at least 8 characters' });
+      res.status(400).json({ message: req.t('common.passwordMinLength', { min: 8 }) });
       return;
     }
 
     const doctor = await Doctor.findById(req.doctor._id).select('+password');
     if (!doctor) {
-      res.status(404).json({ message: 'Doctor not found' });
+      res.status(404).json({ message: req.t('common.doctorNotFound') });
       return;
     }
 
     const isValid = await doctor.comparePassword(currentPassword);
     if (!isValid) {
-      res.status(401).json({ message: 'Current password is incorrect' });
+      res.status(401).json({ message: req.t('auth.currentPasswordIncorrect') });
       return;
     }
 
     doctor.password = newPassword;
     await doctor.save();
 
-    res.status(200).json({ message: 'Password updated successfully' });
+    res.status(200).json({ message: req.t('auth.passwordUpdatedSuccessfully') });
   } catch (error: any) {
-    res.status(500).json({ message: 'Failed to change password', error: error.message });
+    res.status(500).json({ message: req.t('auth.changePasswordFailed'), error: error.message });
   }
 };
 
@@ -691,7 +694,7 @@ export const forgotPassword = async (req: Request, res: Response): Promise<void>
   try {
     const { email } = req.body as { email?: string };
     if (!email) {
-      res.status(400).json({ message: 'Email is required' });
+      res.status(400).json({ message: req.t('auth.emailRequired') });
       return;
     }
 
@@ -718,9 +721,9 @@ export const forgotPassword = async (req: Request, res: Response): Promise<void>
       }
     }
 
-    res.status(200).json({ message: 'If an account exists for this email, a reset link has been sent.' });
+    res.status(200).json({ message: req.t('auth.resetLinkSentIfExists') });
   } catch (error: any) {
-    res.status(500).json({ message: 'Failed to process password reset request', error: error.message });
+    res.status(500).json({ message: req.t('auth.forgotPasswordFailed'), error: error.message });
   }
 };
 
@@ -730,11 +733,11 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
     const { token, newPassword } = req.body as { token?: string; newPassword?: string };
 
     if (!token || !newPassword) {
-      res.status(400).json({ message: 'token and newPassword are required' });
+      res.status(400).json({ message: req.t('auth.tokenNewPasswordRequired') });
       return;
     }
     if (newPassword.length < 8) {
-      res.status(400).json({ message: 'New password must be at least 8 characters' });
+      res.status(400).json({ message: req.t('common.passwordMinLength', { min: 8 }) });
       return;
     }
 
@@ -745,7 +748,7 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
     }).select('+resetPasswordToken +resetPasswordExpires');
 
     if (!doctor) {
-      res.status(400).json({ message: 'Invalid or expired reset token' });
+      res.status(400).json({ message: req.t('auth.invalidOrExpiredResetToken') });
       return;
     }
 
@@ -754,8 +757,8 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
     doctor.resetPasswordExpires = undefined;
     await doctor.save();
 
-    res.status(200).json({ message: 'Password reset successfully' });
+    res.status(200).json({ message: req.t('auth.passwordResetSuccessfully') });
   } catch (error: any) {
-    res.status(500).json({ message: 'Failed to reset password', error: error.message });
+    res.status(500).json({ message: req.t('auth.resetPasswordFailed'), error: error.message });
   }
 };

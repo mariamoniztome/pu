@@ -17,7 +17,7 @@ export const getAllPayments = async (req: Request, res: Response) => {
       .sort({ createdAt: -1 });
     res.json(payments);
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to fetch payments', message: error.message });
+    res.status(500).json({ message: req.t('payments.fetchFailed'), error: error.message });
   }
 };
 
@@ -29,11 +29,11 @@ export const getPaymentById = async (req: Request, res: Response) => {
       .populate('consultation')
       .populate('appointment');
     if (!payment) {
-      return res.status(404).json({ error: 'Payment not found' });
+      return res.status(404).json({ message: req.t('payments.notFound') });
     }
     res.json(payment);
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to fetch payment', message: error.message });
+    res.status(500).json({ message: req.t('payments.fetchOneFailed'), error: error.message });
   }
 };
 
@@ -46,7 +46,7 @@ export const getPaymentsByPatient = async (req: Request, res: Response) => {
       .sort({ createdAt: -1 });
     res.json(payments);
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to fetch payments', message: error.message });
+    res.status(500).json({ message: req.t('payments.fetchFailed'), error: error.message });
   }
 };
 
@@ -78,7 +78,7 @@ export const createPayment = async (req: Request, res: Response) => {
     await payment.populate('patient', 'firstName lastName email phone');
     res.status(201).json(payment);
   } catch (error: any) {
-    res.status(400).json({ error: 'Failed to create payment', message: error.message });
+    res.status(400).json({ message: req.t('payments.createFailed'), error: error.message });
   }
 };
 
@@ -116,11 +116,11 @@ export const updatePayment = async (req: Request, res: Response) => {
     ).populate('patient', 'firstName lastName email phone');
 
     if (!payment) {
-      return res.status(404).json({ error: 'Payment not found' });
+      return res.status(404).json({ message: req.t('payments.notFound') });
     }
     res.json(payment);
   } catch (error: any) {
-    res.status(400).json({ error: 'Failed to update payment', message: error.message });
+    res.status(400).json({ message: req.t('payments.updateFailed'), error: error.message });
   }
 };
 
@@ -129,7 +129,7 @@ export const deletePayment = async (req: Request, res: Response) => {
     const filter = buildOrganizationFilter(req, { _id: req.params.id });
     const payment = await Payment.findOne(filter);
     if (!payment) {
-      return res.status(404).json({ error: 'Payment not found' });
+      return res.status(404).json({ message: req.t('payments.notFound') });
     }
 
     if (payment.receiptAttachment) {
@@ -143,9 +143,9 @@ export const deletePayment = async (req: Request, res: Response) => {
     }
 
     await Payment.findOneAndDelete(filter);
-    res.json({ message: 'Payment deleted successfully' });
+    res.json({ message: req.t('payments.deletedSuccessfully') });
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to delete payment', message: error.message });
+    res.status(500).json({ message: req.t('payments.deleteFailed'), error: error.message });
   }
 };
 
@@ -182,6 +182,6 @@ export const getPaymentStats = async (req: Request, res: Response) => {
 
     res.json(formattedStats);
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to fetch payment stats', message: error.message });
+    res.status(500).json({ message: req.t('payments.statsFailed'), error: error.message });
   }
 };

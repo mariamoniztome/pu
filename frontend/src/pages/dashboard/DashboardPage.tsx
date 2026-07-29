@@ -36,6 +36,10 @@ export function DashboardPage() {
     useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showNextSessionCall, setShowNextSessionCall] = useState(false);
+  const [activeCallAppointment, setActiveCallAppointment] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -141,6 +145,7 @@ export function DashboardPage() {
       }),
       type: apt.type,
       completed: apt.status === "completed",
+      isOnline: apt.isOnline,
     }));
 
   // Soonest upcoming appointment that hasn't happened/been cancelled yet.
@@ -484,6 +489,18 @@ export function DashboardPage() {
                     <div className="text-sm font-medium text-gray-700">
                       {apt.time}
                     </div>
+                    {apt.isOnline && !apt.completed && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setActiveCallAppointment({ id: apt._id, name: apt.name })
+                        }
+                        className="flex items-center gap-1 text-xs font-semibold text-lilac-700 bg-lilac-100 px-3 py-1.5 rounded-full hover:bg-lilac-200 transition-colors flex-shrink-0"
+                      >
+                        <Video className="h-3.5 w-3.5" />
+                        {t("calendar.videoCall.startButton")}
+                      </button>
+                    )}
                     <div
                       className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg ${
                         apt.completed
@@ -533,6 +550,17 @@ export function DashboardPage() {
           onOpenChange={setShowNextSessionCall}
           roomName={`clinicamente-${nextAppointment._id}`}
           patientName={nextAppointmentPatientName || undefined}
+        />
+      )}
+
+      {activeCallAppointment && (
+        <VideoCallDialog
+          open={!!activeCallAppointment}
+          onOpenChange={(open) => {
+            if (!open) setActiveCallAppointment(null);
+          }}
+          roomName={`clinicamente-${activeCallAppointment.id}`}
+          patientName={activeCallAppointment.name}
         />
       )}
     </div>

@@ -15,7 +15,7 @@ export const getAllReports = async (req: Request, res: Response) => {
       .sort({ requestDate: -1 });
     res.json(reports);
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to fetch reports', message: error.message });
+    res.status(500).json({ message: req.t('externalReports.fetchFailed'), error: error.message });
   }
 };
 
@@ -25,11 +25,11 @@ export const getReportById = async (req: Request, res: Response) => {
     const report = await ExternalReport.findOne(filter)
       .populate('patient', 'firstName lastName email phone');
     if (!report) {
-      return res.status(404).json({ error: 'Report not found' });
+      return res.status(404).json({ message: req.t('externalReports.notFound') });
     }
     res.json(report);
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to fetch report', message: error.message });
+    res.status(500).json({ message: req.t('externalReports.fetchOneFailed'), error: error.message });
   }
 };
 
@@ -40,7 +40,7 @@ export const getReportsByPatient = async (req: Request, res: Response) => {
       .sort({ requestDate: -1 });
     res.json(reports);
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to fetch reports', message: error.message });
+    res.status(500).json({ message: req.t('externalReports.fetchFailed'), error: error.message });
   }
 };
 
@@ -73,7 +73,7 @@ export const createReport = async (req: Request, res: Response) => {
     res.status(201).json(report);
   } catch (error: any) {
     console.error('Failed to create report:', error.message);
-    res.status(400).json({ error: 'Failed to create report', message: error.message });
+    res.status(400).json({ message: req.t('externalReports.createFailed'), error: error.message });
   }
 };
 
@@ -111,12 +111,12 @@ export const updateReport = async (req: Request, res: Response) => {
     ).populate('patient', 'firstName lastName email phone');
 
     if (!report) {
-      return res.status(404).json({ error: 'Report not found' });
+      return res.status(404).json({ message: req.t('externalReports.notFound') });
     }
     res.json(report);
   } catch (error: any) {
     console.error('Failed to update report:', error.message);
-    res.status(400).json({ error: 'Failed to update report', message: error.message });
+    res.status(400).json({ message: req.t('externalReports.updateFailed'), error: error.message });
   }
 };
 
@@ -125,7 +125,7 @@ export const deleteReport = async (req: Request, res: Response) => {
     const filter = buildOrganizationFilter(req, { _id: req.params.id });
     const report = await ExternalReport.findOne(filter);
     if (!report) {
-      return res.status(404).json({ error: 'Report not found' });
+      return res.status(404).json({ message: req.t('externalReports.notFound') });
     }
 
     if (report.attachments && report.attachments.length > 0) {
@@ -141,9 +141,9 @@ export const deleteReport = async (req: Request, res: Response) => {
     }
 
     await ExternalReport.findOneAndDelete(filter);
-    res.json({ message: 'Report deleted successfully' });
+    res.json({ message: req.t('externalReports.deletedSuccessfully') });
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to delete report', message: error.message });
+    res.status(500).json({ message: req.t('externalReports.deleteFailed'), error: error.message });
   }
 };
 
@@ -154,7 +154,7 @@ export const deleteReportAttachment = async (req: Request, res: Response) => {
     const report = await ExternalReport.findOne(filter);
 
     if (!report) {
-      return res.status(404).json({ error: 'Report not found' });
+      return res.status(404).json({ message: req.t('externalReports.notFound') });
     }
 
     const attachmentIndex = report.attachments.findIndex(
@@ -162,7 +162,7 @@ export const deleteReportAttachment = async (req: Request, res: Response) => {
     );
 
     if (attachmentIndex === -1) {
-      return res.status(404).json({ error: 'Attachment not found' });
+      return res.status(404).json({ message: req.t('common.attachmentNotFound') });
     }
 
     const attachment = report.attachments[attachmentIndex];
@@ -178,8 +178,8 @@ export const deleteReportAttachment = async (req: Request, res: Response) => {
     report.attachments.splice(attachmentIndex, 1);
     await report.save();
 
-    res.json({ message: 'Attachment deleted successfully' });
+    res.json({ message: req.t('common.attachmentDeletedSuccessfully') });
   } catch (error: any) {
-    res.status(500).json({ error: 'Failed to delete attachment', message: error.message });
+    res.status(500).json({ message: req.t('common.deleteAttachmentFailed'), error: error.message });
   }
 };

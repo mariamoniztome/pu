@@ -8,19 +8,19 @@ export const submitContactForm = async (req: Request, res: Response): Promise<vo
     const { name, email, message } = req.body;
 
     if (!name || !email || !message) {
-      res.status(400).json({ message: 'Name, email and message are required' });
+      res.status(400).json({ message: req.t('contact.fieldsRequired') });
       return;
     }
 
     if (typeof message !== 'string' || message.length > MAX_MESSAGE_LENGTH) {
-      res.status(400).json({ message: 'Message is too long' });
+      res.status(400).json({ message: req.t('contact.messageTooLong') });
       return;
     }
 
     const destination = process.env.CONTACT_EMAIL;
     if (!destination) {
       console.log(`[contact] CONTACT_EMAIL not configured — message from ${email}: ${message}`);
-      res.status(200).json({ message: 'Message received' });
+      res.status(200).json({ message: req.t('contact.messageReceived') });
       return;
     }
 
@@ -30,9 +30,9 @@ export const submitContactForm = async (req: Request, res: Response): Promise<vo
       text: `From: ${name} <${email}>\n\n${message}`,
     });
 
-    res.status(200).json({ message: 'Message received' });
+    res.status(200).json({ message: req.t('contact.messageReceived') });
   } catch (error: any) {
     console.error('Contact form error:', error);
-    res.status(500).json({ message: 'Failed to send message', error: error.message });
+    res.status(500).json({ message: req.t('contact.sendFailed'), error: error.message });
   }
 };

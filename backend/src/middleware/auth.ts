@@ -32,7 +32,7 @@ export const authenticate = async (
     // Get token from header
     const authHeader = req.headers.authorization;
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      res.status(401).json({ message: 'No token provided' });
+      res.status(401).json({ message: req.t('jwt.noTokenProvided') });
       return;
     }
 
@@ -44,21 +44,21 @@ export const authenticate = async (
     // Get doctor from database
     const doctor = await Doctor.findById(decoded.doctorId).select('-password');
     if (!doctor || !doctor.isActive) {
-      res.status(401).json({ message: 'Doctor not found or inactive' });
+      res.status(401).json({ message: req.t('common.doctorNotFound') });
       return;
     }
 
     // Get organization
     const organization = await Organization.findById(decoded.organizationId);
     if (!organization || !organization.isActive) {
-      res.status(401).json({ message: 'Organization not found or inactive' });
+      res.status(401).json({ message: req.t('common.organizationNotFoundOrInactive') });
       return;
     }
 
     // Check subscription status
     if (organization.subscription.status !== 'active') {
-      res.status(403).json({ 
-        message: 'Subscription inactive. Please update your payment information.',
+      res.status(403).json({
+        message: req.t('auth.subscriptionInactiveDetailed'),
         subscriptionStatus: organization.subscription.status
       });
       return;
@@ -79,26 +79,26 @@ export const authenticate = async (
     next();
   } catch (error: any) {
     if (error.name === 'JsonWebTokenError') {
-      res.status(401).json({ message: 'Invalid token' });
+      res.status(401).json({ message: req.t('jwt.invalidToken') });
       return;
     }
     if (error.name === 'TokenExpiredError') {
-      res.status(401).json({ message: 'Token expired' });
+      res.status(401).json({ message: req.t('jwt.tokenExpired') });
       return;
     }
-    res.status(500).json({ message: 'Authentication error', error: error.message });
+    res.status(500).json({ message: req.t('jwt.authenticationError'), error: error.message });
   }
 };
 
 export const requirePermission = (permission: PermissionKey) => {
   return (req: Request, res: Response, next: NextFunction): void => {
     if (!req.doctor) {
-      res.status(401).json({ message: 'Not authenticated' });
+      res.status(401).json({ message: req.t('common.notAuthenticated') });
       return;
     }
 
     if (!effectivePermissions(req.doctor)[permission]) {
-      res.status(403).json({ message: 'Insufficient permissions' });
+      res.status(403).json({ message: req.t('common.insufficientPermissions') });
       return;
     }
 
@@ -108,12 +108,12 @@ export const requirePermission = (permission: PermissionKey) => {
 
 export const requireOwner = (req: Request, res: Response, next: NextFunction): void => {
   if (!req.doctor) {
-    res.status(401).json({ message: 'Not authenticated' });
+    res.status(401).json({ message: req.t('common.notAuthenticated') });
     return;
   }
 
   if (req.doctor.role !== 'owner') {
-    res.status(403).json({ message: 'Only organization owners can perform this action' });
+    res.status(403).json({ message: req.t('jwt.onlyOwnersCanPerformAction') });
     return;
   }
 
