@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate, useSearchParams, Link } from 'react-router-dom';
-import { Check } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Check, Lock } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { organizationApi } from '../../api/organization';
 import { Button } from '../../components/ui/button';
@@ -68,12 +68,11 @@ function StepIndicator({ step }: { step: Step }) {
 export const RegisterPage: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const { register, refreshUser, organization } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const planFromQuery = searchParams.get('plan');
-  const initialPlan: PlanId = PLANS.some((p) => p.id === planFromQuery) ? (planFromQuery as PlanId) : 'free';
-  const [plan, setPlan] = useState<PlanId>(initialPlan);
+  // Self-serve signup always starts on the free trial — there's no payment
+  // collection yet, so paid tiers are shown but only reachable by contacting us.
+  const [plan] = useState<PlanId>('free');
   const [step, setStep] = useState<Step>(1);
   const [useCustomBranding, setUseCustomBranding] = useState(false);
   const [clinicName, setClinicName] = useState('');
@@ -307,28 +306,38 @@ export const RegisterPage: React.FC = () => {
               <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('auth.register.choosePlan')}</h2>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {PLANS.map((p) => {
+                  const isFree = p.id === 'free';
                   const isSelected = plan === p.id;
                   return (
                     <button
                       key={p.id}
                       type="button"
-                      onClick={() => setPlan(p.id)}
+                      onClick={() => !isFree && toast.info(t('auth.register.paidPlanContact'))}
                       className={cn(
                         'relative rounded-2xl border p-3 text-left transition-colors',
-                        isSelected ? 'border-gray-900 ring-1 ring-gray-900 bg-gray-50/60' : 'border-gray-200 bg-white hover:border-gray-300'
+                        isSelected
+                          ? 'border-gray-900 ring-1 ring-gray-900 bg-gray-50/60'
+                          : isFree
+                          ? 'border-gray-200 bg-white hover:border-gray-300'
+                          : 'border-gray-200 bg-gray-50/60 opacity-70'
                       )}
                     >
                       {isSelected && <Check className="h-4 w-4 absolute top-3 right-3 text-gray-900" />}
+                      {!isFree && <Lock className="h-3.5 w-3.5 absolute top-3 right-3 text-gray-400" />}
                       <p className="font-semibold text-gray-900 text-sm">{t(`settings.subscriptionTab.plans.${p.id}`)}</p>
                       <p className="text-xs text-gray-500 mt-1">
                         {p.maxDoctors === 0
                           ? t('settings.subscriptionTab.unlimitedDoctors')
                           : t('settings.subscriptionTab.doctorsLimit', { count: p.maxDoctors })}
                       </p>
+                      {!isFree && (
+                        <p className="text-[11px] font-medium text-lilac-600 mt-1">{t('auth.register.contactForPlan')}</p>
+                      )}
                     </button>
                   );
                 })}
               </div>
+              <p className="text-xs text-gray-500 mt-3">{t('auth.register.startsOnFree')}</p>
             </div>
 
             <div>

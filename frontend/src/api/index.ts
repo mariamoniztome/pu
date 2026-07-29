@@ -4,3 +4,4 @@ export * from './consultations';
 export * from './externalReports';
 export * from './payments';
 export * from './organization';
+export * from './calendarIntegrations';

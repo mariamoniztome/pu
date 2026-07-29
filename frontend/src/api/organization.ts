@@ -28,4 +28,17 @@ export const organizationApi = {
     const response = await api.delete<{ organization: Organization }>(`/organizations/me/branding/logo/${variant}`);
     return response.data.organization;
   },
+  submitTrialFeedback: async (data: {
+    marketType: string;
+    organizationSize: string;
+    needs: string;
+    willingnessToPay: string;
+  }) => {
+    const response = await api.post<{ organization: Organization }>('/organizations/me/trial-feedback', data);
+    return response.data.organization;
+  },
+  endTrialForTesting: async () => {
+    const response = await api.post<{ organization: Organization }>('/organizations/me/end-trial-test');
+    return response.data.organization;
+  },
 };

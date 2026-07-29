@@ -306,6 +306,7 @@ async function initializeDatabase() {
           maxDoctors: 10,
           maxPatients: 1000,
           startDate: new Date(),
+          trialEndsAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
         },
         settings: {
           allowDataSharing: testUser.organizationType === 'clinic',

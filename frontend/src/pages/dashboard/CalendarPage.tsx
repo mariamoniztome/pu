@@ -27,10 +27,11 @@ import {
 } from "../../components/ui/select";
 import { Textarea } from "../../components/ui/textarea";
 import { Switch } from "../../components/ui/switch";
-import { appointmentsApi, patientsApi, consultationsApi } from "../../api";
+import { appointmentsApi, patientsApi, consultationsApi, calendarIntegrationsApi } from "../../api";
 import { Appointment } from "../../types/appointment";
 import { Patient } from "../../types/patient";
 import { Consultation } from "../../types/consultation";
+import { ExternalCalendarEvent } from "../../types/calendarIntegration";
 import { useTranslation } from "../../hooks/useTranslation";
 import { fileUrl } from "../../lib/fileUrl";
 import { PageHeaderAction } from "../../components/PageHeaderAction";
@@ -56,7 +57,10 @@ const localizer = dateFnsLocalizer({
 
 interface CalendarEvent extends Event {
   id: string;
-  appointment: Appointment;
+  appointment?: Appointment;
+  // Read-only "busy" block synced from a connected external calendar
+  // (Google/Outlook/iCloud) — not editable, not a clinical appointment.
+  isExternal?: boolean;
 }
 
 const DnDCalendar = withDragAndDrop<CalendarEvent, object>(Calendar);
@@ -113,6 +117,7 @@ export function CalendarPage() {
   const [appointments, setAppointments] = useState<Appointment[]>([]);
   const [patients, setPatients] = useState<Patient[]>([]);
   const [consultations, setConsultations] = useState<Consultation[]>([]);
+  const [externalEvents, setExternalEvents] = useState<ExternalCalendarEvent[]>([]);
   const [showDialog, setShowDialog] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [linkedConsultation, setLinkedConsultation] = useState<Consultation | null>(null);
@@ -158,17 +163,30 @@ export function CalendarPage() {
       setAppointments(Array.isArray(appointmentsData) ? appointmentsData : []);
       setPatients(Array.isArray(patientsData) ? patientsData : []);
       setConsultations(Array.isArray(consultationsData) ? consultationsData : []);
+
+      // Connected calendars (Google/Outlook/iCloud) are personal to each
+      // doctor's own account — there's no access to a colleague's, so this
+      // overlay only applies to your own calendar view.
+      if (!isViewingOthersCalendar) {
+        calendarIntegrationsApi
+          .getEvents()
+          .then(setExternalEvents)
+          .catch((error) => console.error("Failed to load external calendar events:", error));
+      } else {
+        setExternalEvents([]);
+      }
     } catch (error) {
       console.error("Failed to load data:", error);
       toast.error(t('calendar.failedToLoad'));
       setAppointments([]);
       setPatients([]);
       setConsultations([]);
+      setExternalEvents([]);
     }
   };
 
   const events: CalendarEvent[] = useMemo(() => {
-    return appointments.map((apt) => {
+    const appointmentEvents: CalendarEvent[] = appointments.map((apt) => {
       const patientName =
         typeof apt.patient === "string"
           ? apt.patient
@@ -188,7 +206,18 @@ export function CalendarPage() {
         appointment: apt,
       };
     });
-  }, [appointments, t]);
+
+    const busyEvents: CalendarEvent[] = externalEvents.map((event) => ({
+      id: `external-${event._id}`,
+      title: event.title || t('calendar.external.busy'),
+      start: new Date(event.startTime),
+      end: new Date(event.endTime),
+      allDay: event.allDay,
+      isExternal: true,
+    }));
+
+    return [...appointmentEvents, ...busyEvents];
+  }, [appointments, externalEvents, t]);
 
   const { minTime, maxTime } = useMemo(() => {
     const { startHour, endHour } = TIME_RANGE_PRESETS[timeRange];
@@ -246,19 +275,20 @@ export function CalendarPage() {
   };
 
   const handleSelectEvent = (event: CalendarEvent) => {
-    if (isViewingOthersCalendar) return;
+    if (isViewingOthersCalendar || event.isExternal || !event.appointment) return;
+    const appointment = event.appointment;
 
-    const start = new Date(event.appointment.dateTime);
-    const end = new Date(start.getTime() + (event.appointment.duration || 60) * 60 * 1000);
+    const start = new Date(appointment.dateTime);
+    const end = new Date(start.getTime() + (appointment.duration || 60) * 60 * 1000);
 
     setSelectedEvent(event);
     setFormData({
-      patientId: getPatientId(event.appointment.patient),
+      patientId: getPatientId(appointment.patient),
       dateTime: format(start, "yyyy-MM-dd'T'HH:mm"),
       endTime: format(end, "yyyy-MM-dd'T'HH:mm"),
-      type: event.appointment.type,
-      isOnline: event.appointment.isOnline || false,
-      notes: event.appointment.notes || "",
+      type: appointment.type,
+      isOnline: appointment.isOnline || false,
+      notes: appointment.notes || "",
     });
 
     const existing = findConsultationForAppointment(event.id);
@@ -397,12 +427,12 @@ export function CalendarPage() {
   };
 
   const handleEventDrop = ({ event, start, end }: EventInteractionArgs<CalendarEvent>) => {
-    if (isViewingOthersCalendar) return;
+    if (isViewingOthersCalendar || event.isExternal) return;
     updateAppointmentTiming(event.id, new Date(start), new Date(end));
   };
 
   const handleEventResize = ({ event, start, end }: EventInteractionArgs<CalendarEvent>) => {
-    if (isViewingOthersCalendar) return;
+    if (isViewingOthersCalendar || event.isExternal) return;
     updateAppointmentTiming(event.id, new Date(start), new Date(end));
   };
 
@@ -436,6 +466,22 @@ export function CalendarPage() {
   };
 
   const eventStyleGetter = (event: CalendarEvent) => {
+    if (event.isExternal) {
+      return {
+        style: {
+          backgroundColor: "repeating-linear-gradient(45deg, #e5e7eb, #e5e7eb 6px, #f3f4f6 6px, #f3f4f6 12px)",
+          background: "repeating-linear-gradient(45deg, #e5e7eb, #e5e7eb 6px, #f3f4f6 6px, #f3f4f6 12px)",
+          borderRadius: "8px",
+          border: "1px dashed #9ca3af",
+          color: "#4b5563",
+          fontSize: "0.875rem",
+          padding: "4px 8px",
+          fontWeight: "500",
+          cursor: "default",
+        },
+      };
+    }
+
     const colors = {
       scheduled: { backgroundColor: "#6366f1", borderColor: "#4f46e5" },
       completed: { backgroundColor: "#10b981", borderColor: "#059669" },
@@ -445,7 +491,7 @@ export function CalendarPage() {
     };
 
     const color =
-      colors[event.appointment.status as keyof typeof colors] ||
+      colors[event.appointment?.status as keyof typeof colors] ||
       colors.scheduled;
 
     return {
@@ -538,7 +584,8 @@ export function CalendarPage() {
             onEventResize={handleEventResize}
             selectable={!isViewingOthersCalendar}
             resizable={!isViewingOthersCalendar}
-            draggableAccessor={() => !isViewingOthersCalendar}
+            draggableAccessor={(event) => !isViewingOthersCalendar && !event.isExternal}
+            resizableAccessor={(event) => !isViewingOthersCalendar && !event.isExternal}
             eventPropGetter={eventStyleGetter}
             views={["month", "week", "day", "agenda"]}
             defaultView="week"

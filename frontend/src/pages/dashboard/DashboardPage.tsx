@@ -13,6 +13,7 @@ import { Button } from "../../components/ui/button";
 import { DashboardChart } from "../../components/shared/DashboardChart";
 import { AppointmentForm } from "../../components/appointments/AppointmentForm";
 import { VideoCallDialog } from "../../components/calendar/VideoCallDialog";
+import { TrialBanner } from "../../components/trial/TrialBanner";
 import { ConsultationForm } from "../../components/consultations/ConsultationForm";
 import { appointmentsApi, patientsApi } from "../../api";
 import { Appointment } from "../../types/appointment";
@@ -253,6 +254,7 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      <TrialBanner />
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">

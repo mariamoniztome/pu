@@ -193,6 +193,9 @@ export function LandingPage() {
                       <span className="text-gray-500 text-sm">{t('landing.perMonth')}</span>
                     </>
                   )}
+                  {plan.id !== 'free' && (
+                    <p className="text-xs text-gray-400 mt-1">{t('landing.pricingIndicative')}</p>
+                  )}
                 </div>
                 <ul className="text-sm text-gray-600 space-y-1.5 flex-1">
                   <li className="flex items-center gap-2">
@@ -208,12 +211,21 @@ export function LandingPage() {
                       : t('settings.subscriptionTab.patientsLimit', { count: plan.maxPatients })}
                   </li>
                 </ul>
-                <Link
-                  to={`/register?plan=${plan.id}`}
-                  className={buttonVariants({ variant: isFeatured ? 'default' : 'outline' })}
-                >
-                  {t('landing.choosePlan')}
-                </Link>
+                {plan.id === 'free' ? (
+                  <Link
+                    to="/register"
+                    className={buttonVariants({ variant: isFeatured ? 'default' : 'outline' })}
+                  >
+                    {t('landing.choosePlan')}
+                  </Link>
+                ) : (
+                  <a
+                    href="#contact"
+                    className={buttonVariants({ variant: isFeatured ? 'default' : 'outline' })}
+                  >
+                    {t('landing.contactForPricing')}
+                  </a>
+                )}
               </div>
             );
           })}

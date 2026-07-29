@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Check, Minus, Sparkles } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { usePermissions } from '../../hooks/usePermissions';
@@ -21,9 +22,10 @@ import { toast } from 'sonner';
 import { TeamTab } from '../../components/settings/TeamTab';
 import { BrandingTab } from '../../components/settings/BrandingTab';
 import { ProfileTab } from '../../components/settings/ProfileTab';
+import { CalendarIntegrationsTab } from '../../components/settings/CalendarIntegrationsTab';
 import { PLANS } from '../../lib/plans';
 
-type Tab = 'profile' | 'team' | 'branding' | 'organization' | 'subscription' | 'access';
+type Tab = 'profile' | 'team' | 'branding' | 'organization' | 'integrations' | 'subscription' | 'access';
 
 const TIMEZONES = [
   'UTC',
@@ -268,18 +270,28 @@ function AccessTab() {
 export const SettingsPage: React.FC = () => {
   const { t } = useTranslation();
   const { can } = usePermissions();
-  const [activeTab, setActiveTab] = useState<Tab>('profile');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tabParam = searchParams.get('tab') as Tab | null;
+  const [activeTab, setActiveTab] = useState<Tab>(tabParam || 'profile');
 
   const tabs: { key: Tab; label: string; visible: boolean }[] = [
     { key: 'profile', label: t('settings.tabs.profile'), visible: true },
     { key: 'team', label: t('settings.tabs.team'), visible: can('canManageDoctors') },
     { key: 'branding', label: t('settings.tabs.branding'), visible: can('canManageBranding') },
     { key: 'organization', label: t('settings.tabs.organization'), visible: can('canManageOrganization') },
+    { key: 'integrations', label: t('settings.tabs.integrations'), visible: true },
     { key: 'subscription', label: t('settings.tabs.subscription'), visible: can('canManageBilling') },
     { key: 'access', label: t('settings.tabs.access'), visible: true },
   ];
   const visibleTabs = tabs.filter((tab) => tab.visible);
   const currentTab = visibleTabs.some((t) => t.key === activeTab) ? activeTab : 'profile';
+
+  const selectTab = (key: Tab) => {
+    setActiveTab(key);
+    const next = new URLSearchParams(searchParams);
+    next.set('tab', key);
+    setSearchParams(next, { replace: true });
+  };
 
   return (
     <div className="space-y-6">
@@ -287,7 +299,7 @@ export const SettingsPage: React.FC = () => {
         {visibleTabs.map((tab) => (
           <button
             key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
+            onClick={() => selectTab(tab.key)}
             className={cn(
               'pb-3 text-sm font-medium border-b-2 -mb-px transition-colors',
               currentTab === tab.key
@@ -305,6 +317,7 @@ export const SettingsPage: React.FC = () => {
         {currentTab === 'team' && <TeamTab />}
         {currentTab === 'branding' && <BrandingTab />}
         {currentTab === 'organization' && <OrganizationTab />}
+        {currentTab === 'integrations' && <CalendarIntegrationsTab />}
         {currentTab === 'subscription' && <SubscriptionTab />}
         {currentTab === 'access' && <AccessTab />}
       </Card>

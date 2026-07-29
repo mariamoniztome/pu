@@ -507,6 +507,9 @@
       "linkCopied": "Link copiado, envie ao paciente",
       "title": "Videochamada",
       "loadFailed": "Falha ao carregar a videochamada"
+    },
+    "external": {
+      "busy": "Ocupado"
     }
   },
   "forms": {
@@ -610,6 +613,9 @@
       "registrationSuccess": "Registo efetuado com sucesso! Bem-vinda à clínica.",
       "registrationFailed": "Falha no registo. Por favor, tente novamente.",
       "choosePlan": "Escolhe o teu plano",
+      "contactForPlan": "Contacta-nos",
+      "paidPlanContact": "Os planos pagos ainda não têm subscrição automática — contacta-nos e tratamos disso por ti. Podes começar já no plano gratuito.",
+      "startsOnFree": "A tua conta começa no plano gratuito. Precisas de mais espaço? Contacta-nos a qualquer momento em Definições.",
       "customBranding": "Marca personalizada",
       "customBrandingHelp": "Define já as cores da tua clínica, ou começa com a paleta por defeito e muda quando quiseres.",
       "stepData": "Os teus dados",
@@ -732,8 +738,41 @@
       "team": "Equipa",
       "branding": "Marca",
       "organization": "Organização",
+      "integrations": "Integrações",
       "subscription": "Subscrição",
       "access": "Acesso"
+    },
+    "integrations": {
+      "title": "Integrações de calendário",
+      "subtitle": "Liga os teus calendários pessoais para veres tudo aqui, incluindo eventos antigos.",
+      "loadFailed": "Falha ao carregar as ligações de calendário",
+      "providers": {
+        "google": "Google Calendar",
+        "outlook": "Outlook",
+        "icloud": "iCloud"
+      },
+      "notConnected": "Não ligado",
+      "notConfigured": "Ainda não disponível",
+      "connect": "Ligar",
+      "syncNow": "Sincronizar agora",
+      "disconnect": "Desligar",
+      "confirmDisconnect": "Desligar este calendário? Os eventos sincronizados serão removidos da tua vista de calendário.",
+      "disconnected": "Calendário desligado",
+      "disconnectFailed": "Falha ao desligar calendário",
+      "syncSuccess": "Calendário sincronizado",
+      "syncFailed": "Falha ao sincronizar calendário",
+      "syncError": "A última sincronização falhou — tenta novamente ou volta a ligar",
+      "lastSynced": "Última sincronização {{date}}",
+      "neverSynced": "Ainda não sincronizado",
+      "connectFailed": "Falha ao iniciar a ligação",
+      "connectedToast": "{{provider}} ligado",
+      "connectFailedToast": "Falha ao ligar {{provider}}",
+      "icloudDialogTitle": "Ligar calendário do iCloud",
+      "icloudDialogHelp": "Usa uma password específica de app gerada em appleid.apple.com — não a tua password normal do Apple ID.",
+      "icloudEmail": "Email do Apple ID",
+      "icloudPassword": "Password específica de app",
+      "icloudConnectFailed": "Falha ao ligar o calendário do iCloud",
+      "note": "Os calendários ligados aparecem aqui apenas como blocos de ocupado, só de leitura — nada é escrito de volta no Google, Outlook ou iCloud."
     },
     "profile": {
       "saved": "Perfil atualizado",
@@ -866,7 +905,9 @@
     "free": "Grátis",
     "customPricing": "Personalizado",
     "perMonth": "/mês",
-    "pricingNote": "Depois de escolheres um plano, configuras a tua conta e convidas a tua equipa. Não é preciso cartão de crédito para começar.",
+    "pricingIndicative": "Preço indicativo — contacta-nos para confirmar",
+    "contactForPricing": "Contactar",
+    "pricingNote": "Todas as contas começam com 14 dias de teste grátis, sem cartão de crédito. Queres um plano pago? Contacta-nos e tratamos disso por ti.",
     "badgeTrial": "14 dias grátis",
     "badgeNoCard": "Sem cartão de crédito",
     "badgeCancelAnytime": "Cancela quando quiseres",
@@ -974,5 +1015,46 @@
         "a": "Verifica se a partilha de dados está ativa em Definições → Organização, dependendo das tuas permissões, podes só ver os teus próprios pacientes. Se não for isso, contacta-nos."
       }
     }
+  },
+  "trial": {
+    "bannerLabel": "Trial gratuito",
+    "daysRemaining_one": "Falta {{count}} dia",
+    "daysRemaining_other": "Faltam {{count}} dias",
+    "lastDay": "Último dia",
+    "testEndTrial": "Simular: terminar trial de 14 dias (teste)",
+    "testEndFailed": "Falha ao terminar o trial para teste",
+    "gateTitle": "O teu trial gratuito de 14 dias terminou",
+    "gateSubtitle": "Antes de continuares, ajuda-nos a perceber quem usa o Clinicamente — demora menos de um minuto.",
+    "selectOption": "Selecione uma opção",
+    "marketType": "Que tipo de prática ou mercado é o teu?",
+    "marketTypeOptions": {
+      "clinicalPsychology": "Psicologia clínica",
+      "psychiatry": "Psiquiatria",
+      "familyTherapy": "Terapia familiar / de casal",
+      "coaching": "Coaching / desenvolvimento pessoal",
+      "nutrition": "Nutrição",
+      "other": "Outro"
+    },
+    "organizationSize": "Qual o tamanho da tua organização?",
+    "organizationSizeOptions": {
+      "justMe": "Só eu",
+      "twoToFive": "2-5 profissionais",
+      "sixToTwenty": "6-20 profissionais",
+      "moreThanTwenty": "Mais de 20 profissionais"
+    },
+    "needs": "Quais são as tuas principais necessidades neste momento?",
+    "needsPlaceholder": "ex.: agendamento, faturação, registos de pacientes, videochamadas...",
+    "willingnessToPay": "Quanto pagarias por mês por isto?",
+    "willingnessToPayOptions": {
+      "under10": "Menos de €10",
+      "from10to25": "€10 - €25",
+      "from25to50": "€25 - €50",
+      "from50to100": "€50 - €100",
+      "over100": "Mais de €100"
+    },
+    "submit": "Submeter e continuar",
+    "submitted": "Obrigado pelo teu feedback!",
+    "submitFailed": "Falha ao submeter, tenta novamente",
+    "requiredFields": "Por favor responde a todas as perguntas."
   }
 }

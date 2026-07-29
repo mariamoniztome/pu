@@ -13,6 +13,8 @@ export interface IOrganization extends Document {
     endDate?: Date;
     maxDoctors: number;
     maxPatients: number;
+    trialEndsAt?: Date;
+    trialSurveyCompletedAt?: Date;
   };
   settings: {
     timezone: string;
@@ -87,6 +89,12 @@ const organizationSchema = new Schema<IOrganization>(
       maxPatients: {
         type: Number,
         default: 50,
+      },
+      trialEndsAt: {
+        type: Date,
+      },
+      trialSurveyCompletedAt: {
+        type: Date,
       },
     },
     settings: {

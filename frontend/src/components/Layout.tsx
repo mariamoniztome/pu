@@ -19,6 +19,8 @@ import { useTranslation } from '../hooks/useTranslation';
 import { useAuth } from '../contexts/AuthContext';
 import { PageHeaderSlotContext } from '../contexts/PageHeaderContext';
 import { OrgLogo } from './branding/OrgLogo';
+import { useTrialStatus } from '../hooks/useTrialStatus';
+import { TrialSurveyGate } from './trial/TrialSurveyGate';
 
 const SIDEBAR_PINNED_KEY = 'sidebar-pinned';
 
@@ -36,6 +38,7 @@ export function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { doctor, organization, logout } = useAuth();
+  const trial = useTrialStatus();
   const [pinned, setPinned] = useState(() => localStorage.getItem(SIDEBAR_PINNED_KEY) === 'true');
   const [open, setOpen] = useState(pinned);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -304,6 +307,7 @@ export function Layout() {
         </main>
       </div>
 
+      {trial.inTrial && trial.isExpired && !trial.surveyCompleted && <TrialSurveyGate />}
     </div>
   );
 }

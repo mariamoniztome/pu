@@ -26,7 +26,6 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       organizationType,
       organizationEmail,
       organizationPhone,
-      plan,
       clinicName,
       primaryColor,
       accentColor,
@@ -48,7 +47,9 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const selectedPlan = PLAN_LIMITS[plan] ? plan : 'free';
+    // Self-serve signup always starts on the free trial — paid plans have no
+    // payment collection yet and are only granted manually after sales contact.
+    const selectedPlan = 'free';
 
     if (primaryColor && !HEX_COLOR_RE.test(primaryColor)) {
       res.status(400).json({ message: req.t('auth.invalidPrimaryColor') });
@@ -83,6 +84,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         plan: selectedPlan,
         status: 'active',
         startDate: new Date(),
+        trialEndsAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
         ...PLAN_LIMITS[selectedPlan],
       },
       settings: {

@@ -13,6 +13,7 @@ import externalReportRoutes from './routes/externalReportRoutes.js';
 import paymentRoutes from './routes/paymentRoutes.js';
 import organizationRoutes from './routes/organizationRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
+import calendarIntegrationRoutes from './routes/calendarIntegrationRoutes.js';
 
 dotenv.config();
 
@@ -53,6 +54,7 @@ app.use('/api/external-reports', externalReportRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/organizations', organizationRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/calendar-integrations', calendarIntegrationRoutes);
 
 app.use(errorHandler);
 

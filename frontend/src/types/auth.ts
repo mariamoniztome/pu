@@ -12,6 +12,8 @@ export interface Organization {
     endDate?: string;
     maxDoctors: number;
     maxPatients: number;
+    trialEndsAt?: string;
+    trialSurveyCompletedAt?: string;
   };
   settings: {
     timezone: string;

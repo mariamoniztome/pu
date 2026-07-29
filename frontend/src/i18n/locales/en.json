@@ -507,6 +507,9 @@
       "linkCopied": "Link copied, send it to the patient",
       "title": "Video call",
       "loadFailed": "Failed to load the video call"
+    },
+    "external": {
+      "busy": "Busy"
     }
   },
   "forms": {
@@ -610,6 +613,9 @@
       "registrationSuccess": "Registration successful! Welcome to your clinic.",
       "registrationFailed": "Registration failed. Please try again.",
       "choosePlan": "Choose your plan",
+      "contactForPlan": "Contact us",
+      "paidPlanContact": "Paid plans aren't self-serve yet — contact us and we'll set it up for you. You can start on the free trial right now.",
+      "startsOnFree": "Your account starts on the free plan. Need more room? Contact us any time from Settings.",
       "customBranding": "Custom branding",
       "customBrandingHelp": "Set your clinic's colors now, or start with our default palette and change it anytime later.",
       "stepData": "Your details",
@@ -732,8 +738,41 @@
       "team": "Team",
       "branding": "Branding",
       "organization": "Organization",
+      "integrations": "Integrations",
       "subscription": "Subscription",
       "access": "Access"
+    },
+    "integrations": {
+      "title": "Calendar integrations",
+      "subtitle": "Connect your personal calendars to see everything here, old events included.",
+      "loadFailed": "Failed to load calendar connections",
+      "providers": {
+        "google": "Google Calendar",
+        "outlook": "Outlook",
+        "icloud": "iCloud"
+      },
+      "notConnected": "Not connected",
+      "notConfigured": "Not available yet",
+      "connect": "Connect",
+      "syncNow": "Sync now",
+      "disconnect": "Disconnect",
+      "confirmDisconnect": "Disconnect this calendar? Its synced events will be removed from your calendar view.",
+      "disconnected": "Calendar disconnected",
+      "disconnectFailed": "Failed to disconnect calendar",
+      "syncSuccess": "Calendar synced",
+      "syncFailed": "Failed to sync calendar",
+      "syncError": "Last sync failed — try syncing again or reconnect",
+      "lastSynced": "Last synced {{date}}",
+      "neverSynced": "Not synced yet",
+      "connectFailed": "Failed to start the connection",
+      "connectedToast": "{{provider}} connected",
+      "connectFailedToast": "Failed to connect {{provider}}",
+      "icloudDialogTitle": "Connect iCloud calendar",
+      "icloudDialogHelp": "Use an app-specific password from appleid.apple.com — not your regular Apple ID password.",
+      "icloudEmail": "Apple ID email",
+      "icloudPassword": "App-specific password",
+      "icloudConnectFailed": "Failed to connect iCloud calendar",
+      "note": "Connected calendars only show as read-only busy blocks here — nothing is written back to Google, Outlook, or iCloud."
     },
     "profile": {
       "saved": "Profile updated",
@@ -866,7 +905,9 @@
     "free": "Free",
     "customPricing": "Custom",
     "perMonth": "/month",
-    "pricingNote": "You'll set up your account and invite your team after choosing a plan. No credit card required to start.",
+    "pricingIndicative": "Indicative price — contact us to confirm",
+    "contactForPricing": "Contact us",
+    "pricingNote": "Every account starts on a 14-day free trial, no credit card required. Want a paid plan? Contact us and we'll set it up for you.",
     "badgeTrial": "14-day free trial",
     "badgeNoCard": "No credit card required",
     "badgeCancelAnytime": "Cancel anytime",
@@ -974,5 +1015,46 @@
         "a": "Check whether data sharing is enabled in Settings → Organization, depending on your permissions, you may only see your own patients. If that's not it, contact us."
       }
     }
+  },
+  "trial": {
+    "bannerLabel": "Free trial",
+    "daysRemaining_one": "{{count}} day left",
+    "daysRemaining_other": "{{count}} days left",
+    "lastDay": "Last day",
+    "testEndTrial": "Simulate: end 14-day trial (test)",
+    "testEndFailed": "Failed to end trial for testing",
+    "gateTitle": "Your 14-day free trial has ended",
+    "gateSubtitle": "Before you continue, help us understand who's using Clinicamente — this takes less than a minute.",
+    "selectOption": "Select an option",
+    "marketType": "What type of practice or market are you in?",
+    "marketTypeOptions": {
+      "clinicalPsychology": "Clinical psychology",
+      "psychiatry": "Psychiatry",
+      "familyTherapy": "Family / couples therapy",
+      "coaching": "Coaching / personal development",
+      "nutrition": "Nutrition",
+      "other": "Other"
+    },
+    "organizationSize": "How big is your organization?",
+    "organizationSizeOptions": {
+      "justMe": "Just me",
+      "twoToFive": "2-5 professionals",
+      "sixToTwenty": "6-20 professionals",
+      "moreThanTwenty": "More than 20 professionals"
+    },
+    "needs": "What are your main needs right now?",
+    "needsPlaceholder": "e.g. scheduling, billing, patient records, video calls...",
+    "willingnessToPay": "How much would you pay per month for this?",
+    "willingnessToPayOptions": {
+      "under10": "Less than €10",
+      "from10to25": "€10 - €25",
+      "from25to50": "€25 - €50",
+      "from50to100": "€50 - €100",
+      "over100": "More than €100"
+    },
+    "submit": "Submit and continue",
+    "submitted": "Thanks for your feedback!",
+    "submitFailed": "Failed to submit, please try again",
+    "requiredFields": "Please answer all questions."
   }
 }
