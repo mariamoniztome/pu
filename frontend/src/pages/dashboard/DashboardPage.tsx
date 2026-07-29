@@ -139,7 +139,7 @@ export function DashboardPage() {
         minute: "2-digit",
         timeZone,
       }),
-      type: apt.type,
+      type: t(`appointments.type.${apt.type === "follow-up" ? "followUp" : apt.type}`),
       completed: apt.status === "completed",
       isOnline: apt.isOnline,
     }));
