@@ -1,8 +1,10 @@
 import { useState, useEffect, useMemo } from "react";
 import { Calendar, dateFnsLocalizer, Event } from "react-big-calendar";
+import withDragAndDrop, { EventInteractionArgs } from "react-big-calendar/lib/addons/dragAndDrop";
 import { format, parse, startOfWeek, getDay } from "date-fns";
 import { enUS, pt } from "date-fns/locale";
 import "react-big-calendar/lib/css/react-big-calendar.css";
+import "react-big-calendar/lib/addons/dragAndDrop/styles.css";
 import "../../styles/calendar.css";
 import { Plus, X, Upload, FileText, Video, Link as LinkIcon } from "lucide-react";
 import { toast } from "sonner";
@@ -56,6 +58,8 @@ interface CalendarEvent extends Event {
   id: string;
   appointment: Appointment;
 }
+
+const DnDCalendar = withDragAndDrop<CalendarEvent, object>(Calendar);
 
 const TIME_RANGE_PRESETS = {
   "8-18": { startHour: 8, endHour: 18, label: "08:00 - 18:00" },
@@ -123,6 +127,7 @@ export function CalendarPage() {
   const [formData, setFormData] = useState({
     patientId: "",
     dateTime: "",
+    endTime: "",
     type: "initial" as AppointmentType,
     isOnline: false,
     notes: "",
@@ -173,11 +178,13 @@ export function CalendarPage() {
 
       const typeKey = apt.type === "follow-up" ? "followUp" : apt.type;
 
+      const start = new Date(apt.dateTime);
+
       return {
         id: apt._id,
         title: `${patientName} - ${t(`appointments.type.${typeKey}`)}`,
-        start: new Date(apt.dateTime),
-        end: new Date(new Date(apt.dateTime).getTime() + 60 * 60 * 1000),
+        start,
+        end: new Date(start.getTime() + (apt.duration || 60) * 60 * 1000),
         appointment: apt,
       };
     });
@@ -205,9 +212,12 @@ export function CalendarPage() {
   const openNewAppointment = () => {
     setSelectedEvent(null);
     setLinkedConsultation(null);
+    const start = new Date();
+    const end = new Date(start.getTime() + 60 * 60 * 1000);
     setFormData({
       patientId: "",
-      dateTime: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
+      dateTime: format(start, "yyyy-MM-dd'T'HH:mm"),
+      endTime: format(end, "yyyy-MM-dd'T'HH:mm"),
       type: "initial",
       isOnline: false,
       notes: "",
@@ -225,6 +235,7 @@ export function CalendarPage() {
     setFormData({
       patientId: "",
       dateTime: format(slotInfo.start, "yyyy-MM-dd'T'HH:mm"),
+      endTime: format(slotInfo.end, "yyyy-MM-dd'T'HH:mm"),
       type: "initial",
       isOnline: false,
       notes: "",
@@ -237,10 +248,14 @@ export function CalendarPage() {
   const handleSelectEvent = (event: CalendarEvent) => {
     if (isViewingOthersCalendar) return;
 
+    const start = new Date(event.appointment.dateTime);
+    const end = new Date(start.getTime() + (event.appointment.duration || 60) * 60 * 1000);
+
     setSelectedEvent(event);
     setFormData({
       patientId: getPatientId(event.appointment.patient),
-      dateTime: format(new Date(event.appointment.dateTime), "yyyy-MM-dd'T'HH:mm"),
+      dateTime: format(start, "yyyy-MM-dd'T'HH:mm"),
+      endTime: format(end, "yyyy-MM-dd'T'HH:mm"),
       type: event.appointment.type,
       isOnline: event.appointment.isOnline || false,
       notes: event.appointment.notes || "",
@@ -272,12 +287,22 @@ export function CalendarPage() {
       return;
     }
 
+    const start = new Date(formData.dateTime);
+    const end = new Date(formData.endTime);
+    const duration = Math.round((end.getTime() - start.getTime()) / 60000);
+
+    if (!(duration > 0)) {
+      toast.error(t('appointments.endTimeBeforeStart'));
+      return;
+    }
+
     setLoading(true);
 
     try {
       const data = {
         patient: formData.patientId,
-        dateTime: new Date(formData.dateTime).toISOString(),
+        dateTime: start.toISOString(),
+        duration: Math.min(480, Math.max(15, duration)),
         type: formData.type,
         isOnline: formData.isOnline,
         notes: formData.notes || undefined,
@@ -348,6 +373,37 @@ export function CalendarPage() {
     } catch (error) {
       toast.error(t('calendar.failedToDelete'));
     }
+  };
+
+  const updateAppointmentTiming = async (
+    appointmentId: string,
+    start: Date,
+    end: Date
+  ) => {
+    const duration = Math.max(
+      15,
+      Math.round((end.getTime() - start.getTime()) / 60000)
+    );
+
+    try {
+      await appointmentsApi.update(appointmentId, {
+        dateTime: start.toISOString(),
+        duration,
+      });
+      await loadData();
+    } catch (err: any) {
+      toast.error(err.message || t('calendar.failedToSave'));
+    }
+  };
+
+  const handleEventDrop = ({ event, start, end }: EventInteractionArgs<CalendarEvent>) => {
+    if (isViewingOthersCalendar) return;
+    updateAppointmentTiming(event.id, new Date(start), new Date(end));
+  };
+
+  const handleEventResize = ({ event, start, end }: EventInteractionArgs<CalendarEvent>) => {
+    if (isViewingOthersCalendar) return;
+    updateAppointmentTiming(event.id, new Date(start), new Date(end));
   };
 
   const videoCallRoomName = selectedEvent ? `clinicamente-${selectedEvent.id}` : "";
@@ -469,7 +525,7 @@ export function CalendarPage() {
 
       <Card className="rounded-2xl p-2 sm:p-4 border-gray-100 bg-white overflow-hidden">
         <div style={{ height: "calc(100vh - 166px)", minHeight: "600px" }}>
-          <Calendar
+          <DnDCalendar
             localizer={localizer}
             culture={culture}
             messages={calendarMessages}
@@ -478,7 +534,11 @@ export function CalendarPage() {
             endAccessor="end"
             onSelectSlot={handleSelectSlot}
             onSelectEvent={handleSelectEvent}
+            onEventDrop={handleEventDrop}
+            onEventResize={handleEventResize}
             selectable={!isViewingOthersCalendar}
+            resizable={!isViewingOthersCalendar}
+            draggableAccessor={() => !isViewingOthersCalendar}
             eventPropGetter={eventStyleGetter}
             views={["month", "week", "day", "agenda"]}
             defaultView="week"
@@ -530,19 +590,50 @@ export function CalendarPage() {
                 </Select>
               </div>
 
-              {/* Date */}
-              <div className="space-y-2">
-                <Label className="text-sm font-semibold text-gray-700">
-                  {t('appointments.dateTime')} <span className="text-red-500">*</span>
-                </Label>
-                <Input
-                  type="datetime-local"
-                  value={formData.dateTime}
-                  onChange={(e) =>
-                    setFormData({ ...formData, dateTime: e.target.value })
-                  }
-                  required
-                />
+              {/* Date & Time */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-sm font-semibold text-gray-700">
+                    {t('appointments.startTime')} <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    type="datetime-local"
+                    value={formData.dateTime}
+                    onChange={(e) => {
+                      const dateTime = e.target.value;
+                      setFormData((prev) => {
+                        // Shift endTime by the same amount so the duration
+                        // the user already set is preserved when only the
+                        // start is moved.
+                        const prevStart = new Date(prev.dateTime);
+                        const prevEnd = new Date(prev.endTime);
+                        const nextStart = new Date(dateTime);
+                        const durationMs = prevEnd.getTime() - prevStart.getTime();
+                        const endTime =
+                          prev.dateTime && durationMs > 0
+                            ? format(new Date(nextStart.getTime() + durationMs), "yyyy-MM-dd'T'HH:mm")
+                            : prev.endTime;
+                        return { ...prev, dateTime, endTime };
+                      });
+                    }}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-sm font-semibold text-gray-700">
+                    {t('appointments.endTime')} <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    type="datetime-local"
+                    value={formData.endTime}
+                    min={formData.dateTime || undefined}
+                    onChange={(e) =>
+                      setFormData({ ...formData, endTime: e.target.value })
+                    }
+                    required
+                  />
+                </div>
               </div>
 
               {/* Type */}
