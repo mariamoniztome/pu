@@ -5,12 +5,14 @@ import {
   CalendarClock,
   FileBarChart,
   Euro,
+  Receipt,
   Home,
   Settings,
   Pin,
   PinOff,
   LogOut,
 } from 'lucide-react';
+import { toast } from 'sonner';
 import { cn } from '../lib/utils';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { useTranslation } from '../hooks/useTranslation';
@@ -26,6 +28,7 @@ const getNavItems = (t: any) => [
   { to: '/consultations', label: t('navigation.consultations'), icon: CalendarClock },
   { to: '/reports', label: t('navigation.reports'), icon: FileBarChart },
   { to: '/payments', label: t('navigation.payments'), icon: Euro },
+  { to: '/billing', label: t('navigation.billing'), icon: Receipt, comingSoon: true },
 ];
 
 export function Layout() {
@@ -126,6 +129,31 @@ export function Layout() {
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = isRouteActive(item.to);
+
+              if (item.comingSoon) {
+                return (
+                  <button
+                    key={item.to}
+                    type="button"
+                    onClick={() => toast.info(t('navigation.billingComingSoon'))}
+                    className={cn(
+                      'flex items-center gap-3 px-4 py-4 rounded-3xl text-sm font-medium transition-all duration-300 w-full text-gray-400 row-hover hover:text-gray-600',
+                      !isExpanded && 'justify-center'
+                    )}
+                    title={t('navigation.billingComingSoon')}
+                  >
+                    <Icon className="h-5 w-5 flex-shrink-0" />
+                    {isExpanded && (
+                      <span className="flex items-center gap-2 whitespace-nowrap">
+                        {item.label}
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wide bg-lilac-100 text-lilac-600">
+                          {t('navigation.comingSoon')}
+                        </span>
+                      </span>
+                    )}
+                  </button>
+                );
+              }
 
               return (
                 <Link
