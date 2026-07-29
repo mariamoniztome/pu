@@ -36,10 +36,6 @@ export function DashboardPage() {
     useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [showNextSessionCall, setShowNextSessionCall] = useState(false);
-  const [activeCallAppointment, setActiveCallAppointment] = useState<{
-    id: string;
-    name: string;
-  } | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -151,9 +147,20 @@ export function DashboardPage() {
   // Soonest upcoming appointment that hasn't happened/been cancelled yet.
   // appointmentsApi returns appointments sorted by dateTime descending, so
   // we can't just take the first entry — filter and sort ascending here.
-  const now = new Date();
+  // Not restricted to dateTime >= now: a session whose start time has
+  // already passed but hasn't been marked completed is still the one the
+  // doctor would want to jump into (e.g. starting a call a few minutes late).
   const nextAppointment = appointments
-    .filter((apt) => new Date(apt.dateTime) >= now && !["cancelled", "completed", "no-show"].includes(apt.status))
+    .filter((apt) => {
+      const aptDate = new Date(apt.dateTime);
+      return (
+        apt.isOnline &&
+        aptDate.getDate() === today.getDate() &&
+        aptDate.getMonth() === today.getMonth() &&
+        aptDate.getFullYear() === today.getFullYear() &&
+        !["cancelled", "completed", "no-show"].includes(apt.status)
+      );
+    })
     .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime())[0];
   const nextAppointmentPatientName = nextAppointment
     ? typeof nextAppointment.patient === "string"
@@ -290,9 +297,10 @@ export function DashboardPage() {
                     <button
                       type="button"
                       onClick={() => setShowNextSessionCall(true)}
-                      className="text-xs font-semibold text-gray-700 bg-white/40 backdrop-blur-sm px-4 py-2 rounded-full hover:bg-white/70 transition-colors"
+                      className="flex items-center gap-1.5 text-xs font-semibold text-gray-700 bg-white/40 backdrop-blur-sm px-4 py-2 rounded-full hover:bg-white/70 transition-colors"
                     >
-                      {t("dashboard.available")}
+                      <Video className="h-3.5 w-3.5" />
+                      {t("calendar.videoCall.startButton")}
                     </button>
                   </div>
                 )}
@@ -489,18 +497,6 @@ export function DashboardPage() {
                     <div className="text-sm font-medium text-gray-700">
                       {apt.time}
                     </div>
-                    {apt.isOnline && !apt.completed && (
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setActiveCallAppointment({ id: apt._id, name: apt.name })
-                        }
-                        className="flex items-center gap-1 text-xs font-semibold text-lilac-700 bg-lilac-100 px-3 py-1.5 rounded-full hover:bg-lilac-200 transition-colors flex-shrink-0"
-                      >
-                        <Video className="h-3.5 w-3.5" />
-                        {t("calendar.videoCall.startButton")}
-                      </button>
-                    )}
                     <div
                       className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 shadow-lg ${
                         apt.completed
@@ -550,17 +546,6 @@ export function DashboardPage() {
           onOpenChange={setShowNextSessionCall}
           roomName={`clinicamente-${nextAppointment._id}`}
           patientName={nextAppointmentPatientName || undefined}
-        />
-      )}
-
-      {activeCallAppointment && (
-        <VideoCallDialog
-          open={!!activeCallAppointment}
-          onOpenChange={(open) => {
-            if (!open) setActiveCallAppointment(null);
-          }}
-          roomName={`clinicamente-${activeCallAppointment.id}`}
-          patientName={activeCallAppointment.name}
         />
       )}
     </div>
